@@ -1,0 +1,29 @@
+<svg width="900" height="600" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f5f1" />
+      <stop offset="100%" stop-color="#d4c7b2" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b09772" />
+      <stop offset="100%" stop-color="#6a4b2d" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="900" height="600" fill="url(#bg)" />
+  <g opacity="0.8">
+    <rect x="60" y="280" width="200" height="240" fill="white" />
+    <rect x="320" y="160" width="160" height="360" fill="white" />
+    <rect x="520" y="240" width="160" height="280" fill="white" />
+    <rect x="720" y="200" width="120" height="320" fill="white" />
+  </g>
+  <g opacity="0.65">
+    <rect x="80" y="300" width="20" height="200" fill="url(#accent)" />
+    <rect x="140" y="300" width="20" height="200" fill="url(#accent)" />
+    <rect x="200" y="300" width="20" height="200" fill="url(#accent)" />
+    <rect x="340" y="180" width="30" height="320" fill="url(#accent)" />
+    <rect x="380" y="180" width="30" height="320" fill="url(#accent)" />
+    <rect x="560" y="260" width="24" height="240" fill="url(#accent)" />
+    <rect x="600" y="260" width="24" height="240" fill="url(#accent)" />
+  </g>
+  <rect x="0" y="0" width="900" height="600" fill="url(#bg)" opacity="0.15" />
+</svg>

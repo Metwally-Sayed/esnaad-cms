@@ -1,0 +1,250 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  role          String    @default("ADMIN")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  emailVerified Boolean   @default(false)
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
+
+model Theme {
+  id        String    @id @default(cuid())
+  name      EnumTheme @default(DEFAULT)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("theme")
+}
+
+model GlobalSettings {
+  id              String   @id @default("global")
+  siteName        String?
+  siteDescription String?
+  defaultHeaderId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  defaultFooterId String?
+  defaultFooter   Footer?  @relation("DefaultFooter", fields: [defaultFooterId], references: [id])
+  defaultHeader   Header?  @relation("DefaultHeader", fields: [defaultHeaderId], references: [id])
+
+  @@map("global_settings")
+}
+
+model Header {
+  id             String           @id @default(cuid())
+  name           String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  globalSettings GlobalSettings[] @relation("DefaultHeader")
+  headerLinks    HeaderLink[]
+  pages          Page[]
+
+  @@map("header")
+}
+
+model HeaderLink {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  headerId  String
+  header    Header   @relation(fields: [headerId], references: [id], onDelete: Cascade)
+
+  @@map("header_link")
+}
+
+model Page {
+  id             String          @id @default(cuid())
+  title          String
+  slug           String          @unique
+  description    String?
+  published      Boolean         @default(false)
+  headerId       String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  footerId       String?
+  footer         Footer?         @relation(fields: [footerId], references: [id])
+  header         Header?         @relation(fields: [headerId], references: [id])
+  blocks         PageBlock[]
+  collectionItem CollectionItem? @relation("CollectionItemPage")
+
+  @@map("page")
+}
+
+model PageBlock {
+  id        String   @id @default(cuid())
+  order     Int
+  pageId    String
+  blockId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  block     Block    @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, order])
+  @@index([pageId])
+  @@map("page_block")
+}
+
+model Block {
+  id         String      @id @default(cuid())
+  name       String
+  type       BlockType
+  variant    String      @default("default")
+  content    Json
+  isGlobal   Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  pageBlocks PageBlock[]
+
+  @@index([type])
+  @@index([type, variant])
+  @@map("block")
+}
+
+model Footer {
+  id             String           @id @default(cuid())
+  name           String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  footerLinks    FooterLink[]
+  globalSettings GlobalSettings[] @relation("DefaultFooter")
+  pages          Page[]
+
+  @@map("footer")
+}
+
+model FooterLink {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  footerId  String
+  footer    Footer   @relation(fields: [footerId], references: [id], onDelete: Cascade)
+
+  @@map("footer_link")
+}
+
+enum EnumTheme {
+  DEFAULT
+  AMBER
+  VERCEL
+  CAFFEINE
+  CLAUDE
+  DARKMATTER
+  FANCEY
+  WHITEKOALA
+}
+
+enum BlockType {
+  HERO
+  TEXT
+  IMAGE
+  GALLERY
+  VIDEO
+  CTA
+  HIGHLIGHTS
+  TESTIMONIALS
+  FEATURES
+  PRICING
+  FAQ
+  FORM
+  SPACER
+  CODE
+  CUSTOM
+  ABOUT
+  PROJECT_DETAILS
+
+  @@map("block_type")
+}
+
+model Collection {
+  id                     String           @id @default(cuid())
+  name                   String
+  slug                   String           @unique
+  hasProfilePages        Boolean          @default(false)
+  profilePageSlugPattern String?
+  items                  CollectionItem[]
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  @@map("collection")
+}
+
+model CollectionItem {
+  id           String     @id @default(cuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  content      Json
+  order        Int        @default(0)
+  pageId       String?    @unique
+  page         Page?      @relation("CollectionItemPage", fields: [pageId], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([collectionId])
+  @@map("collection_item")
+}

@@ -1,0 +1,278 @@
+"use server";
+
+import prisma from "@/lib/prisma";
+import { pageDetailsSchema } from "@/lib/validators/page";
+import { BlockType, Prisma } from "@prisma/client";
+import { z } from "zod/v3";
+
+export async function getPageBySlug({ slug }: { slug: string }) {
+  console.log("getPageBySlug called with:", slug);
+  try {
+    const count = await prisma.page.count();
+    console.log("Total pages in DB:", count);
+    const page = await prisma.page.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        blocks: {
+          orderBy: {
+            order: "asc",
+          },
+          include: {
+            block: true,
+          },
+        },
+        header: true,
+        footer: true,
+        collectionItem: true,
+      },
+    });
+
+    return page;
+  } catch (error) {
+    console.error("Error fetching page by slug:", error);
+    return null;
+  }
+}
+
+const pageBlockSchema = z.object({
+  blockId: z.string().min(1),
+  order: z.number().int().min(0),
+  name: z.string().min(1),
+  type: z.nativeEnum(BlockType),
+  variant: z.string().default("default"),
+  content: z.record(z.any()).optional(),
+});
+
+const createPageSchema = pageDetailsSchema.extend({
+  blocks: z.array(pageBlockSchema).min(1, "Please select at least one block."),
+});
+
+export type CreatePageInput = z.infer<typeof createPageSchema>;
+
+export async function createPage(input: CreatePageInput) {
+  const parsed = createPageSchema.safeParse(input);
+
+  if (!parsed.success) {
+    const message =
+      parsed.error.errors[0]?.message || "Invalid page configuration.";
+    return {
+      success: false,
+      error: message,
+    };
+  }
+
+  const { blocks, ...pageData } = parsed.data;
+
+  const normalizedSlug = pageData.slug.startsWith("/")
+    ? pageData.slug.toLowerCase()
+    : `/${pageData.slug}`.toLowerCase();
+
+  try {
+    const createdPage = await prisma.page.create({
+      data: {
+        title: pageData.title,
+        slug: normalizedSlug.replace(/\/{2,}/g, "/"),
+        description:
+          pageData.description && pageData.description.length > 0
+            ? pageData.description
+            : null,
+        published: pageData.published,
+      },
+    });
+
+    const createdBlocks = await Promise.all(
+      blocks.map(async (block) => {
+        const newBlock = await prisma.block.create({
+          data: {
+            name: block.name,
+            type: block.type,
+            variant: block.variant || "default",
+            content: block.content ?? {},
+            isGlobal: false,
+          },
+        });
+
+        return {
+          pageId: createdPage.id,
+          blockId: newBlock.id,
+          order: block.order,
+        };
+      })
+    );
+
+    await prisma.pageBlock.createMany({
+      data: createdBlocks,
+    });
+
+    return {
+      success: true,
+      data: createdPage,
+    };
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return {
+        success: false,
+        error: "A page with this slug already exists.",
+      };
+    }
+
+    console.error("Error creating page:", error);
+    return {
+      success: false,
+      error: "Failed to create page.",
+    };
+  }
+}
+export async function getPages() {
+  try {
+    const pages = await prisma.page.findMany({
+      include: {
+        blocks: true,
+        header: true,
+        footer: true,
+      },
+    });
+
+    return pages;
+  } catch (error) {
+    console.error("Error fetching pages:", error);
+    return null;
+  }
+}
+
+export async function getPageWithBlocks(pageId: string) {
+  try {
+    const page = await prisma.page.findUnique({
+      where: {
+        id: pageId,
+      },
+      include: {
+        header: true,
+        footer: true,
+        blocks: {
+          orderBy: {
+            order: "asc",
+          },
+          include: {
+            block: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                variant: true,
+                content: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return page;
+  } catch (error) {
+    console.error("Error fetching page with blocks:", error);
+    return null;
+  }
+}
+
+export async function updatePage(pageId: string, input: CreatePageInput) {
+  const parsed = createPageSchema.safeParse(input);
+
+  if (!parsed.success) {
+    const message =
+      parsed.error.errors[0]?.message || "Invalid page configuration.";
+    return {
+      success: false,
+      error: message,
+    };
+  }
+
+  const { blocks, ...pageData } = parsed.data;
+
+  const normalizedSlug = pageData.slug.startsWith("/")
+    ? pageData.slug.toLowerCase()
+    : `/${pageData.slug}`.toLowerCase();
+
+  try {
+    const updatedPage = await prisma.$transaction(async (tx) => {
+      const targetPage = await tx.page.update({
+        where: { id: pageId },
+        data: {
+          title: pageData.title,
+          slug: normalizedSlug.replace(/\/{2,}/g, "/"),
+          description:
+            pageData.description && pageData.description.length > 0
+              ? pageData.description
+              : null,
+          published: pageData.published,
+        },
+      });
+
+      const existingBlocks = await tx.pageBlock.findMany({
+        where: { pageId },
+        select: { blockId: true },
+      });
+
+      if (existingBlocks.length) {
+        await tx.pageBlock.deleteMany({ where: { pageId } });
+        await tx.block.deleteMany({
+          where: { id: { in: existingBlocks.map((b) => b.blockId) } },
+        });
+      }
+
+      const createdBlocks = await Promise.all(
+        blocks.map(async (block) => {
+          const newBlock = await tx.block.create({
+            data: {
+              name: block.name,
+              type: block.type,
+              variant: block.variant || "default",
+              content: block.content ?? {},
+              isGlobal: false,
+            },
+          });
+
+          return {
+            pageId: targetPage.id,
+            blockId: newBlock.id,
+            order: block.order,
+          };
+        })
+      );
+
+      if (createdBlocks.length) {
+        await tx.pageBlock.createMany({
+          data: createdBlocks,
+        });
+      }
+
+      return targetPage;
+    });
+
+    return {
+      success: true,
+      data: updatedPage,
+    };
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return {
+        success: false,
+        error: "A page with this slug already exists.",
+      };
+    }
+
+    console.error("Error updating page:", error);
+    return {
+      success: false,
+      error: "Failed to update page.",
+    };
+  }
+}

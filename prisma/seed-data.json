@@ -1,0 +1,1037 @@
+{
+  "collections": [
+    {
+      "id": "cmi8vulkf00161856dxdfuaz3",
+      "name": "What We Build",
+      "slug": "what-we-build",
+      "createdAt": "2025-11-21T13:15:17.295Z",
+      "updatedAt": "2025-11-21T13:15:17.295Z"
+    },
+    {
+      "id": "col-our-philosophy",
+      "name": "Our Philosophy",
+      "slug": "our-philosophy",
+      "createdAt": "2025-11-21T15:45:00.000Z",
+      "updatedAt": "2025-11-21T15:45:00.000Z"
+    },
+    {
+      "id": "col-projects",
+      "name": "Projects",
+      "slug": "projects",
+      "hasProfilePages": true,
+      "profilePageSlugPattern": "/projects/[slug]",
+      "createdAt": "2025-11-21T17:05:00.000Z",
+      "updatedAt": "2025-11-21T17:05:00.000Z"
+    }
+  ],
+  "collectionItems": [
+    {
+      "id": "cmi8vulkf00171856aa2l17k2",
+      "collectionId": "cmi8vulkf00161856dxdfuaz3",
+      "content": {
+        "image": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2000&q=80",
+        "title": "THE SPARK"
+      },
+      "order": 0,
+      "createdAt": "2025-11-21T13:15:17.295Z",
+      "updatedAt": "2025-11-21T13:15:17.295Z"
+    },
+    {
+      "id": "cmi8vulkf00181856wglepawm",
+      "collectionId": "cmi8vulkf00161856dxdfuaz3",
+      "content": {
+        "image": "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=2000&q=80",
+        "title": "THE SPARK"
+      },
+      "order": 1,
+      "createdAt": "2025-11-21T13:15:17.295Z",
+      "updatedAt": "2025-11-21T13:15:17.295Z"
+    },
+    {
+      "id": "col-our-philosophy-1",
+      "collectionId": "col-our-philosophy",
+      "content": {
+        "title": "EXCELLENCE",
+        "description": "The Spark by Esnaad is our flagship development in Meydan District 11, Dubai — a project that reflects our vision for contemporary, design-driven living. Rising B+G+5+R, the building offers a collection of one- and two-bedroom residences aimed to elevate beautiful living with precision and purpose.",
+        "image": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=80"
+      },
+      "order": 0,
+      "createdAt": "2025-11-21T15:45:00.000Z",
+      "updatedAt": "2025-11-21T15:45:00.000Z"
+    },
+    {
+      "id": "col-our-philosophy-2",
+      "collectionId": "col-our-philosophy",
+      "content": {
+        "title": "SYNERGY",
+        "description": "We believe true luxury is not measured in square meters but in how spaces connect and support life. Some of our designs bring people together. Others carve quiet moments of pause. Both are built with the same intention: to place people first.",
+        "image": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=2000&q=80"
+      },
+      "order": 1,
+      "createdAt": "2025-11-21T15:45:00.000Z",
+      "updatedAt": "2025-11-21T15:45:00.000Z"
+    },
+    {
+      "id": "col-our-philosophy-3",
+      "collectionId": "col-our-philosophy",
+      "content": {
+        "title": "QUALITY",
+        "description": "Quality is precision, in every cut, every surface, every transition. It is not excess, but discipline: details refined until they feel seamless, enduring, inevitable.",
+        "image": "https://images.unsplash.com/photo-1508387027703-04bd78ec9c56?auto=format&fit=crop&w=2000&q=80"
+      },
+      "order": 2,
+      "createdAt": "2025-11-21T15:45:00.000Z",
+      "updatedAt": "2025-11-21T15:45:00.000Z"
+    },
+    {
+      "id": "col-our-philosophy-4",
+      "collectionId": "col-our-philosophy",
+      "content": {
+        "title": "DESIGN",
+        "description": "Design is our signature. It is detail drawn with precision, spaces carved with intention, experiences built to feel inevitable. We design for resonance, not for ornament.",
+        "image": "https://images.unsplash.com/photo-1529429617124-aee5f4ae7890?auto=format&fit=crop&w=2000&q=80"
+      },
+      "order": 3,
+      "createdAt": "2025-11-21T15:45:00.000Z",
+      "updatedAt": "2025-11-21T15:45:00.000Z"
+    },
+    {
+      "id": "col-projects-1",
+      "collectionId": "col-projects",
+      "content": {
+        "title": "THE SPARK",
+        "image": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=2000&q=80",
+        "slug": "the-spark",
+        "heroImage": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=80",
+        "conceptDescription": "The Spark by Esnaad is our flagship development in Meydan District 11, Dubai — a project that reflects our vision for contemporary, design-driven living. Rising B+G+5+R, the building offers a collection of one- and two-bedroom residences aimed to elevate beautiful living with precision and purpose.",
+        "conceptImages": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400,https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=400,https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400,https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400,https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=400,https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400",
+        "architecture": "B+G+5+R 50 One & Two-Bedroom Apartments",
+        "features": "Full glass façade, Swimming pool, Gym, Sauna & Steam Room, Co-working space, Café & Entrance Lobby, Secured Covered Parking with Dedicated Spaces, Bicycle Parking and Electric Vehicle Charging Stations, 24/7 Dubai Civil Defense Approved Security Systems",
+        "brochureUrl": "#",
+        "locationDescription": "Dubai's strategic location extends beyond city infrastructure to include a robust legal system, public transport, parks, and entertainment, making it a gateway to global opportunities.",
+        "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3610.1903458851785!2d55.3427315!3d25.1971815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f69d5b0e3b3d7%3A0x5f9b8f0e3b3b3b3b!2sMeydan%2C%20Dubai!5e0!3m2!1sen!2sae!4v1234567890",
+        "emplacementText": "A sleek, full-glass façade with generous ceiling heights, creating bright, open living spaces.",
+        "recreationalText": "Designed with modern lifestyle in mind: amenities include an infinity pool, gym, sauna & steam room, co working lounge, café, EV charging stations and bicycle parking.",
+        "stats": "[{\"value\":\"50\",\"label\":\"RESIDENCES\"},{\"value\":\"B+G+5+R\",\"label\":\"FLOORS\"},{\"value\":\"2026\",\"label\":\"DELIVERY\"},{\"value\":\"LEED SILVER\",\"label\":\"CERTIFICATION\"}]"
+      },
+      "order": 0,
+      "createdAt": "2025-11-21T17:05:00.000Z",
+      "updatedAt": "2025-11-21T17:05:00.000Z"
+    },
+    {
+      "id": "col-projects-2",
+      "collectionId": "col-projects",
+      "content": {
+        "title": "PROJECT 02",
+        "image": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=80",
+        "slug": "project-02"
+      },
+      "order": 1,
+      "createdAt": "2025-11-21T17:05:00.000Z",
+      "updatedAt": "2025-11-21T17:05:00.000Z"
+    },
+    {
+      "id": "col-projects-3",
+      "collectionId": "col-projects",
+      "content": {
+        "title": "PROJECT 03",
+        "image": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=2000&q=80",
+        "slug": "project-03"
+      },
+      "order": 2,
+      "createdAt": "2025-11-21T17:05:00.000Z",
+      "updatedAt": "2025-11-21T17:05:00.000Z"
+    }
+  ],
+  "headers": [
+    {
+      "id": "cmi8vuhu400001856rf3snarm",
+      "name": "Default Header",
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z"
+    },
+    {
+      "id": "cmi8vuirr000918560m6ouvtr",
+      "name": "Resizable Header",
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z"
+    }
+  ],
+  "headerLinks": [
+    {
+      "id": "cmi8vuhu400011856m5b2w2tc",
+      "name": "Home",
+      "slug": "/",
+      "order": 1,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuhu400021856b7sox0j8",
+      "name": "Developments",
+      "slug": "/developments",
+      "order": 2,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuhu400031856jyy1iw1x",
+      "name": "About Us",
+      "slug": "/about-us",
+      "order": 3,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuhu400041856s03nx49s",
+      "name": "Blogs",
+      "slug": "/blogs",
+      "order": 4,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuhu4000518564hjt7b7y",
+      "name": "Contact Us",
+      "slug": "/contact-us",
+      "order": 5,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuhu40006185689cs5hd4",
+      "name": "Broker",
+      "slug": "/broker",
+      "order": 6,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuhu4000718562ry74e49",
+      "name": "Registration",
+      "slug": "/registration",
+      "order": 7,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuhu400081856j989kqw2",
+      "name": "Careers",
+      "slug": "/careers",
+      "order": 8,
+      "createdAt": "2025-11-21T13:15:12.460Z",
+      "updatedAt": "2025-11-21T13:15:12.460Z",
+      "headerId": "cmi8vuhu400001856rf3snarm"
+    },
+    {
+      "id": "cmi8vuirr000a1856syxlztob",
+      "name": "Home",
+      "slug": "/",
+      "order": 1,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    },
+    {
+      "id": "cmi8vuirr000b185681jd5eoi",
+      "name": "Developments",
+      "slug": "/developments",
+      "order": 2,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    },
+    {
+      "id": "cmi8vuirr000c1856m9v61kte",
+      "name": "About Us",
+      "slug": "/about-us",
+      "order": 3,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    },
+    {
+      "id": "cmi8vuirr000d185645ib9f61",
+      "name": "Blogs",
+      "slug": "/blogs",
+      "order": 4,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    },
+    {
+      "id": "cmi8vuirr000e1856ghpovu3a",
+      "name": "Contact Us",
+      "slug": "/contact-us",
+      "order": 5,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    },
+    {
+      "id": "cmi8vuirr000f1856srp6ugut",
+      "name": "Broker",
+      "slug": "/broker",
+      "order": 6,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    },
+    {
+      "id": "cmi8vuirr000g18564lyd38sx",
+      "name": "Registration",
+      "slug": "/registration",
+      "order": 7,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    },
+    {
+      "id": "cmi8vuirr000h185637awd30o",
+      "name": "Careers",
+      "slug": "/careers",
+      "order": 8,
+      "createdAt": "2025-11-21T13:15:13.671Z",
+      "updatedAt": "2025-11-21T13:15:13.671Z",
+      "headerId": "cmi8vuirr000918560m6ouvtr"
+    }
+  ],
+  "footers": [
+    {
+      "id": "cmi8vujbv000i1856x8854t22",
+      "name": "Default Footer",
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z"
+    },
+    {
+      "id": "cmi8vuk83000r18561u1kgc72",
+      "name": "Resizable Footer",
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z"
+    }
+  ],
+  "footerLinks": [
+    {
+      "id": "cmi8vujbv000j18560ay278ax",
+      "name": "Home",
+      "slug": "/",
+      "order": 1,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vujbv000k1856zy31v4yx",
+      "name": "Developments",
+      "slug": "/developments",
+      "order": 2,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vujbv000l1856nby1la8r",
+      "name": "About Us",
+      "slug": "/about-us",
+      "order": 3,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vujbv000m18564gqw59cg",
+      "name": "Blogs",
+      "slug": "/blogs",
+      "order": 4,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vujbv000n1856dnjoxx2e",
+      "name": "Contact Us",
+      "slug": "/contact-us",
+      "order": 5,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vujbv000o1856o1958ay4",
+      "name": "Broker",
+      "slug": "/broker",
+      "order": 6,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vujbv000p1856sanqb22a",
+      "name": "Registration",
+      "slug": "/registration",
+      "order": 7,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vujbv000q1856h59580cj",
+      "name": "Careers",
+      "slug": "/careers",
+      "order": 8,
+      "createdAt": "2025-11-21T13:15:14.396Z",
+      "updatedAt": "2025-11-21T13:15:14.396Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vuk83000s1856t81zz0ju",
+      "name": "Home",
+      "slug": "/",
+      "order": 1,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vuk83000t1856z0xat5cx",
+      "name": "Developments",
+      "slug": "/developments",
+      "order": 2,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vuk83000u1856zlzdt7uw",
+      "name": "About Us",
+      "slug": "/about-us",
+      "order": 3,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vuk83000v1856ev0vhpu1",
+      "name": "Blogs",
+      "slug": "/blogs",
+      "order": 4,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vuk83000w185618af756p",
+      "name": "Contact Us",
+      "slug": "/contact-us",
+      "order": 5,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vuk83000x18564vxqj8de",
+      "name": "Broker",
+      "slug": "/broker",
+      "order": 6,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vuk83000y1856iguvmqg8",
+      "name": "Registration",
+      "slug": "/registration",
+      "order": 7,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vuk83000z185675n3106g",
+      "name": "Careers",
+      "slug": "/careers",
+      "order": 8,
+      "createdAt": "2025-11-21T13:15:15.555Z",
+      "updatedAt": "2025-11-21T13:15:15.555Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    }
+  ],
+  "globalSettings": [
+    {
+      "id": "global",
+      "siteName": "Esnaad CMS",
+      "siteDescription": "A modern content management system",
+      "defaultHeaderId": "cmi8vuhu400001856rf3snarm",
+      "createdAt": "2025-11-21T13:15:16.276Z",
+      "updatedAt": "2025-11-21T13:15:16.276Z",
+      "defaultFooterId": "cmi8vujbv000i1856x8854t22"
+    }
+  ],
+
+  "pages": [
+    {
+      "id": "cmi8vul0700111856896i636l",
+      "title": "Home",
+      "slug": "/",
+      "description": "Welcome to Esnaad CMS",
+      "published": true,
+      "headerId": null,
+      "createdAt": "2025-11-21T13:15:16.567Z",
+      "updatedAt": "2025-11-21T13:33:03.435Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "cmi8vul8b001318568cj6zsi4",
+      "title": "About Us",
+      "slug": "/about-us",
+      "description": "Learn more about us",
+      "published": true,
+      "headerId": "cmi8vuirr000918560m6ouvtr",
+      "createdAt": "2025-11-21T13:15:16.859Z",
+      "updatedAt": "2025-11-21T13:15:16.859Z",
+      "footerId": "cmi8vuk83000r18561u1kgc72"
+    },
+    {
+      "id": "cmi8vulgc00151856ef4we1vh",
+      "title": "Developments",
+      "slug": "/developments",
+      "description": "Our development projects",
+      "published": true,
+      "headerId": null,
+      "createdAt": "2025-11-21T13:15:17.148Z",
+      "updatedAt": "2025-11-21T13:15:17.148Z",
+      "footerId": "cmi8vujbv000i1856x8854t22"
+    },
+    {
+      "id": "page-our-vision",
+      "title": "Our Vision",
+      "slug": "/our-vision",
+      "description": "A vision shaped by design",
+      "published": true,
+      "headerId": null,
+      "footerId": "cmi8vujbv000i1856x8854t22",
+      "createdAt": "2025-11-21T18:25:00.000Z",
+      "updatedAt": "2025-11-21T18:25:00.000Z"
+    },
+    {
+      "id": "page-careers",
+      "title": "Careers",
+      "slug": "/careers",
+      "description": "Join our team",
+      "published": true,
+      "headerId": "cmi8vuhu400001856rf3snarm",
+      "footerId": "cmi8vujbv000i1856x8854t22",
+      "createdAt": "2025-11-22T20:00:00.000Z",
+      "updatedAt": "2025-11-22T20:00:00.000Z"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "cmi8vumt9001b1856848pos2t",
+      "name": "About: What We Build",
+      "type": "ABOUT",
+      "variant": "about-philosophy",
+      "content": {
+        "subtitle": "Embark on an extraordinary journey shaped by over two decades of profound expertise in the dynamic realms of real estate and construction. ESNAAD, synonymous with innovation and excellence, is dedicated to elevating your living experiences through meticulously crafted spaces.",
+        "textColor": "#2d2d2d",
+        "titleColor": "#1a1a1a",
+        "collectionId": "cmi8vulkf00161856dxdfuaz3",
+        "customColors": false,
+        "sectionTitle": "WHAT WE BUILD",
+        "backgroundColor": "#ffffff",
+        "description": "Embark on an extraordinary journey shaped by over two decades of profound expertise in the dynamic realms of real estate and construction. ESNAAD, synonymous with innovation and excellence, is dedicated to elevating your living experiences through meticulously crafted spaces.",
+        "itemTextAlign": "center"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T13:15:18.909Z",
+      "updatedAt": "2025-11-21T13:15:18.909Z"
+    },
+    {
+      "id": "cmi8vumxb001c1856vxkumewi",
+      "name": "CTA: Hero Inline Link",
+      "type": "CTA",
+      "variant": "default",
+      "content": {
+        "href": "#story",
+        "tone": "light",
+        "label": "Show Apartment Video",
+        "variant": "hero-inline",
+        "accentWidth": 40
+      },
+      "isGlobal": true,
+      "createdAt": "2025-11-21T13:15:19.055Z",
+      "updatedAt": "2025-11-21T13:15:19.055Z"
+    },
+    {
+      "id": "cmi8vun1d001d1856ock0u6i2",
+      "name": "CTA: Glow Button",
+      "type": "CTA",
+      "variant": "default",
+      "content": {
+        "href": "/downloads/brochure.pdf",
+        "label": "Download Brochure",
+        "variant": "glow-button",
+        "sublabel": "3 MB • PDF",
+        "glowColor": "#F2D4A1"
+      },
+      "isGlobal": true,
+      "createdAt": "2025-11-21T13:15:19.202Z",
+      "updatedAt": "2025-11-21T13:15:19.202Z"
+    },
+    {
+      "id": "cmi8vundm001g18567fzppyic",
+      "name": "Highlights: Grid Cards",
+      "type": "HIGHLIGHTS",
+      "variant": "default",
+      "content": {
+        "items": [
+          {
+            "label": "Residences",
+            "value": "5K",
+            "description": "Delivered across Abu Dhabi & Dubai"
+          },
+          {
+            "label": "Cities",
+            "value": "4",
+            "description": "Active development footprints"
+          },
+          {
+            "label": "Consultants",
+            "value": "120+",
+            "description": "Design, engineering, and hospitality partners"
+          },
+          {
+            "label": "Sustainable rating",
+            "value": "LEED Gold",
+            "description": "Across our flagship towers"
+          }
+        ],
+        "title": "Our Track Record",
+        "variant": "grid-cards"
+      },
+      "isGlobal": true,
+      "createdAt": "2025-11-21T13:15:19.642Z",
+      "updatedAt": "2025-11-21T13:15:19.642Z"
+    },
+    {
+      "id": "cmi8whh26001h18lra0zykcq9",
+      "name": "Company Story",
+      "type": "ABOUT",
+      "variant": "about-story",
+      "content": {
+        "image": "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?auto=format&fit=crop&w=2000&q=80",
+        "imageAlt": "Company building",
+        "subtitle": "OUR STORY",
+        "textColor": "#171717",
+        "paragraphs": [
+          {
+            "text": "Embark on an extraordinary journey shaped by over two decades of profound expertise in the dynamic realms of real estate and construction."
+          },
+          {
+            "text": "ESNAAD, synonymous with innovation and excellence, is dedicated to elevating your living experiences through meticulously crafted spaces."
+          },
+          {
+            "text": "Every detail in our designs is a striking reflection of our relentless passion for sophistication and unparalleled craftsmanship."
+          },
+          {
+            "text": "Inspired by a legacy steeped in over 20 years of industry expertise, ESNAAD takes pride in going beyond the ordinary. We don’t just build homes; we curate lifestyles that transcend expectations."
+          }
+        ],
+        "titleColor": "#1a1a1a",
+        "customColors": true,
+        "sectionTitle": "ABOUT COMPANY",
+        "backgroundColor": "#f5f5f0"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T13:33:04.542Z",
+      "updatedAt": "2025-11-21T13:33:04.542Z"
+    },
+    {
+      "id": "cmi8whh26001i18lrnst7pvyf",
+      "name": "Philosophy Section",
+      "type": "ABOUT",
+      "variant": "about-philosophy",
+      "content": {
+        "subtitle": "WHAT WE STAND FOR",
+        "textColor": "#4a4a4a",
+        "titleColor": "#000000",
+        "collectionId": "col-our-philosophy",
+        "customColors": false,
+        "sectionTitle": "ESNAAD PHILOSOPHY",
+        "backgroundColor": "#ffffff",
+        "description": "",
+        "itemTextAlign": "left"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T13:33:04.542Z",
+      "updatedAt": "2025-11-21T13:33:04.542Z"
+    },
+    {
+      "id": "blk-hero-about",
+      "name": "Hero: About Esnaad",
+      "type": "HERO",
+      "variant": "hero-title-only",
+      "content": {
+        "title": "ABOUT ESNAAD",
+        "backgroundColor": "#f8f6f4",
+        "textColor": "#111111"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T18:15:00.000Z",
+      "updatedAt": "2025-11-21T18:15:00.000Z"
+    },
+    {
+      "id": "blk-about-essay",
+      "name": "About Essay",
+      "type": "ABOUT",
+      "variant": "about-essay",
+      "content": {
+        "paragraphs": [
+          {
+            "text": "ESNAAD Developments, a strategic subsidiary of UAE-based Aura Holdings, has been a key player in shaping the real estate and construction landscape in the region. Since its inception, ESNAAD has become synonymous with excellence in property development, urban planning, and innovative construction solutions. Backed by the expertise and financial strength of Aura Holdings, the company has delivered several landmark projects that have redefined the standards of modern living and commercial spaces."
+          },
+          {
+            "text": "ESNAAD’s portfolio spans residential, commercial, and mixed-use developments, reflecting a commitment to quality, sustainability, and cutting-edge design. The company's approach is rooted in a strong vision of creating spaces that foster community, functionality, and luxury, ensuring that each project meets the highest standards of design, technology, and environmental responsibility."
+          },
+          {
+            "text": "With a proven track record of success in both the UAE and broader Middle Eastern markets, ESNAAD has forged strong partnerships with local and international contractors, architects, and designers. These collaborations have enabled the company to continually push the boundaries of construction and real estate development."
+          }
+        ],
+        "image": "https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?auto=format&fit=crop&w=1400&q=80",
+        "imageAlt": "Greenery detail",
+        "backgroundColor": "#ffffff"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T18:15:00.000Z",
+      "updatedAt": "2025-11-21T18:15:00.000Z"
+    },
+    {
+      "id": "blk-about-vision",
+      "name": "About Vision",
+      "type": "ABOUT",
+      "variant": "about-vision",
+      "content": {
+        "heading": "A TEAM OF INNOVATORS AND BUILDERS PIONEERING PROGRESSIVE FORMS OF LARGE-SCALE URBAN DEVELOPMENT",
+        "image": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=80",
+        "imageAlt": "Abstract soft texture",
+        "backgroundColor": "#f8f6f4",
+        "paragraphs": [
+          {
+            "text": "ESNAAD Development envisions a bold future where our unwavering commitment to excellence, innovation, and sustainability will redefine the landscape of Dubai’s real estate sector."
+          },
+          {
+            "text": "Guided by the visionary leadership of H.H. Sheikh Mohammed Bin Rashid Al Maktoum, we are driven by the ambition to be at the forefront of transformative developments that not only shape the city's skyline but also contribute to its ever-evolving growth as a global hub for business, culture, and innovation. Our vision is grounded in a deep understanding of Dubai’s unique potential and its dynamic evolution into a world-class metropolis."
+          },
+          {
+            "text": "As we expand our presence across the city, ESNAAD Development aspires to be recognized as a developer synonymous with visionary architecture, cutting-edge design, and a steadfast commitment to sustainability."
+          },
+          {
+            "text": "With a focus on quality, community, and forward-thinking practices, ESNAAD Development is poised to become a catalyst for positive change in the region’s real estate sector."
+          }
+        ]
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T18:15:00.000Z",
+      "updatedAt": "2025-11-21T18:15:00.000Z"
+    },
+    {
+      "id": "cmi8whh26001g18lrq48eyvtd",
+      "name": "Advanced Hero",
+      "type": "HERO",
+      "variant": "hero-advanced",
+      "content": {
+        "ctas": [],
+        "title": "Experience Esnaad",
+        "location": "",
+        "mediaUrl": "https://cdn.coverr.co/videos/coverr-contemporary-interior-o2152/1080p.mp4",
+        "subtitle": "Build modern experiences with our CMS foundation.",
+        "headlines": [],
+        "mediaType": "video",
+        "highlights": [],
+        "posterImage": "",
+        "contactLabel": ""
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T13:33:04.542Z",
+      "updatedAt": "2025-11-21T13:33:04.542Z"
+    },
+    {
+      "id": "blk-project-cards",
+      "name": "Projects: Card Trio",
+      "type": "FEATURES",
+      "variant": "project-cards",
+      "content": {
+        "sectionTitle": "OUR PROJECTS",
+        "collectionId": "col-projects"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T17:05:00.000Z",
+      "updatedAt": "2025-11-21T17:05:00.000Z"
+    },
+    {
+      "id": "blk-hero-vision-image",
+      "name": "Hero: Vision Image",
+      "type": "HERO",
+      "variant": "hero-image-only",
+      "content": {
+        "image": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80",
+        "imageAlt": "Abstract blurred",
+        "minHeight": 520
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T18:25:00.000Z",
+      "updatedAt": "2025-11-21T18:25:00.000Z"
+    },
+    {
+      "id": "blk-vision-statement",
+      "name": "Vision Statement",
+      "type": "ABOUT",
+      "variant": "about-vision-statement",
+      "content": {
+        "heading": "A VISION SHAPED BY DESIGN",
+        "subheading": "INSPIRED BY PEOPLE",
+        "paragraphs": [
+          {
+            "text": "We are quietly reshaping how people live within their spaces. Founded on the belief that design should serve life, not just aesthetics; that when form is crafted with intention, movement follows and transformation happens, ESNAAD positions itself as a design-forward, human-centered developer in a city known for spectacle. We build to connect."
+          },
+          {
+            "text": "Rooted in Dubai yet looking forward, Esnaad creates spaces where structure follows intention, where beauty is embedded in function, and where luxury is defined by precision, not excess."
+          },
+          {
+            "text": "We believe that modern living should be beautiful, elevated but also attainable. That light should flow not only through windows, but through purposefully crafted experiences. That every corridor, every material, and every square meter can become an opportunity for rhythm, balance, and breath."
+          },
+          {
+            "text": "With a strong design language, a recognizable identity, and a commitment to long-term value over trends, Esnaad is building the foundations for a new kind of luxury living defined by integrity, connection, and transformation."
+          }
+        ],
+        "portraitImage": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80",
+        "portraitAlt": "Founder portrait",
+        "founderHeading": "A MESSAGE FROM OUR FOUNDER",
+        "founderParagraphs": [
+          {
+            "text": "From the very beginning, Esnaad has been about high-end design. We have always believed in architecture that endures, in quality that defines, and in experiences that make living more than routine. Design-forward and quality-driven, that has always been, and will always remain, our foundation."
+          },
+          {
+            "text": "Today, our vision is sharper. We understand that design and quality reach their highest purpose when they serve people: when they connect, inspire, and allow space for pause and reflection. True luxury is not only in materials or finishes, but in how a place makes life feel, balanced, effortless, human."
+          },
+          {
+            "text": "Our work is never linear. It is an ongoing pursuit of beauty, where every proportion, material, and detail is refined until it reveals its truest form. We design beyond aesthetics to leave a mark, each project created to speak quietly yet powerfully to the lives within it."
+          },
+          {
+            "text": "Boutique by nature, we dwell on details others overlook. Time, precision, and passion shape every decision, ensuring that each corridor, window, and finish contributes to how people live. This is what moves us, and it defines who we are."
+          }
+        ],
+        "topBackgroundColor": "#ffffff",
+        "bottomBackgroundColor": "#f4f2ef"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T18:25:00.000Z",
+      "updatedAt": "2025-11-21T18:25:00.000Z"
+    },
+    {
+      "id": "blk-vision-video",
+      "name": "Vision Video",
+      "type": "HERO",
+      "variant": "hero-video-poster",
+      "content": {
+        "image": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80",
+        "imageAlt": "Building video poster",
+        "title": "BUILDING VIDEO",
+        "videoUrl": "https://example.com/video.mp4"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-21T18:25:00.000Z",
+      "updatedAt": "2025-11-21T18:25:00.000Z"
+    },
+    {
+      "id": "blk-career-hero",
+      "name": "Career Hero",
+      "type": "HERO",
+      "variant": "hero-minimal-text",
+      "content": {
+        "title": "CAREERS DEVELOPMENT CENTER",
+        "subtitle": "JOIN US ON OUR JOURNEY OF INNOVATION AND EXCELLENCE.",
+        "backgroundColor": "#F8F8F8",
+        "textColor": "#1A1A1A",
+        "textAlign": "center"
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-22T20:00:00.000Z",
+      "updatedAt": "2025-11-22T20:00:00.000Z"
+    },
+    {
+      "id": "blk-career-form",
+      "name": "Career Application Form",
+      "type": "FORM",
+      "variant": "default",
+      "content": {
+        "title": "CAREERS DEVELOPMENT CENTER",
+        "subtitle": "We welcome your application! Fill in your details, attach your CV, and our human resource team will review your application and get in touch with you.",
+        "submitLabel": "SUBMIT",
+        "fields": [
+          {
+            "name": "name",
+            "label": "Applicant Name",
+            "type": "text",
+            "required": true,
+            "width": "full"
+          },
+          {
+            "name": "email",
+            "label": "Applicant Email",
+            "type": "email",
+            "required": true,
+            "width": "full"
+          },
+          {
+            "name": "mobile",
+            "label": "Applicant Mobile",
+            "type": "tel",
+            "required": true,
+            "width": "full"
+          },
+          {
+            "name": "position",
+            "label": "Job Position",
+            "type": "text",
+            "required": true,
+            "width": "full"
+          },
+          {
+            "name": "cv",
+            "label": "CV Upload",
+            "type": "file",
+            "required": false,
+            "width": "full"
+          }
+        ]
+      },
+      "isGlobal": false,
+      "createdAt": "2025-11-22T20:00:00.000Z",
+      "updatedAt": "2025-11-22T20:00:00.000Z"
+    }
+  ],
+  "pageBlocks": [
+    {
+      "id": "cmi8whhhf001j18lrjnlvt512",
+      "order": 0,
+      "pageId": "cmi8vul0700111856896i636l",
+      "blockId": "cmi8whh26001g18lrq48eyvtd",
+      "createdAt": "2025-11-21T13:33:05.092Z",
+      "updatedAt": "2025-11-21T13:33:05.092Z"
+    },
+    {
+      "id": "cmi8whhhf001k18lrr1iqyngx",
+      "order": 1,
+      "pageId": "cmi8vul0700111856896i636l",
+      "blockId": "cmi8whh26001h18lra0zykcq9",
+      "createdAt": "2025-11-21T13:33:05.092Z",
+      "updatedAt": "2025-11-21T13:33:05.092Z"
+    },
+    {
+      "id": "cmi8whhhf001l18lrz3oneknn",
+      "order": 2,
+      "pageId": "cmi8vul0700111856896i636l",
+      "blockId": "cmi8whh26001i18lrnst7pvyf",
+      "createdAt": "2025-11-21T13:33:05.092Z",
+      "updatedAt": "2025-11-21T13:33:05.092Z"
+    },
+    {
+      "id": "pgblk-about-hero",
+      "order": 0,
+      "pageId": "cmi8vul8b001318568cj6zsi4",
+      "blockId": "blk-hero-about",
+      "createdAt": "2025-11-21T18:15:00.000Z",
+      "updatedAt": "2025-11-21T18:15:00.000Z"
+    },
+    {
+      "id": "pgblk-about-essay",
+      "order": 1,
+      "pageId": "cmi8vul8b001318568cj6zsi4",
+      "blockId": "blk-about-essay",
+      "createdAt": "2025-11-21T18:15:00.000Z",
+      "updatedAt": "2025-11-21T18:15:00.000Z"
+    },
+    {
+      "id": "pgblk-about-vision",
+      "order": 2,
+      "pageId": "cmi8vul8b001318568cj6zsi4",
+      "blockId": "blk-about-vision",
+      "createdAt": "2025-11-21T18:15:00.000Z",
+      "updatedAt": "2025-11-21T18:15:00.000Z"
+    },
+    {
+      "id": "cmi8vunxx001m1856c86gw1uj",
+      "order": 0,
+      "pageId": "cmi8vulgc00151856ef4we1vh",
+      "blockId": "cmi8vumt9001b1856848pos2t",
+      "createdAt": "2025-11-21T13:15:20.373Z",
+      "updatedAt": "2025-11-21T13:15:20.373Z"
+    },
+    {
+      "id": "pgblk-project-cards",
+      "order": 1,
+      "pageId": "cmi8vulgc00151856ef4we1vh",
+      "blockId": "blk-project-cards",
+      "createdAt": "2025-11-21T17:05:00.000Z",
+      "updatedAt": "2025-11-21T17:05:00.000Z"
+    },
+    {
+      "id": "pgblk-vision-hero",
+      "order": 0,
+      "pageId": "page-our-vision",
+      "blockId": "blk-hero-vision-image",
+      "createdAt": "2025-11-21T18:25:00.000Z",
+      "updatedAt": "2025-11-21T18:25:00.000Z"
+    },
+    {
+      "id": "pgblk-vision-statement",
+      "order": 1,
+      "pageId": "page-our-vision",
+      "blockId": "blk-vision-statement",
+      "createdAt": "2025-11-21T18:25:00.000Z",
+      "updatedAt": "2025-11-21T18:25:00.000Z"
+    },
+    {
+      "id": "pgblk-vision-video",
+      "order": 2,
+      "pageId": "page-our-vision",
+      "blockId": "blk-vision-video",
+      "createdAt": "2025-11-21T18:25:00.000Z",
+      "updatedAt": "2025-11-21T18:25:00.000Z"
+    },
+    {
+      "id": "pgblk-career-hero",
+      "order": 0,
+      "pageId": "page-careers",
+      "blockId": "blk-career-hero",
+      "createdAt": "2025-11-22T20:00:00.000Z",
+      "updatedAt": "2025-11-22T20:00:00.000Z"
+    },
+    {
+      "id": "pgblk-career-form",
+      "order": 1,
+      "pageId": "page-careers",
+      "blockId": "blk-career-form",
+      "createdAt": "2025-11-22T20:00:00.000Z",
+      "updatedAt": "2025-11-22T20:00:00.000Z"
+    }
+  ],
+
+  "themes": [
+    {
+      "id": "cmhz98540000018cdcp3dztww",
+      "name": "AMBER",
+      "createdAt": "2025-11-14T19:32:02.401Z",
+      "updatedAt": "2025-11-21T12:57:54.380Z"
+    }
+  ],
+  "exportedAt": "2025-11-21T13:40:38.400Z"
+}
