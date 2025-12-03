@@ -290,16 +290,16 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-30 flex items-center justify-center bg-foreground text-background font-serif uppercase tracking-[0.2em] sm:tracking-[0.3em] overflow-y-auto"
+            className="fixed inset-0 z-30 bg-foreground text-background font-serif uppercase tracking-[0.2em] sm:tracking-[0.3em] overflow-y-auto overscroll-contain"
             style={{
-              // iOS safe area support
-              paddingTop: 'max(2rem, env(safe-area-inset-top))',
-              paddingBottom: 'max(2rem, env(safe-area-inset-bottom))',
+              // iOS safe area support - add extra padding for menu
+              paddingTop: 'max(5rem, calc(env(safe-area-inset-top) + 4rem))',
+              paddingBottom: 'max(8rem, calc(env(safe-area-inset-bottom) + 6rem))',
               paddingLeft: 'max(1rem, env(safe-area-inset-left))',
               paddingRight: 'max(1rem, env(safe-area-inset-right))',
             }}
           >
-            <nav className="flex flex-col items-center justify-center space-y-6 sm:space-y-8 w-full px-4 py-8 sm:py-0">
+            <nav className="flex flex-col items-center justify-start min-h-full space-y-4 sm:space-y-8 w-full px-4 py-2">
               {navLinks.map((link, index) => (
                 <motion.div
                   key={link.href}
@@ -312,7 +312,7 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
                   <Link
                     href={link.href}
                     onClick={toggleMenu}
-                    className="group relative inline-block text-3xl sm:text-4xl md:text-6xl font-semibold transition-colors hover:opacity-60 active:opacity-50 touch-manipulation py-2"
+                    className="group relative inline-block text-2xl sm:text-4xl md:text-6xl font-semibold transition-colors hover:opacity-60 active:opacity-50 touch-manipulation py-1 sm:py-2"
                   >
                     {link.name}
                     <motion.span
@@ -330,7 +330,7 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: navLinks.length * 0.1 + 0.2, duration: 0.3 }}
-                className="mt-8 sm:mt-12 flex items-center gap-4 sm:gap-6"
+                className="mt-6 sm:mt-12 flex items-center gap-4 sm:gap-6 pb-4"
               >
                 <a
                   href="#"
