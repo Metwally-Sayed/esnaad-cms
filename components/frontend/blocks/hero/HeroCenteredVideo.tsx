@@ -26,10 +26,18 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
   const videoUrl = content.videoUrl as string;
   const posterImage = content.posterImage as string;
   const ctas = (content.ctas as CTA[]) || [];
+  const minHeight = (content.minHeight as number) || undefined;
   const mimeType = inferMimeType(videoUrl);
 
+  // Determine the height class based on minHeight prop
+  const heightClass = minHeight ? `min-h-[${minHeight}px]` : "min-h-screen";
+  const heightStyle = minHeight ? { minHeight: `${minHeight}px` } : undefined;
+
   return (
-    <section className={cn("relative min-h-screen overflow-hidden", className)}>
+    <section
+      className={cn("relative overflow-hidden", heightClass, className)}
+      style={heightStyle}
+    >
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video
@@ -46,7 +54,10 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center text-white">
+      <div
+        className={cn("relative z-10 flex flex-col items-center justify-center px-4 text-center text-white", heightClass)}
+        style={heightStyle}
+      >
         <h1 className="mb-6 text-5xl font-bold tracking-tight md:text-7xl">
           {title}
         </h1>

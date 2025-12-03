@@ -93,6 +93,11 @@ async function main() {
     await prisma.collection.createMany({ data: mapDates(data.collections) });
   }
 
+  // Create pages first, before collection items (collection items reference pages)
+  if (data.pages?.length) {
+    await prisma.page.createMany({ data: mapDates(data.pages) });
+  }
+
   if (data.collectionItems?.length) {
     await prisma.collectionItem.createMany({
       data: mapDates(data.collectionItems),
@@ -101,10 +106,6 @@ async function main() {
 
   if (data.blocks?.length) {
     await prisma.block.createMany({ data: mapBlocks(data.blocks) });
-  }
-
-  if (data.pages?.length) {
-    await prisma.page.createMany({ data: mapDates(data.pages) });
   }
 
   if (data.pageBlocks?.length) {

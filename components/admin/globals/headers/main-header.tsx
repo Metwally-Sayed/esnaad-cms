@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useHeaderStore } from "@/store/header-store";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import Link from "next/link";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 interface AnimatedMenuIconProps {
@@ -19,10 +19,10 @@ const AnimatedMenuIcon = ({ isOpen, onClick, className, hasScrolled }: AnimatedM
     <button
       onClick={onClick}
       className={cn(
-        "relative z-50 flex h-12 w-12 flex-col items-center justify-center rounded-md transition-all duration-300 border",
-        hasScrolled 
-          ? "bg-foreground/5 hover:bg-foreground/10 border-foreground/20" 
-          : "bg-background/5 hover:bg-background/10 border-background/20",
+        "relative z-50 flex h-11 w-11 sm:h-12 sm:w-12 flex-col items-center justify-center rounded-md transition-all duration-300 border touch-manipulation",
+        hasScrolled
+          ? "bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 border-foreground/20"
+          : "bg-background/5 hover:bg-background/10 active:bg-background/15 border-background/20",
         className
       )}
       aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -125,6 +125,35 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
 
   const { scrollY } = useScroll();
 
+  // Prevent body scroll when menu is open (important for iOS Safari)
+  useEffect(() => {
+    if (isMenuOpen) {
+      // Store original overflow
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+
+      // Prevent scrolling on iOS Safari
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
+
+      return () => {
+        // Restore original overflow
+        const scrollY = document.body.style.top;
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = '';
+        document.body.style.width = '';
+
+        // Restore scroll position
+        if (scrollY) {
+          window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        }
+      };
+    }
+  }, [isMenuOpen]);
+
   useMotionValueEvent(scrollY, "change", (latest) => {
     const currentScrollY = latest;
 
@@ -208,7 +237,12 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
           ease: "easeInOut",
         }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4 transition-all duration-300 font-sans text-[0.65rem] uppercase tracking-[0.45em]",
+          "fixed top-0 left-0 right-0 z-40 flex items-center justify-between transition-all duration-300 font-sans text-[0.65rem] uppercase tracking-[0.45em]",
+          // Mobile-first padding with safe area support for iPhone
+          "px-4 py-3 sm:px-6 sm:py-4",
+          // iOS safe area support
+          "pt-[max(0.75rem,env(safe-area-inset-top))] sm:pt-[max(1rem,env(safe-area-inset-top))]",
+          "pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]",
           hasScrolled
             ? "bg-background text-foreground backdrop-blur-xl border-b border-foreground/15 shadow-sm"
             : "bg-foreground text-background border-b border-transparent",
@@ -218,13 +252,13 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
         {/* Logo */}
         <Link
           href="/"
-          className="relative z-50 flex items-center space-x-2 font-serif text-lg tracking-[0.3em]"
+          className="relative z-50 flex items-center space-x-1.5 sm:space-x-2 font-serif tracking-[0.2em] sm:tracking-[0.3em] touch-manipulation"
         >
           {logo || (
             <>
               <div
                 className={cn(
-                  "h-8 w-8 rounded-md transition-colors duration-300",
+                  "h-7 w-7 sm:h-8 sm:w-8 rounded-md transition-colors duration-300 flex-shrink-0",
                   hasScrolled
                     ? "bg-linear-to-br from-foreground to-foreground/70"
                     : "bg-linear-to-br from-background to-background/70"
@@ -232,7 +266,7 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
               />
               <span
                 className={cn(
-                  "text-xl font-semibold transition-colors duration-300",
+                  "text-base sm:text-xl font-semibold transition-colors duration-300",
                   hasScrolled ? "text-foreground" : "text-background"
                 )}
               >
@@ -256,9 +290,16 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-30 flex items-center justify-center bg-foreground text-background font-serif uppercase tracking-[0.3em]"
+            className="fixed inset-0 z-30 flex items-center justify-center bg-foreground text-background font-serif uppercase tracking-[0.2em] sm:tracking-[0.3em] overflow-y-auto"
+            style={{
+              // iOS safe area support
+              paddingTop: 'max(2rem, env(safe-area-inset-top))',
+              paddingBottom: 'max(2rem, env(safe-area-inset-bottom))',
+              paddingLeft: 'max(1rem, env(safe-area-inset-left))',
+              paddingRight: 'max(1rem, env(safe-area-inset-right))',
+            }}
           >
-            <nav className="flex flex-col items-center justify-center space-y-8">
+            <nav className="flex flex-col items-center justify-center space-y-6 sm:space-y-8 w-full px-4 py-8 sm:py-0">
               {navLinks.map((link, index) => (
                 <motion.div
                   key={link.href}
@@ -266,15 +307,16 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.1, duration: 0.3 }}
+                  className="w-full text-center"
                 >
                   <Link
                     href={link.href}
                     onClick={toggleMenu}
-                    className="group relative text-4xl font-semibold transition-colors hover:opacity-60 md:text-6xl"
+                    className="group relative inline-block text-3xl sm:text-4xl md:text-6xl font-semibold transition-colors hover:opacity-60 active:opacity-50 touch-manipulation py-2"
                   >
                     {link.name}
                     <motion.span
-                      className="absolute -bottom-2 left-0 h-1 w-0 bg-background"
+                      className="absolute -bottom-1 sm:-bottom-2 left-0 h-0.5 sm:h-1 w-0 bg-background"
                       whileHover={{ width: "100%" }}
                       transition={{ duration: 0.3 }}
                     />
@@ -288,54 +330,54 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: navLinks.length * 0.1 + 0.2, duration: 0.3 }}
-                className="mt-12 flex items-center gap-6"
+                className="mt-8 sm:mt-12 flex items-center gap-4 sm:gap-6"
               >
                 <a
                   href="#"
-                  className="group flex flex-col items-center gap-2 transition-opacity hover:opacity-100 opacity-70"
+                  className="group flex flex-col items-center gap-1.5 sm:gap-2 transition-opacity hover:opacity-100 active:opacity-100 opacity-70 touch-manipulation p-2"
                   aria-label="Instagram"
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                   </svg>
-                  <span className="text-xs font-sans uppercase tracking-[0.4em]">Instagram</span>
+                  <span className="text-[0.6rem] sm:text-xs font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em]">Instagram</span>
                 </a>
 
                 <a
                   href="#"
-                  className="group flex flex-col items-center gap-2 transition-opacity hover:opacity-100 opacity-70"
+                  className="group flex flex-col items-center gap-1.5 sm:gap-2 transition-opacity hover:opacity-100 active:opacity-100 opacity-70 touch-manipulation p-2"
                   aria-label="Twitter"
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
-                  <span className="text-xs font-sans uppercase tracking-[0.4em]">Twitter</span>
+                  <span className="text-[0.6rem] sm:text-xs font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em]">Twitter</span>
                 </a>
 
                 <a
                   href="#"
-                  className="group flex flex-col items-center gap-2 transition-opacity hover:opacity-100 opacity-70"
+                  className="group flex flex-col items-center gap-1.5 sm:gap-2 transition-opacity hover:opacity-100 active:opacity-100 opacity-70 touch-manipulation p-2"
                   aria-label="LinkedIn"
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                   </svg>
-                  <span className="text-xs font-sans uppercase tracking-[0.4em]">LinkedIn</span>
+                  <span className="text-[0.6rem] sm:text-xs font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em]">LinkedIn</span>
                 </a>
               </motion.div>
             </nav>
