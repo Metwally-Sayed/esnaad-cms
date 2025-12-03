@@ -58,7 +58,7 @@ const HeroSection = ({
   const mimeType = inferMimeType(mediaSource);
 
   return (
-    <section className="relative isolate h-[820px] min-h-[70vh] w-full overflow-hidden bg-black text-white">
+    <section className="relative isolate h-[620px] md:h-[920px] lg:min-h-[70vh] w-full overflow-hidden bg-black text-white">
       {mediaType === "image" ? (
         <div
           className="absolute inset-0 h-full w-full bg-cover bg-center"
