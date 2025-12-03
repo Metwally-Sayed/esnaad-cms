@@ -29,7 +29,6 @@ export default function HeroStats({ content, className }: HeroVariantProps) {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/60" />
         </div>
       )}
 

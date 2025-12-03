@@ -9,7 +9,7 @@ export default function FrontLayout({
   return (
     <>
       <HeaderRenderer />
-      <main className="w-full pt-20">{children}</main>
+      <main className="w-full pt-16 sm:pt-20">{children}</main>
       <FooterRenderer />
     </>
   );

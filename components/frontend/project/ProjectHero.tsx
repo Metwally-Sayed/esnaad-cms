@@ -41,49 +41,41 @@ export function ProjectHero({ heroImage, title, tabs = ["Location", "Units", "Am
           priority
           sizes="100vw"
         />
-        {/* Dark Overlay - stronger for better text contrast */}
-        <div className="absolute inset-0 bg-black/60" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-between px-6">
-        <div className="h-[50%] flex items-end">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 sm:px-6">
         <motion.h1
-          className="font-serif text-6xl font-light uppercase tracking-[0.2em] text-white md:text-7xl lg:text-8xl "
+          className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-light uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white text-center"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           {title}
         </motion.h1>
-        </div>
-
-
-        {/* Navigation Tabs - Glassmorphism Effect */}
-        <div className="h-[50%] flex items-end justify-center mb-24">
-          <motion.div
-            className="flex gap-1 rounded-xl border border-white/20 bg-white/10 p-2 backdrop-blur-md shadow-lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => scrollToSection(tab)}
-                className={`relative px-8 py-3 font-serif text-sm uppercase tracking-widest transition-all duration-300 rounded-xl ${
-                  activeTab === tab
-                    ? "bg-white/20 text-white shadow-md"
-                    : "text-white/70 hover:bg-white/10 hover:text-white/90"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </motion.div>
-        </div>
-     
       </div>
+
+      {/* Sticky Navigation Tabs - Glassmorphism Effect */}
+      <motion.div
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-row gap-1 w-auto rounded-xl border border-black/40 bg-black/60 p-2 backdrop-blur-xl shadow-2xl"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => scrollToSection(tab)}
+            className={`relative px-4 sm:px-8 py-2.5 sm:py-3 font-serif text-xs sm:text-sm uppercase tracking-wider sm:tracking-widest transition-all duration-300 rounded-lg sm:rounded-xl touch-manipulation ${
+              activeTab === tab
+                ? "bg-white/30 text-white shadow-md"
+                : "text-white/80 hover:bg-white/20 active:bg-white/25 hover:text-white"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </motion.div>
 
 
     </section>

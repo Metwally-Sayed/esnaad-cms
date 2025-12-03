@@ -20,11 +20,11 @@ type ProjectCardsClientProps = {
 
 export function ProjectCardsClient({ heading, cards }: ProjectCardsClientProps) {
   return (
-    <section className="px-6 py-12 md:px-10 bg-background text-foreground transition-colors">
-      <div className="mx-auto max-w-6xl space-y-5">
+    <section className="px-4 sm:px-6 md:px-10 py-10 sm:py-12 bg-background text-foreground transition-colors">
+      <div className="mx-auto max-w-6xl space-y-4 sm:space-y-5">
         {heading ? (
           <motion.h2
-            className="font-serif text-2xl tracking-[0.08em] text-foreground"
+            className="font-serif text-xl sm:text-2xl tracking-[0.06em] sm:tracking-[0.08em] text-foreground"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -34,7 +34,7 @@ export function ProjectCardsClient({ heading, cards }: ProjectCardsClientProps) 
           </motion.h2>
         ) : null}
 
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-2 sm:gap-3 md:grid-cols-3">
           {cards.map((card, index) => {
             const cardContent = (
               <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-[1/1] lg:aspect-[3/4] xl:aspect-[3/4]">
@@ -43,7 +43,7 @@ export function ProjectCardsClient({ heading, cards }: ProjectCardsClientProps) 
                     src={card.image}
                     alt={card.title || "Project image"}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105 group-active:scale-105"
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 )}
@@ -51,7 +51,7 @@ export function ProjectCardsClient({ heading, cards }: ProjectCardsClientProps) 
                 <div className="absolute inset-x-0 bottom-0 bg-black/50 dark:bg-black/55">
                   <p
                     className={cn(
-                      "px-4 py-4 text-center font-serif text-lg uppercase tracking-[0.14em] text-white"
+                      "px-3 sm:px-4 py-3 sm:py-4 text-center font-serif text-base sm:text-lg uppercase tracking-[0.12em] sm:tracking-[0.14em] text-white"
                     )}
                   >
                     {card.title}

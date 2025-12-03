@@ -13,11 +13,11 @@ export default function HeroMinimalText({ content, className }: HeroVariantProps
 
   return (
     <section
-      className="relative flex min-h-[50vh] w-full items-center justify-center overflow-hidden px-4 py-24 text-center bg-[#f8f6f4]"
+      className="relative flex min-h-[40vh] sm:min-h-[50vh] w-full items-center justify-center overflow-hidden px-4 sm:px-6 py-16 sm:py-24 text-center bg-[#f8f6f4]"
     >
       <motion.div
         className={cn(
-          "max-w-4xl",
+          "max-w-4xl w-full",
           textAlign === "left" && "text-left",
           textAlign === "center" && "text-center",
           textAlign === "right" && "text-right"
@@ -27,11 +27,11 @@ export default function HeroMinimalText({ content, className }: HeroVariantProps
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <h1 className="mb-6 font-serif text-5xl font-light tracking-[0.1em] md:text-6xl lg:text-6xl uppercase text-black dark:text-black">
+        <h1 className="mb-4 sm:mb-6 font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-[0.08em] sm:tracking-[0.1em] uppercase text-black dark:text-black leading-tight sm:leading-tight">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-lg opacity-80 md:text-xl text-black dark:text-black">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl opacity-80 text-black dark:text-black leading-relaxed max-w-2xl mx-auto">
             {subtitle}
           </p>
         )}

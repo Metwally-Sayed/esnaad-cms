@@ -16,15 +16,15 @@ export function ProjectStats({ stats }: ProjectStatsProps) {
   }
 
   return (
-    <section id="amenities" className="min-h-screen snap-start bg-[#F3EFE7] py-16 flex items-center">
-      <div className="container mx-auto px-4 w-full">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+    <section id="amenities" className="min-h-screen snap-start bg-[#F3EFE7] py-12 sm:py-16 flex items-center">
+      <div className="container mx-auto px-4 sm:px-6 w-full">
+        <div className="grid grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4">
           {stats.map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="font-serif text-4xl md:text-5xl text-foreground mb-2">
+              <div className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground mb-1 sm:mb-2">
                 {stat.value}
               </div>
-              <div className="text-sm md:text-base uppercase tracking-widest text-foreground/80">
+              <div className="text-xs sm:text-sm md:text-base uppercase tracking-wider sm:tracking-widest text-foreground/80 leading-tight">
                 {stat.label}
               </div>
             </div>

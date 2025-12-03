@@ -50,7 +50,6 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
         >
           <source src={videoUrl} type={mimeType} />
         </video>
-        <div className="absolute inset-0 bg-black/50" />
       </div>
 
       {/* Content */}

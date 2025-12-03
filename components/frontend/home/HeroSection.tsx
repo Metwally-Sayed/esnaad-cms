@@ -76,8 +76,6 @@ const HeroSection = ({
           <source src={mediaSource} type={mimeType} />
         </video>
       )}
-      <div className="absolute inset-0 bg-black/60" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
 
       <div className="relative z-10 flex h-full flex-col px-4 pb-12 pt-8 sm:px-10 lg:px-24">
         <div className="mt-auto grid gap-6 text-white">

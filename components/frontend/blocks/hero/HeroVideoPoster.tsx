@@ -37,7 +37,6 @@ export default function HeroVideoPoster({ content, className }: HeroVariantProps
               sizes="100vw"
               priority
             />
-            <div className="absolute inset-0 bg-black/15" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex flex-col items-center gap-4">
                 <div className="grid place-items-center rounded-full border border-white/60 bg-white/80 p-4 text-white shadow-lg backdrop-blur-sm transition duration-300 hover:scale-105">
