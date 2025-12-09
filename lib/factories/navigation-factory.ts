@@ -23,6 +23,32 @@ export function createNavigationActions<TType extends "header" | "footer">(
   const defaultIdField =
     type === "header" ? "defaultHeaderId" : "defaultFooterId";
 
+  /**
+   * Helper function to map database links to NavigationLink format with nested children
+   */
+  const mapLinks = (links: any[]): any[] => {
+    // Filter to get only root-level links (those without a parent)
+    const rootLinks = links.filter(link => !link.parentId);
+
+    // Recursive function to build the tree structure
+    const buildTree = (parentLink: any): any => {
+      const children = links
+        .filter(link => link.parentId === parentLink.id)
+        .map(buildTree)
+        .sort((a, b) => a.order - b.order);
+
+      return {
+        id: parentLink.id,
+        name: parentLink.name,
+        slug: parentLink.slug,
+        order: parentLink.order,
+        ...(children.length > 0 && { children }),
+      };
+    };
+
+    return rootLinks.map(buildTree).sort((a, b) => a.order - b.order);
+  };
+
   return {
     /**
      * Get the global default navigation item
@@ -53,12 +79,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
         const navigationData: NavigationData = {
           id: navigationItem.id,
           name: navigationItem.name,
-          links: navigationItem[linksField].map((link: any) => ({
-            id: link.id,
-            name: link.name,
-            slug: link.slug,
-            order: link.order,
-          })),
+          links: mapLinks(navigationItem[linksField]),
         };
 
         return success(navigationData);
@@ -91,12 +112,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
         const navigationData: NavigationData = {
           id: item.id,
           name: item.name,
-          links: item[linksField].map((link: any) => ({
-            id: link.id,
-            name: link.name,
-            slug: link.slug,
-            order: link.order,
-          })),
+          links: mapLinks(item[linksField]),
         };
 
         return success(navigationData);
@@ -136,12 +152,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
           const navigationData: NavigationData = {
             id: pageNav.id,
             name: pageNav.name,
-            links: pageNav[linksField].map((link: any) => ({
-              id: link.id,
-              name: link.name,
-              slug: link.slug,
-              order: link.order,
-            })),
+            links: mapLinks(pageNav[linksField]),
           };
           return success(navigationData);
         }
@@ -169,12 +180,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
         const navigationData: NavigationData = {
           id: globalItem.id,
           name: globalItem.name,
-          links: globalItem[linksField].map((link: any) => ({
-            id: link.id,
-            name: link.name,
-            slug: link.slug,
-            order: link.order,
-          })),
+          links: mapLinks(globalItem[linksField]),
         };
 
         return success(navigationData);
@@ -302,15 +308,31 @@ export function createNavigationActions<TType extends "header" | "footer">(
             where: { [foreignKeyField]: id },
           });
 
-          // 2. Create new links
-          if (links.length > 0) {
-            await (tx as any)[linkModelName].createMany({
-              data: links.map((link) => ({
+          // 2. Flatten nested structure and create all links
+          const flattenLinks = (linksList: NavigationLinkInput[], parentId: string | null = null): any[] => {
+            const result: any[] = [];
+            for (const link of linksList) {
+              result.push({
                 [foreignKeyField]: id,
                 name: link.name,
                 slug: link.slug,
                 order: link.order,
-              })),
+                parentId: link.parentId ?? parentId,
+              });
+
+              // Recursively process children
+              if (link.children && link.children.length > 0) {
+                result.push(...flattenLinks(link.children, link.id ?? null));
+              }
+            }
+            return result;
+          };
+
+          // 3. Create new links
+          if (links.length > 0) {
+            const flattenedLinks = flattenLinks(links);
+            await (tx as any)[linkModelName].createMany({
+              data: flattenedLinks,
             });
           }
         });

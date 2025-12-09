@@ -19,55 +19,52 @@ const AnimatedMenuIcon = ({ isOpen, onClick, className, hasScrolled }: AnimatedM
     <button
       onClick={onClick}
       className={cn(
-        "relative z-50 flex h-11 w-11 sm:h-12 sm:w-12 flex-col items-center justify-center rounded-md transition-all duration-300 border touch-manipulation",
+        "relative z-50 flex h-12 w-12 sm:h-14 sm:w-14 flex-col items-center justify-center rounded-full transition-all duration-300 touch-manipulation group",
         hasScrolled
-          ? "bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 border-foreground/20"
-          : "bg-background/5 hover:bg-background/10 active:bg-background/15 border-background/20",
+          ? "bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 hover:scale-105 active:scale-95"
+          : "bg-background/5 hover:bg-background/10 active:bg-background/15 hover:scale-105 active:scale-95",
         className
       )}
       aria-label={isOpen ? "Close menu" : "Open menu"}
     >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        className="transition-colors duration-300"
-      >
-        <motion.path
-          stroke={hasScrolled ? "currentColor" : "currentColor"}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          animate={isOpen ? { d: "M 4 4 L 20 20" } : { d: "M 4 6 L 20 6" }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+      <div className="relative w-6 h-6 sm:w-7 sm:h-7">
+        <motion.span
           className={cn(
-            "transition-colors duration-300",
-            hasScrolled ? "text-foreground" : "text-background"
+            "absolute h-0.5 w-full rounded-full left-0 origin-center transition-colors duration-300",
+            hasScrolled ? "bg-foreground" : "bg-background"
           )}
+          animate={
+            isOpen
+              ? { rotate: 45, top: "50%", translateY: "-50%" }
+              : { rotate: 0, top: "20%", translateY: "0%" }
+          }
+          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         />
-        <motion.path
-          stroke={hasScrolled ? "currentColor" : "currentColor"}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          animate={isOpen ? { opacity: 0 } : { opacity: 1, d: "M 4 12 L 20 12" }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+        <motion.span
           className={cn(
-            "transition-colors duration-300",
-            hasScrolled ? "text-foreground" : "text-background"
+            "absolute h-0.5 w-full rounded-full left-0 top-1/2 -translate-y-1/2 transition-colors duration-300",
+            hasScrolled ? "bg-foreground" : "bg-background"
           )}
+          animate={
+            isOpen
+              ? { opacity: 0, width: "0%" }
+              : { opacity: 1, width: "100%" }
+          }
+          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
         />
-        <motion.path
-          stroke={hasScrolled ? "currentColor" : "currentColor"}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          animate={isOpen ? { d: "M 4 20 L 20 4" } : { d: "M 4 18 L 20 18" }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+        <motion.span
           className={cn(
-            "transition-colors duration-300",
-            hasScrolled ? "text-foreground" : "text-background"
+            "absolute h-0.5 w-full rounded-full left-0 origin-center transition-colors duration-300",
+            hasScrolled ? "bg-foreground" : "bg-background"
           )}
+          animate={
+            isOpen
+              ? { rotate: -45, bottom: "50%", translateY: "50%" }
+              : { rotate: 0, bottom: "20%", translateY: "0%" }
+          }
+          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         />
-      </svg>
+      </div>
     </button>
   );
 };
@@ -75,6 +72,7 @@ const AnimatedMenuIcon = ({ isOpen, onClick, className, hasScrolled }: AnimatedM
 interface NavLink {
   name: string;
   href: string;
+  children?: NavLink[];
 }
 
 interface MainHeaderProps {
@@ -105,23 +103,44 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const menuButtonRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
 
   // Get header data from Zustand store
   const headerData = useHeaderStore((state) => state.headerData);
 
+  console.log(headerData, "headerData");
+  
+
+  // Helper function to map database links to NavLink format
+  const mapLinksToNavLinks = (dbLinks: any[]): NavLink[] => {
+    return dbLinks.map(link => ({
+      name: link.name,
+      href: link.slug,
+      children: link.children ? mapLinksToNavLinks(link.children) : undefined
+    }));
+  };
+
   // Use links from props, or from store, or from initialData, or fall back to defaults
   const navLinks = links ||
-    headerData?.links.map(link => ({
-      name: link.name,
-      href: link.slug
-    })) ||
-    initialData?.links.map(link => ({
-      name: link.name,
-      href: link.slug
-    })) ||
+    (headerData?.links ? mapLinksToNavLinks(headerData.links) : undefined) ||
+    (initialData?.links ? mapLinksToNavLinks(initialData.links) : undefined) ||
     defaultLinks;
+
+  console.log(navLinks, "navLinks");
+
+  const toggleSubmenu = useCallback((linkName: string) => {
+    setExpandedMenus(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(linkName)) {
+        newSet.delete(linkName);
+      } else {
+        newSet.add(linkName);
+      }
+      return newSet;
+    });
+  }, [expandedMenus]);
 
   const { scrollY } = useScroll();
 
@@ -309,18 +328,72 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
                   transition={{ delay: index * 0.1, duration: 0.3 }}
                   className="w-full text-center"
                 >
-                  <Link
-                    href={link.href}
-                    onClick={toggleMenu}
-                    className="group relative inline-block text-2xl sm:text-4xl md:text-6xl font-semibold transition-colors hover:opacity-60 active:opacity-50 touch-manipulation py-1 sm:py-2"
-                  >
-                    {link.name}
-                    <motion.span
-                      className="absolute -bottom-1 sm:-bottom-2 left-0 h-0.5 sm:h-1 w-0 bg-background"
-                      whileHover={{ width: "100%" }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </Link>
+                  {link.children && link.children.length > 0 ? (
+                    // Parent link with children
+                    <div className="flex flex-col items-center">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleSubmenu(link.name);
+                        }}
+                        className="group relative inline-block text-2xl sm:text-4xl md:text-6xl font-semibold transition-colors hover:opacity-60 active:opacity-50 touch-manipulation py-1 sm:py-2 cursor-pointer"
+                      >
+                        {link.name}
+                      </button>
+
+                      <AnimatePresence>
+                        {expandedMenus.has(link.name) && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="flex flex-col items-center space-y-2 sm:space-y-3 mt-3 sm:mt-4 w-full"
+                          >
+                            {link.children.map((child, childIndex) => (
+                              <motion.div
+                                key={child.href}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ delay: childIndex * 0.05, duration: 0.2 }}
+                                className="w-full flex justify-center"
+                              >
+                                <Link
+                                  href={child.href}
+                                  onClick={toggleMenu}
+                                  className="group relative inline-block text-base sm:text-xl md:text-3xl font-normal opacity-70 hover:opacity-100 transition-all duration-300 touch-manipulation py-1 px-4"
+                                >
+                                  {child.name}
+                                  <motion.span
+                                    className="absolute -bottom-0.5 left-4 right-4 h-[1px] w-0 bg-background/50"
+                                    whileHover={{ width: "calc(100% - 2rem)" }}
+                                    transition={{ duration: 0.3 }}
+                                  />
+                                </Link>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    // Regular link without children
+                    <Link
+                      href={link.href}
+                      onClick={toggleMenu}
+                      className="group relative inline-block text-2xl sm:text-4xl md:text-6xl font-semibold transition-colors hover:opacity-60 active:opacity-50 touch-manipulation py-1 sm:py-2"
+                    >
+                      {link.name}
+                      <motion.span
+                        className="absolute -bottom-1 sm:-bottom-2 left-0 h-0.5 sm:h-1 w-0 bg-background"
+                        whileHover={{ width: "100%" }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </Link>
+                  )}
                 </motion.div>
               ))}
 

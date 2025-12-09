@@ -102,14 +102,17 @@ model Header {
 }
 
 model HeaderLink {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   name      String
   slug      String
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  order     Int          @default(0)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   headerId  String
-  header    Header   @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  parentId  String?
+  header    Header       @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  parent    HeaderLink?  @relation("HeaderLinkChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children  HeaderLink[] @relation("HeaderLinkChildren")
 
   @@map("header_link")
 }
@@ -176,14 +179,17 @@ model Footer {
 }
 
 model FooterLink {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   name      String
   slug      String
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  order     Int          @default(0)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   footerId  String
-  footer    Footer   @relation(fields: [footerId], references: [id], onDelete: Cascade)
+  parentId  String?
+  footer    Footer       @relation(fields: [footerId], references: [id], onDelete: Cascade)
+  parent    FooterLink?  @relation("FooterLinkChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children  FooterLink[] @relation("FooterLinkChildren")
 
   @@map("footer_link")
 }

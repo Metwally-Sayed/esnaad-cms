@@ -7,6 +7,7 @@ export interface NavigationLink {
   name: string;
   slug: string;
   order: number;
+  children?: NavigationLink[];
 }
 
 export interface NavigationData {
@@ -20,4 +21,6 @@ export interface NavigationLinkInput {
   name: string;
   slug: string;
   order: number;
+  parentId?: string | null;
+  children?: NavigationLinkInput[];
 }
