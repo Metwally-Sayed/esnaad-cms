@@ -1,16 +1,20 @@
 import { FooterRenderer } from "@/components/admin/globals/footers/footer-renderer";
 import { HeaderRenderer } from "@/components/admin/globals/headers/header-renderer";
 
-export default function FrontLayout({
+export default async function FrontLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
+  
   return (
     <>
-      <HeaderRenderer />
+      <HeaderRenderer locale={locale} />
       <main className="w-full pt-16 sm:pt-20">{children}</main>
-      <FooterRenderer />
+      <FooterRenderer locale={locale} />
     </>
   );
 }

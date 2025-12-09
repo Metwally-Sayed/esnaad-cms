@@ -1,6 +1,5 @@
 "use client";
 
-import { createCollection } from "@/server/actions/collection";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -14,7 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createCollection } from "@/server/actions/collection";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -27,6 +28,7 @@ export function CreateCollectionDialog() {
   const [profilePageSlugPattern, setProfilePageSlugPattern] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("Collections");
 
   const handleCreate = async () => {
     if (!name || !slug) {
@@ -69,19 +71,19 @@ export function CreateCollectionDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus className="mr-2 h-4 w-4" /> New Collection
+          <Plus className="mr-2 h-4 w-4" /> {t('new')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Collection</DialogTitle>
+          <DialogTitle>{t('create')}</DialogTitle>
           <DialogDescription>
-            Add a new collection to manage dynamic content.
+            {t('dialog.description')}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t('name')}</Label>
             <Input
               id="name"
               value={name}
@@ -101,7 +103,7 @@ export function CreateCollectionDialog() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="slug">Slug</Label>
+            <Label htmlFor="slug">{t('slug')}</Label>
             <Input
               id="slug"
               value={slug}
@@ -125,7 +127,7 @@ export function CreateCollectionDialog() {
             />
             <div className="space-y-1 leading-none flex-1">
               <Label htmlFor="hasProfilePages" className="cursor-pointer font-medium">
-                Enable profile pages
+                {t('hasProfilePages')}
               </Label>
               <p className="text-sm text-muted-foreground">
                 Automatically create a detail page for each item in this collection
@@ -135,7 +137,7 @@ export function CreateCollectionDialog() {
 
           {hasProfilePages && (
             <div className="grid gap-2">
-              <Label htmlFor="profilePageSlugPattern">Profile Page URL Pattern</Label>
+              <Label htmlFor="profilePageSlugPattern">{t('profilePagePattern')}</Label>
               <Input
                 id="profilePageSlugPattern"
                 value={profilePageSlugPattern}
@@ -150,10 +152,10 @@ export function CreateCollectionDialog() {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
+            {t('dialog.cancel')}
           </Button>
           <Button onClick={handleCreate} disabled={isLoading}>
-            {isLoading ? "Creating..." : "Create"}
+            {isLoading ? "Creating..." : t('dialog.create') || "Create"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { MainHeader } from "./main-header";
 import { ResizableHeader } from "./resizable-header";
 
-export function HeaderRenderer() {
+export function HeaderRenderer({ locale }: { locale: string }) {
   const { headerData, isLoading, setHeaderData, setIsLoading } =
     useHeaderStore();
 
@@ -41,6 +41,6 @@ export function HeaderRenderer() {
 
     case "Default Header":
     default:
-      return <MainHeader />;
+      return <MainHeader locale={locale} />;
   }
 }

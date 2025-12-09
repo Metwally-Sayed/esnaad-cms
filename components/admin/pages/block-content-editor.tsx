@@ -6,20 +6,20 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAllCollections } from "@/server/actions/collection";
 
 import {
-  BlockListField,
-  BlockSchemaField,
-  createListItemDefaults,
+    BlockListField,
+    BlockSchemaField,
+    createListItemDefaults,
 } from "@/lib/block-variants";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -362,25 +362,94 @@ const JsonEditor = ({
 };
 
 const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
+  const [locale, setLocale] = useState<"en" | "ar">("en");
   const schema = block.schema;
-  const safeValues = useMemo(
+  
+  const fullValues = useMemo(
     () => (isRecord(block.values) ? block.values : {}),
-    [block.values],
+    [block.values]
   );
 
+  const safeValues = useMemo(() => {
+    // If values are nested under locale keys (migrated structure), pick the locale
+    if (fullValues.en || fullValues.ar) {
+      return (fullValues[locale] as Record<string, unknown>) || {};
+    }
+    // Fallback for non-migrated data (shouldn't happen often if migration ran)
+    return fullValues;
+  }, [fullValues, locale]);
+
   const handleFieldChange = (name: string, value: unknown) => {
-    onChange({
+    // Construct new locale-specific values
+    const newLocaleValues = {
       ...safeValues,
       [name]: value,
+    };
+
+    // Update the full content object
+    // If legacy structure, we migrate it on write
+    const nextFullValues = {
+      ...fullValues,
+      [locale]: newLocaleValues,
+      // Preserve other locale if it exists, or migrate legacy data to 'en' if we are editing 'ar' (complex case, simplified below)
+    };
+
+    // Ensure we don't lose the OTHER locale's data
+    // If fullValues was legacy, we should probably instantiate both keys?
+    // But migration script handled existing data.
+    // If creating NEW block, fullValues is empty.
+    
+    onChange({
+      ...fullValues,
+      [locale]: newLocaleValues,
     });
   };
 
   if (!schema) {
-    return <JsonEditor value={safeValues} onChange={onChange} />;
+    // For custom blocks without schema, we might want to localize too?
+    // Assuming custom blocks also need localization.
+    return (
+      <div className="space-y-4">
+        <div className="flex space-x-2 border-b pb-2">
+          <Button
+            variant={locale === "en" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setLocale("en")}
+          >
+            English
+          </Button>
+          <Button
+            variant={locale === "ar" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setLocale("ar")}
+          >
+            Arabic
+          </Button>
+        </div>
+        <JsonEditor value={safeValues} onChange={(val) => onChange({ ...fullValues, [locale]: val })} />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
+      <div className="flex space-x-2 border-b pb-2">
+        <Button
+          variant={locale === "en" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setLocale("en")}
+        >
+          English
+        </Button>
+        <Button
+          variant={locale === "ar" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setLocale("ar")}
+        >
+          Arabic
+        </Button>
+      </div>
+
       {schema.fields.map((field) => {
         // Hide color fields when customColors is false
         const isColorField = field.name === "backgroundColor" || field.name === "titleColor" || field.name === "textColor";
@@ -402,14 +471,16 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
 
       <details className="rounded-lg border px-4 py-3">
         <summary className="cursor-pointer text-sm font-medium">
-          Advanced JSON
+          Advanced JSON ({locale.toUpperCase()})
         </summary>
         <p className="mt-2 text-xs text-muted-foreground">
-          Use this editor to add bespoke properties that are not yet exposed in
-          the visual controls.
+          Use this editor to add bespoke properties for the current language.
         </p>
         <div className="mt-3">
-          <JsonEditor value={safeValues} onChange={onChange} />
+          <JsonEditor 
+            value={safeValues} 
+            onChange={(val) => onChange({ ...fullValues, [locale]: val })} 
+          />
         </div>
       </details>
     </div>

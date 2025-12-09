@@ -1,30 +1,31 @@
 "use client";
 
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { motion } from "framer-motion";
 import {
-  Bell,
-  Download,
-  Filter,
-  MoreHorizontal,
-  RefreshCw,
-  Search,
+    Bell,
+    Download,
+    Filter,
+    MoreHorizontal,
+    RefreshCw,
+    Search,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { memo } from "react";
 import { AnimatedThemeToggler } from "./animated-theme-toggler";
 import { ThemeSelector } from "./theme-selector";
@@ -47,6 +48,7 @@ export const DashboardHeader = memo(
     onExport,
     isRefreshing,
   }: DashboardHeaderProps) => {
+    const t = useTranslations("DashboardHeader");
     return (
       <header className="bg-background/95 sticky top-0 z-50 flex h-16 w-full shrink-0 items-center gap-2 border-b backdrop-blur transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
@@ -71,7 +73,7 @@ export const DashboardHeader = memo(
             <div className="relative hidden md:block">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
-                placeholder="Search..."
+                placeholder={t("search_placeholder")}
                 value={searchQuery}
                 // onChange={(e) => onSearchChange(e.target.value)}
                 className="w-64 pl-10"
@@ -82,12 +84,12 @@ export const DashboardHeader = memo(
             <div className="hidden items-center gap-2 md:flex">
               <Button variant="outline" size="sm">
                 <Filter className="mr-2 h-4 w-4" />
-                Filter
+                {t("filter")}
               </Button>
 
               <Button variant="outline" size="sm" onClick={onExport}>
                 <Download className="mr-2 h-4 w-4" />
-                Export
+                {t("export")}
               </Button>
 
               <Button
@@ -101,7 +103,7 @@ export const DashboardHeader = memo(
                     isRefreshing ? "animate-spin" : ""
                   }`}
                 />
-                Refresh
+                {t("refresh")}
               </Button>
 
               <ThemeSelector />
@@ -118,23 +120,22 @@ export const DashboardHeader = memo(
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem
-
                 // onClick={() => onSearchChange("")}
                 >
                   <Search className="mr-2 h-4 w-4" />
-                  Search
+                  {t("search")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Filter className="mr-2 h-4 w-4" />
-                  Filter
+                  {t("filter")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onExport}>
                   <Download className="mr-2 h-4 w-4" />
-                  Export
+                  {t("export")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onRefresh}>
                   <RefreshCw className="mr-2 h-4 w-4" />
-                  Refresh
+                  {t("refresh")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

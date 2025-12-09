@@ -1,4 +1,4 @@
-import AuthProvider from "@/app/providers/auth-provider";
+import AuthProvider from "@/app/[locale]/providers/auth-provider";
 import AdminDashboard from "@/components/mvpblocks";
 
 export default function ProtectedLayout({

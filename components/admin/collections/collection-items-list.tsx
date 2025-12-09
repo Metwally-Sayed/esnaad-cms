@@ -1,6 +1,5 @@
 "use client";
 
-import { deleteCollectionItem } from "@/server/actions/collection";
 import { Button } from "@/components/ui/button";
 import {
     Table,
@@ -10,11 +9,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { deleteCollectionItem } from "@/server/actions/collection";
 import { Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CollectionItemDialog } from "./collection-item-dialog";
+import { useTranslations } from "next-intl";
 
 interface CollectionItemsListProps {
   collectionId: string;
@@ -32,8 +33,11 @@ export function CollectionItemsList({
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
+  const t = useTranslations("Collections.table");
 
   const handleDelete = async (id: string) => {
+    // Note: Confirm dialogs usually need UI component or translated string. 
+    // For now keeping native confirm but we could translate the message if we had it.
     if (!confirm("Are you sure you want to delete this item?")) return;
 
     const result = await deleteCollectionItem(id);
@@ -56,16 +60,16 @@ export function CollectionItemsList({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px]">Order</TableHead>
-              <TableHead>Content Preview</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="w-[50px]">{t('order')}</TableHead>
+              <TableHead>{t('contentPreview')}</TableHead>
+              <TableHead className="text-right">{t('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {items.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                  No items in this collection.
+                  {t('empty')}
                 </TableCell>
               </TableRow>
             ) : (

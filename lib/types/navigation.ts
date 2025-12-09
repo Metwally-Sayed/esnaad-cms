@@ -5,6 +5,7 @@
 export interface NavigationLink {
   id: string;
   name: string;
+  nameAr?: string | null;
   slug: string;
   order: number;
   children?: NavigationLink[];

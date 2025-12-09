@@ -1,6 +1,5 @@
 "use client";
 
-import { createCollectionItem, updateCollectionItem } from "@/server/actions/collection";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -21,7 +20,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { createCollectionItem, updateCollectionItem } from "@/server/actions/collection";
 import { Plus, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -63,6 +64,7 @@ export function CollectionItemDialog({
   const [fields, setFields] = useState<Field[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("Collections.itemDialog");
 
   useEffect(() => {
     if (open) {
@@ -287,9 +289,9 @@ export function CollectionItemDialog({
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{item ? "Edit Item" : "Add New Item"}</DialogTitle>
+          <DialogTitle>{item ? t('title') : t('new')}</DialogTitle>
           <DialogDescription>
-            Define the content for this item. You can add custom fields.
+            {t('description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -301,7 +303,7 @@ export function CollectionItemDialog({
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Field {index + 1}
+                  {t('field')} {index + 1}
                 </span>
                 <Button
                   variant="ghost"
@@ -310,13 +312,13 @@ export function CollectionItemDialog({
                   onClick={() => handleRemoveField(field.id)}
                 >
                   <X className="h-4 w-4 mr-1" />
-                  Remove
+                  {t('remove')}
                 </Button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-sm mb-2 block font-medium">Field Name (Key)</Label>
+                  <Label className="text-sm mb-2 block font-medium">{t('fieldName')}</Label>
                   <Input
                     value={field.key}
                     onChange={(e) => updateField(field.id, { key: e.target.value })}
@@ -330,7 +332,7 @@ export function CollectionItemDialog({
                   )}
                 </div>
                 <div>
-                  <Label className="text-sm mb-2 block font-medium">Type</Label>
+                  <Label className="text-sm mb-2 block font-medium">{t('type')}</Label>
                   <Select
                     value={field.type}
                     onValueChange={(val) => updateField(field.id, { type: val as FieldType })}
@@ -340,29 +342,29 @@ export function CollectionItemDialog({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="text">Text</SelectItem>
-                      <SelectItem value="textarea">Long Text</SelectItem>
-                      <SelectItem value="image">Image URL</SelectItem>
-                      <SelectItem value="number">Number</SelectItem>
+                      <SelectItem value="text">{t('types.text')}</SelectItem>
+                      <SelectItem value="textarea">{t('types.textarea')}</SelectItem>
+                      <SelectItem value="image">{t('types.image')}</SelectItem>
+                      <SelectItem value="number">{t('types.number')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div>
-                <Label className="text-sm mb-2 block font-medium">Value</Label>
+                <Label className="text-sm mb-2 block font-medium">{t('value')}</Label>
                 {field.type === "textarea" ? (
                   <Textarea
                     value={field.value}
                     onChange={(e) => updateField(field.id, { value: e.target.value })}
                     className="min-h-[100px] resize-y"
-                    placeholder="Enter value..."
+                    placeholder={t('enterValue')}
                   />
                 ) : (
                   <Input
                     value={field.value}
                     onChange={(e) => updateField(field.id, { value: e.target.value })}
-                    placeholder="Enter value..."
+                    placeholder={t('enterValue')}
                   />
                 )}
               </div>
@@ -370,16 +372,16 @@ export function CollectionItemDialog({
           ))}
 
           <Button onClick={handleAddField} variant="outline" className="w-full border-dashed">
-            <Plus className="mr-2 h-4 w-4" /> Add Field
+            <Plus className="mr-2 h-4 w-4" /> {t('addField')}
           </Button>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button onClick={handleSave} disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Item"}
+            {isLoading ? t('saving') : t('save')}
           </Button>
         </DialogFooter>
       </DialogContent>

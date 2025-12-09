@@ -16,4 +16,5 @@ export type FooterListItem = {
 export interface FooterTemplateProps {
   links?: FooterData["links"];
   isLoading?: boolean;
+  locale?: string;
 }

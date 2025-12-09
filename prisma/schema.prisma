@@ -104,6 +104,7 @@ model Header {
 model HeaderLink {
   id        String       @id @default(cuid())
   name      String
+  nameAr    String?
   slug      String
   order     Int          @default(0)
   createdAt DateTime     @default(now())
@@ -181,6 +182,7 @@ model Footer {
 model FooterLink {
   id        String       @id @default(cuid())
   name      String
+  nameAr    String?
   slug      String
   order     Int          @default(0)
   createdAt DateTime     @default(now())

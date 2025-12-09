@@ -7,7 +7,7 @@ import { useFooterStore } from "@/store/footer-store";
 import MainFooter from "./main-footer";
 import ResizableFooter from "./resizable-footer";
 
-export function FooterRenderer() {
+export function FooterRenderer({ locale }: { locale: string }) {
   const { footerData, isLoading, setFooterData, setIsLoading } =
     useFooterStore();
 
@@ -38,6 +38,7 @@ export function FooterRenderer() {
   const templateProps = {
     links: footerData.links,
     isLoading,
+    locale,
   };
 
   // Render different header components based on header name

@@ -16,7 +16,7 @@ const socialLinks = [
   { label: "YouTube", icon: Youtube },
 ];
 
-const MainFooter = ({ links, isLoading }: FooterTemplateProps) => {
+const MainFooter = ({ links, isLoading, locale }: FooterTemplateProps) => {
   const { footerData, isLoading: storeIsLoading } = useFooterStore();
 
 
@@ -87,7 +87,7 @@ const MainFooter = ({ links, isLoading }: FooterTemplateProps) => {
                     href={item.slug}
                     className="transition-colors "
                   >
-                    {item.name}
+                    {(locale === 'ar' && item.nameAr) ? item.nameAr : item.name}
                   </Link>
                 ))}
             </nav>

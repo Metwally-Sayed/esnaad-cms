@@ -9,8 +9,10 @@ type ProjectCardsContent = {
 
 export default async function ProjectCards({
   content,
+  locale,
 }: {
   content: ProjectCardsContent;
+  locale: string;
 }) {
   if (!content.collectionId) {
     return null;
@@ -26,7 +28,18 @@ export default async function ProjectCards({
   }
 
   const cards = items.map((item) => {
-    const data = item.content as {
+    const rawContent = item.content as Record<string, any>;
+    
+    // Determine the content based on locale
+    let data = rawContent;
+    if (rawContent[locale] && typeof rawContent[locale] === 'object') {
+        data = rawContent[locale];
+    } else if (rawContent['en'] && typeof rawContent['en'] === 'object') {
+        data = rawContent['en'];
+    }
+
+    // Cast data to expected type after resolution
+    const typedData = data as {
       title?: string;
       image?: string;
       slug?: string;
@@ -36,17 +49,17 @@ export default async function ProjectCards({
     };
 
     // If there's a slug but no link, generate profile page link
-    let finalLink = data.link;
-    if (!finalLink && data.slug) {
-      finalLink = `/projects/${data.slug}`;
+    let finalLink = typedData.link;
+    if (!finalLink && typedData.slug) {
+      finalLink = `/projects/${typedData.slug}`;
     }
 
     return {
-      title: data.title,
-      image: data.image,
+      title: typedData.title,
+      image: typedData.image,
       link: finalLink,
-      actionLabel: data.actionLabel,
-      actionType: data.actionType,
+      actionLabel: typedData.actionLabel,
+      actionType: typedData.actionType,
     };
   });
 

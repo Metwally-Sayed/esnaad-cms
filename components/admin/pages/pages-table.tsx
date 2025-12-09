@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -6,12 +7,12 @@ import { Footer, Header, Page, PageBlock } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { PlusIcon } from "lucide-react";
 
@@ -23,6 +24,8 @@ type PageWithRelations = Page & {
 
 const PagesTable = async () => {
   const pagesResult = await getPages();
+  const t = await getTranslations("PagesTable");
+  const commonT = await getTranslations("Common");
 
   if (!pagesResult) {
     notFound();
@@ -33,7 +36,7 @@ const PagesTable = async () => {
   if (pages.length === 0) {
     return (
       <div className="flex items-center justify-center py-8">
-        <p className="text-muted-foreground">No pages found</p>
+        <p className="text-muted-foreground">{t("no_pages_found")}</p>
       </div>
     );
   }
@@ -47,20 +50,20 @@ const PagesTable = async () => {
         <Link href="/admin/pages/create">
           <Button>
             <PlusIcon className="w-4 h-4 ml-2" />
-            Create New Page
+            {t("create_new_page")}
           </Button>
         </Link>
       </div>
       <Table>
         <TableHeader>
           <TableRow className="bg-muted">
-            <TableHead>Page</TableHead>
-            <TableHead>Slug</TableHead>
-            <TableHead>Header</TableHead>
-            <TableHead>Footer</TableHead>
-            <TableHead>Blocks</TableHead>
-            <TableHead>Updated</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>{t("page")}</TableHead>
+            <TableHead>{t("slug")}</TableHead>
+            <TableHead>{t("header")}</TableHead>
+            <TableHead>{t("footer")}</TableHead>
+            <TableHead>{t("blocks")}</TableHead>
+            <TableHead>{t("updated")}</TableHead>
+            <TableHead className="text-right">{t("actions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -79,7 +82,7 @@ const PagesTable = async () => {
                   >
                     <span className="font-medium">{page.title}</span>
                     <span className="text-xs text-muted-foreground">
-                      {page.description || "No description"}
+                      {page.description || t("no_description")}
                     </span>
                   </Link>
                 </TableCell>
@@ -94,10 +97,10 @@ const PagesTable = async () => {
                   </Link>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {page.header?.name || "Global Default"}
+                  {page.header?.name || t("global_default")}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {page.footer?.name || "Global Default"}
+                  {page.footer?.name || t("global_default")}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {blocksCount}
@@ -108,7 +111,7 @@ const PagesTable = async () => {
                 <TableCell className="text-right">
                   <Link href={`/admin/pages/${page.id}/edit`}>
                     <Button variant="outline" size="sm">
-                      Edit
+                      {commonT("edit")}
                     </Button>
                   </Link>
                 </TableCell>

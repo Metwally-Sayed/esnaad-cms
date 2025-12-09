@@ -1,0 +1,107 @@
+{
+  "Common": {
+    "dashboard": "لوحة التحكم",
+    "pages": "الصفحات",
+    "blocks": "البلوكات",
+    "settings": "الإعدادات",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "language": "اللغة",
+    "english": "الإنجليزية",
+    "arabic": "العربية"
+  },
+  "Blocks": {
+    "hero": "Hero",
+    "text": "نص",
+    "image": "صورة"
+  },
+  "Sidebar": {
+    "dashboard": "لوحة التحكم",
+    "pages": "الصفحات",
+    "categories": "التصنيفات",
+    "users": "المستخدمين",
+    "collections": "المجموعات",
+    "globals": "العامة",
+    "headers": "القوائم العلوية",
+    "footers": "القوائم السفلية",
+    "themes": "السمات",
+    "settings": "الإعدادات",
+    "admin_profile": "الملف الشخصي",
+    "logout": "تسجيل خروج",
+    "navigation": "تصفح",
+    "admin_panel": "لوحة الإدارة"
+  },
+  "DashboardHeader": {
+    "search_placeholder": "بحث...",
+    "filter": "تصفية",
+    "export": "تصدير",
+    "refresh": "تحديث",
+    "search": "بحث"
+  },
+  "PagesTable": {
+    "page": "الصفحة",
+    "slug": "المسار",
+    "header": "القائمة العلوية",
+    "footer": "القائمة السفلية",
+    "blocks": "البلوكات",
+    "updated": "آخر تحديث",
+    "actions": "الإجراءات",
+    "create_new_page": "إنشاء صفحة جديدة",
+    "no_pages_found": "لم يتم العثور على صفحات",
+    "global_default": "الافتراضي العام",
+    "no_description": "لا يوجد وصف"
+  },
+  "Collections": {
+    "title": "المجموعات",
+    "create": "إنشاء مجموعة",
+    "new": "مجموعة جديدة",
+    "edit": "تعديل المجموعة",
+    "name": "الاسم",
+    "slug": "الاسم اللطيف (Slug)",
+    "hasProfilePages": "تفعيل صفحات الملف الشخصي",
+    "profilePagePattern": "نمط رابط صفحة الملف الشخصي",
+    "table": {
+      "order": "الترتيب",
+      "contentPreview": "معاينة المحتوى",
+      "actions": "إجراءات",
+      "empty": "لا توجد عناصر في هذه المجموعة."
+    },
+    "itemDialog": {
+      "add": "إضافة عنصر",
+      "edit": "تعديل عنصر",
+      "new": "إضافة عنصر جديد",
+      "title": "تعديل عنصر",
+      "description": "حدد محتوى هذا العنصر. يمكنك إضافة حقول مخصصة.",
+      "cancel": "إلغاء",
+      "save": "حفظ العنصر",
+      "saving": "جاري الحفظ...",
+      "field": "حقل",
+      "fieldName": "اسم الحقل (المفتاح)",
+      "type": "النوع",
+      "value": "القيمة",
+      "remove": "حذف",
+      "addField": "إضافة حقل",
+      "enterValue": "أدخل القيمة...",
+      "types": {
+        "text": "نص",
+        "textarea": "نص طويل",
+        "image": "رابط صورة",
+        "number": "رقم"
+      }
+    }
+  },
+  "Project": {
+    "concept": "المفهوم",
+    "architecture": "الهندسة المعمارية",
+    "uniqueFeatures": "مميزات فريدة",
+    "downloadBrochure": "تحميل الكتيب",
+    "amenities": "المرافق",
+    "units": "الوحدات",
+    "location": "الموقع",
+    "contact": "اتصل بنا",
+    "registerInterest": "سجل اهتمامك"
+  }
+}

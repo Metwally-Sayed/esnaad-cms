@@ -9,6 +9,11 @@ type ProjectLocationProps = {
   emplacementText: string;
   recreationalText: string;
   videoTourUrl?: string;
+  labels?: {
+    location: string;
+    amenities: string;
+    units: string;
+  };
 };
 
 export function ProjectLocation({
@@ -17,6 +22,7 @@ export function ProjectLocation({
   emplacementText,
   recreationalText,
   videoTourUrl,
+  labels,
 }: ProjectLocationProps) {
   return (
     <section id="location" className="min-h-screen snap-start bg-[#F3EFE7] px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 flex items-center">
@@ -31,7 +37,7 @@ export function ProjectLocation({
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-[0.08em] sm:tracking-[0.1em]">
-              LOCATION
+              {labels?.location || "LOCATION"}
             </h2>
 
             <p className="font-serif text-sm sm:text-base leading-relaxed text-foreground/80">
@@ -47,7 +53,7 @@ export function ProjectLocation({
 
             {/* Emplacement */}
             <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-serif text-lg sm:text-xl font-medium">Emplacement</h3>
+              <h3 className="font-serif text-lg sm:text-xl font-medium">{labels?.units || "Emplacement"}</h3>
               <p className="font-serif text-sm sm:text-base leading-relaxed text-foreground/80">
                 {emplacementText}
               </p>
@@ -56,7 +62,7 @@ export function ProjectLocation({
             {/* Recreational Activities */}
             <div className="space-y-2 sm:space-y-3">
               <h3 className="font-serif text-lg sm:text-xl font-medium">
-                Recreational Activities
+                {labels?.amenities || "Recreational Activities"}
               </h3>
               <p className="font-serif text-sm sm:text-base leading-relaxed text-foreground/80">
                 {recreationalText}
