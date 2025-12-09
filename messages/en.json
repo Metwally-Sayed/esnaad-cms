@@ -1,0 +1,96 @@
+{
+  "Common": {
+    "dashboard": "Dashboard",
+    "pages": "Pages",
+    "blocks": "Blocks",
+    "settings": "Settings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "language": "Language",
+    "english": "English",
+    "arabic": "Arabic"
+  },
+  "Blocks": {
+    "hero": "Hero",
+    "text": "Text",
+    "image": "Image"
+  },
+  "Sidebar": {
+    "dashboard": "Dashboard",
+    "pages": "Pages",
+    "categories": "Categories",
+    "users": "Users",
+    "collections": "Collections",
+    "globals": "Globals",
+    "headers": "Headers",
+    "footers": "Footers",
+    "themes": "Themes",
+    "settings": "Settings",
+    "admin_profile": "Admin Profile",
+    "logout": "Logout",
+    "navigation": "Navigation",
+    "admin_panel": "Admin Panel"
+  },
+  "DashboardHeader": {
+    "search_placeholder": "Search...",
+    "filter": "Filter",
+    "export": "Export",
+    "refresh": "Refresh",
+    "search": "Search"
+  },
+  "PagesTable": {
+    "page": "Page",
+    "slug": "Slug",
+    "header": "Header",
+    "footer": "Footer",
+    "blocks": "Blocks",
+    "updated": "Updated",
+    "actions": "Actions",
+    "create_new_page": "Create New Page",
+    "no_pages_found": "No pages found",
+    "global_default": "Global Default",
+    "no_description": "No description"
+  },
+  "Collections": {
+    "title": "Collections",
+    "create": "Create Collection",
+    "new": "NewCollection",
+    "edit": "Edit Collection",
+    "name": "Name",
+    "slug": "Slug",
+    "hasProfilePages": "Enable profile pages",
+    "profilePagePattern": "Profile Page URL Pattern",
+    "table": {
+      "order": "Order",
+      "contentPreview": "Content Preview",
+      "actions": "Actions",
+      "empty": "No items in this collection."
+    },
+    "itemDialog": {
+      "add": "Add Item",
+      "edit": "Edit Item",
+      "new": "Add New Item",
+      "title": "Edit Item",
+      "description": "Define the content for this item. You can add custom fields.",
+      "cancel": "Cancel",
+      "save": "Save Item",
+      "saving": "Saving...",
+      "field": "Field",
+      "fieldName": "Field Name (Key)",
+      "type": "Type",
+      "value": "Value",
+      "remove": "Remove",
+      "addField": "Add Field",
+      "enterValue": "Enter value...",
+      "types": {
+        "text": "Text",
+        "textarea": "Long Text",
+        "image": "Image URL",
+        "number": "Number"
+      }
+    }
+  }
+}

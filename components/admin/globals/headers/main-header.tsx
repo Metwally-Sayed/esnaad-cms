@@ -85,10 +85,12 @@ interface MainHeaderProps {
     links: Array<{
       id: string;
       name: string;
+      nameAr?: string | null;
       slug: string;
       order: number;
     }>;
   } | null;
+  locale?: string;
 }
 
 const defaultLinks: NavLink[] = [
@@ -99,7 +101,7 @@ const defaultLinks: NavLink[] = [
   { name: "Contact", href: "/contact" },
 ];
 
-export function MainHeader({ logo, links, className, initialData }: MainHeaderProps) {
+export function MainHeader({ logo, links, className, initialData, locale }: MainHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -115,8 +117,15 @@ export function MainHeader({ logo, links, className, initialData }: MainHeaderPr
 
   // Helper function to map database links to NavLink format
   const mapLinksToNavLinks = (dbLinks: any[]): NavLink[] => {
+    // We need to know the current locale to pick correct name
+    // Since MainHeader is a client component, we should probably receive locale as a prop or infer from path
+    // But better to receive it.
+    // For now let's try to get it from window location or simple heuristic if not passed
+    // Actually best practice is to pass it.
+    // Let's assume we will pass locale.
+    
     return dbLinks.map(link => ({
-      name: link.name,
+      name: (locale === 'ar' && link.nameAr) ? link.nameAr : link.name,
       href: link.slug,
       children: link.children ? mapLinksToNavLinks(link.children) : undefined
     }));

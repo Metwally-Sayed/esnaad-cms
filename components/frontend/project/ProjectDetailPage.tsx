@@ -30,7 +30,11 @@ type ProjectDetailPageProps = {
   data: ProjectData;
 };
 
+import { useTranslations } from "next-intl";
+
 export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
+  const t = useTranslations("Project");
+
   // Parse comma-separated strings into arrays
   const conceptImagesArray = data.conceptImages
     ? data.conceptImages.split(",").map((url) => url.trim())
@@ -55,6 +59,12 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
         architecture={data.architecture}
         features={featuresArray}
         brochureUrl={data.brochureUrl}
+        labels={{
+            concept: t('concept'),
+            architecture: t('architecture'),
+            uniqueFeatures: t('uniqueFeatures'),
+            downloadBrochure: t('downloadBrochure')
+        }}
       />
 
       <ProjectLocation
@@ -63,6 +73,11 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
         emplacementText={data.emplacementText}
         recreationalText={data.recreationalText}
         videoTourUrl={data.videoTourUrl}
+        labels={{
+            location: t('location'),
+            amenities: t('amenities'),
+            units: t('units')
+        }}
       />
 
       <ProjectStats stats={statsArray} />

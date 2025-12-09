@@ -1,12 +1,13 @@
 import PageBlockRenderer, {
-  type PageBlockWithBlock,
+    type PageBlockWithBlock,
 } from "@/components/frontend/blocks/PageBlockRenderer";
 import { getPageBySlug } from "@/server/actions/page";
 import { notFound } from "next/navigation";
 
 type Props = {
-  params?: Promise<{
+  params: Promise<{
     slug?: string[];
+    locale: string;
   }>;
 };
 
@@ -51,7 +52,7 @@ const PageBySlug = async ({ params }: Props) => {
 
     return (
       <main className="bg-background">
-        <PageBlockRenderer block={projectDetailsBlock} />
+        <PageBlockRenderer block={projectDetailsBlock} locale={resolvedParams?.locale || 'en'} />
       </main>
     );
   }
@@ -71,7 +72,7 @@ const PageBySlug = async ({ params }: Props) => {
     <main className="bg-background">
       {renderableBlocks.length ? (
         renderableBlocks.map((block) => (
-          <PageBlockRenderer key={block.id} block={block} />
+          <PageBlockRenderer key={block.id} block={block} locale={resolvedParams?.locale || 'en'} />
         ))
       ) : (
         <div className="mx-auto max-w-4xl px-4 py-24 text-center text-muted-foreground">

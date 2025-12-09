@@ -1,9 +1,9 @@
+import { CMS_CONFIG } from "@/config/cms.config";
 import type { ActionResponse } from "@/lib/types/action-response";
-import { success, failure } from "@/lib/types/action-response";
+import { failure, success } from "@/lib/types/action-response";
 import type { NavigationData, NavigationLinkInput } from "@/lib/types/navigation";
 import { logActionError } from "@/lib/utils/logger";
 import { revalidatePath } from "next/cache";
-import { CMS_CONFIG } from "@/config/cms.config";
 import { prisma } from "../prisma";
 
 /**
@@ -40,6 +40,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
       return {
         id: parentLink.id,
         name: parentLink.name,
+        nameAr: parentLink.nameAr,
         slug: parentLink.slug,
         order: parentLink.order,
         ...(children.length > 0 && { children }),

@@ -1,55 +1,37 @@
 "use client";
 
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarRail,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuAction,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    SidebarRail,
 } from "@/components/ui/sidebar";
+import { Link } from "@/src/i18n/routing";
 import {
-  BarChart3,
-  ChartBarStacked,
-  ChevronDown,
-  Database,
-  FileText,
-  LayoutDashboard,
-  Settings,
-  User,
-  Users,
+    BarChart3,
+    ChartBarStacked,
+    ChevronDown,
+    Database,
+    FileText,
+    LayoutDashboard,
+    Settings,
+    User,
+    Users,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import Link from "next/link";
-import { memo, useLayoutEffect, useRef, useState } from "react";
-const menuItems = [
-  { title: "Dashboard", icon: LayoutDashboard, href: "#dashboard" },
-  { title: "Pages", icon: FileText, href: "/admin/pages" },
-  // { title: "Posts", icon: StickyNote, href: "/post" },
-  // { title: "Media", icon: BookImage, href: "/media" },
-  { title: "Categories", icon: ChartBarStacked, href: "/admin/categories" },
-  { title: "Users", icon: Users, href: "/admin/users" },
-  { title: "Collections", icon: Database, href: "/admin/collections" },
-  {
-    title: "Globals",
-    icon: BarChart3,
-    children: [
-      { title: "Headers", href: "/admin/globals/headers" },
-      { title: "Footers", href: "/admin/globals/footers" },
-      { title: "Themes", href: "/admin/globals/themes" },
-    ],
-  },
-  { title: "Settings", icon: Settings, href: "/admin/settings" },
-];
+import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 function Collapsible({
   open,
@@ -95,6 +77,25 @@ function Collapsible({
 export const AdminSidebar = memo(() => {
   const { theme, setTheme } = useTheme();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+  const t = useTranslations("Sidebar");
+
+  const menuItems = useMemo(() => [
+    { title: t("dashboard"), icon: LayoutDashboard, href: "#dashboard" },
+    { title: t("pages"), icon: FileText, href: "/admin/pages" },
+    { title: t("categories"), icon: ChartBarStacked, href: "/admin/categories" },
+    { title: t("users"), icon: Users, href: "/admin/users" },
+    { title: t("collections"), icon: Database, href: "/admin/collections" },
+    {
+      title: t("globals"),
+      icon: BarChart3,
+      children: [
+        { title: t("headers"), href: "/admin/globals/headers" },
+        { title: t("footers"), href: "/admin/globals/footers" },
+        { title: t("themes"), href: "/admin/globals/themes" },
+      ],
+    },
+    { title: t("settings"), icon: Settings, href: "/admin/settings" },
+  ], [t]);
 
   return (
     <Sidebar collapsible="icon">
@@ -102,13 +103,13 @@ export const AdminSidebar = memo(() => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link prefetch={false} href="#dashboard">
+              <Link href="#dashboard">
                 <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <LayoutDashboard className="h-5 w-5" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">TechCorp</span>
-                  <span className="truncate text-xs">Admin Panel</span>
+                  <span className="truncate text-xs">{t("admin_panel")}</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -118,7 +119,7 @@ export const AdminSidebar = memo(() => {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("navigation")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => {
@@ -127,7 +128,7 @@ export const AdminSidebar = memo(() => {
                   <SidebarMenuItem key={item.title}>
                     {item.href ? (
                       <SidebarMenuButton asChild>
-                        <Link prefetch={false} href={item.href}>
+                        <Link href={item.href}>
                           <Icon />
                           <span>{item.title}</span>
                         </Link>
@@ -167,7 +168,7 @@ export const AdminSidebar = memo(() => {
                             {item.children.map((sub) => (
                               <SidebarMenuSubItem key={sub.title}>
                                 <SidebarMenuSubButton asChild>
-                                  <Link prefetch={false} href={sub.href}>
+                                  <Link href={sub.href}>
                                     <span>{sub.title}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
@@ -190,9 +191,9 @@ export const AdminSidebar = memo(() => {
           <SidebarMenuItem></SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link prefetch={false} href="#profile">
+              <Link href="#profile">
                 <User />
-                <span>Admin Profile</span>
+                <span>{t("admin_profile")}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

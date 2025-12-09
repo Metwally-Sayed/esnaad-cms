@@ -6,8 +6,8 @@ import { FormFactory } from "@/components/frontend/blocks/forms";
 import { HeroFactory } from "@/components/frontend/blocks/hero";
 import HeroBlock from "@/components/frontend/blocks/HeroBlock";
 import {
-  HighlightFactory,
-  type HighlightsContent,
+    HighlightFactory,
+    type HighlightsContent,
 } from "@/components/frontend/blocks/highlights";
 import { BlockType, type Block, type PageBlock } from "@prisma/client";
 import ProjectDetailsBlock from "./ProjectDetailsBlock";
@@ -16,8 +16,19 @@ type PageBlockWithBlock = PageBlock & {
   block: Block;
 };
 
-const PageBlockRenderer = async ({ block }: { block: PageBlockWithBlock }) => {
-  const content = (block.block.content ?? {}) as Record<string, unknown>;
+const PageBlockRenderer = async ({ block, locale }: { block: PageBlockWithBlock, locale: string }) => {
+  const rawContent = (block.block.content ?? {}) as Record<string, unknown>;
+  
+  // Handle localized vs legacy content
+  let content = rawContent;
+  if (rawContent[locale] && typeof rawContent[locale] === 'object') {
+    content = rawContent[locale] as Record<string, unknown>;
+  } else if (rawContent['en'] && typeof rawContent['en'] === 'object') {
+    // Fallback to English if current locale missing
+    content = rawContent['en'] as Record<string, unknown>;
+  } 
+  // Else use rawContent (legacy flat structure or already legacy)
+
   const variant = block.block.variant || "default";
 
   switch (block.block.type) {
@@ -46,7 +57,7 @@ const PageBlockRenderer = async ({ block }: { block: PageBlockWithBlock }) => {
       );
     case "FEATURES":
       if (variant === "project-cards" || (!content.features && content.collectionId)) {
-        return <ProjectCards content={content} />;
+        return <ProjectCards content={content} locale={locale} />;
       }
       return <FeaturesSection content={content} />;
     case "ABOUT":

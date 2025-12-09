@@ -10,6 +10,12 @@ type ProjectConceptProps = {
   architecture: string;
   features: string[];
   brochureUrl?: string;
+  labels?: {
+    concept: string;
+    architecture: string;
+    uniqueFeatures: string;
+    downloadBrochure: string;
+  };
 };
 
 export function ProjectConcept({
@@ -18,6 +24,7 @@ export function ProjectConcept({
   architecture,
   features,
   brochureUrl,
+  labels,
 }: ProjectConceptProps) {
   return (
     <section className="min-h-screen snap-start px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 bg-[#F3EFE7] flex items-center">
@@ -68,13 +75,13 @@ export function ProjectConcept({
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-[0.08em] sm:tracking-[0.1em]">
-              CONCEPT
+              {labels?.concept || "CONCEPT"}
             </h2>
 
             <div className="space-y-5 sm:space-y-6">
               <div>
                 <h3 className="mb-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-foreground/70">
-                  Architecture:
+                  {labels?.architecture || "Architecture"}:
                 </h3>
                 <p className="font-serif text-base sm:text-lg text-foreground leading-relaxed">
                   {architecture}
@@ -83,7 +90,7 @@ export function ProjectConcept({
 
               <div>
                 <h3 className="mb-2 sm:mb-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-foreground/70">
-                  Unique Features:
+                  {labels?.uniqueFeatures || "Unique Features"}:
                 </h3>
                 <p className="font-serif text-sm sm:text-base leading-relaxed text-foreground">
                   {features.join(", ")}
@@ -99,7 +106,7 @@ export function ProjectConcept({
                 className="group inline-flex w-full sm:w-fit items-center justify-center gap-2 sm:gap-3 rounded-full border-2 border-foreground px-6 sm:px-8 py-3 sm:py-4 font-serif text-sm sm:text-base uppercase tracking-[0.08em] sm:tracking-[0.1em] transition-all hover:bg-foreground hover:text-background touch-manipulation"
               >
                 <Download className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:translate-y-1" />
-                DOWNLOAD BROCHURE
+                {labels?.downloadBrochure || "DOWNLOAD BROCHURE"}
               </a>
             )}
           </motion.div>
