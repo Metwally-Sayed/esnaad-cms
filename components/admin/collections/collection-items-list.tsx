@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CollectionItemDialog } from "./collection-item-dialog";
+import { useTranslations } from "next-intl";
 
 interface CollectionItemsListProps {
   collectionId: string;
