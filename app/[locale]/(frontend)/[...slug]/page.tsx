@@ -4,6 +4,7 @@ import PageBlockRenderer, {
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getPageBySlug } from "@/server/actions/page";
 import { notFound } from "next/navigation";
+import { BlockType } from "@prisma/client";
 
 type Props = {
   params: Promise<{
@@ -38,7 +39,7 @@ const PageBySlug = async ({ params, searchParams }: Props) => {
   if (page.collectionItem && page.blocks.length === 0) {
     // Determine block type based on collection slug
     const collectionSlug = page.collectionItem.collection.slug;
-    const blockType = collectionSlug === "media" ? "MEDIA_DETAILS" : "PROJECT_DETAILS";
+    const blockType = collectionSlug === "media" ? BlockType.MEDIA_DETAILS : BlockType.PROJECT_DETAILS;
     const blockName = collectionSlug === "media"
       ? "Auto-generated Media Details"
       : "Auto-generated Project Details";
