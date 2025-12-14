@@ -88,15 +88,29 @@ const PageBySlug = async ({ params, searchParams }: Props) => {
   return (
     <main className="bg-background">
       {renderableBlocks.length ? (
-        renderableBlocks.map((block) => (
-          <ScrollReveal key={block.id} width="100%" className="w-full">
-            <PageBlockRenderer
-              block={block}
-              locale={resolvedParams?.locale || 'en'}
-              searchParams={resolvedSearchParams}
-            />
-          </ScrollReveal>
-        ))
+        renderableBlocks.map((block) => {
+          // Don't wrap forms in ScrollReveal to prevent mobile rendering issues
+          if (block.block.type === "FORM") {
+            return (
+              <PageBlockRenderer
+                key={block.id}
+                block={block}
+                locale={resolvedParams?.locale || 'en'}
+                searchParams={resolvedSearchParams}
+              />
+            );
+          }
+
+          return (
+            <ScrollReveal key={block.id} width="100%" className="w-full">
+              <PageBlockRenderer
+                block={block}
+                locale={resolvedParams?.locale || 'en'}
+                searchParams={resolvedSearchParams}
+              />
+            </ScrollReveal>
+          );
+        })
       ) : (
         <div className="mx-auto max-w-4xl px-4 py-24 text-center text-muted-foreground">
           This page does not have any blocks yet.

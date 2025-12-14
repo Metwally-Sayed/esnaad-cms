@@ -17,7 +17,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         console.log("Theme from database:", result);
 
         // Get dark mode from localStorage (independent of theme colors)
-        const themeMode = localStorage.getItem("theme-mode");
+        const themeMode = localStorage.getItem("theme-mode") || "dark";
         const savedMode = themeMode === "dark";
         console.log("Dark mode from localStorage:", themeMode, "=>", savedMode);
 
@@ -26,7 +26,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           setTheme(result.theme);
         } else {
           // Fallback to localStorage for theme
-          const savedTheme = (localStorage.getItem("theme-name") || "amber") as ThemeName;
+          const savedTheme = (localStorage.getItem("theme-name") || "default") as ThemeName;
           setTheme(savedTheme);
         }
 
@@ -36,8 +36,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         console.error("Error loading theme:", error);
 
         // Fallback: load both from localStorage
-        const savedTheme = (localStorage.getItem("theme-name") || "amber") as ThemeName;
-        const savedMode = localStorage.getItem("theme-mode") === "dark";
+        const savedTheme = (localStorage.getItem("theme-name") || "default") as ThemeName;
+        const themeMode = localStorage.getItem("theme-mode") || "dark";
+        const savedMode = themeMode === "dark";
 
         setTheme(savedTheme);
         setIsDark(savedMode);

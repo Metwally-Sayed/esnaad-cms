@@ -66,8 +66,8 @@ export default async function Layout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                const themeName = localStorage.getItem('theme-name') || 'amber';
-                const themeMode = localStorage.getItem('theme-mode');
+                const themeName = localStorage.getItem('theme-name') || 'default';
+                const themeMode = localStorage.getItem('theme-mode') || 'dark';
                 document.documentElement.setAttribute('data-theme', themeName);
                 if (themeMode === 'dark') {
                   document.documentElement.classList.add('dark');

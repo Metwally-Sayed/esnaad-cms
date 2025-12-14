@@ -25,7 +25,7 @@ export const ScrollReveal = ({
   staggerChildren = 0,
 }: ScrollRevealProps) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px", amount: viewportAmount });
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px", amount: "some" });
 
   const getVariants = (): { hidden: Variant; visible: Variant } => {
     switch (mode) {

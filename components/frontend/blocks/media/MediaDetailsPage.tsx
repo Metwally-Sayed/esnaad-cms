@@ -44,10 +44,10 @@ export default async function MediaDetailsPage({
   return (
     <main className="min-h-screen bg-background">
       {/* Back Button */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 pt-24 pb-6">
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/${locale}/gallery${content.type ? `?type=${content.type}` : ""}`}>
-            <ArrowLeft className="mr-2 size-4" />
+            <ArrowLeft className="me-2 size-4" />
             {locale === "ar" ? "العودة إلى المعرض" : "Back to Gallery"}
           </Link>
         </Button>
