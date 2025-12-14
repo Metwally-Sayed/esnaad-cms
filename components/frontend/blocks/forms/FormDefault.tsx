@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -41,19 +42,19 @@ type FormContent = {
   fields?: FieldConfig[];
 };
 
-const generateSchema = (fields: FieldConfig[]) => {
+const generateSchema = (fields: FieldConfig[], t: (key: string) => string) => {
   const schemaMap: Record<string, z.ZodTypeAny> = {};
 
   fields.forEach((field) => {
     let validator: z.ZodTypeAny = z.string();
 
     if (field.type === "email") {
-      validator = (validator as z.ZodString).email("Invalid email address");
+      validator = (validator as z.ZodString).email(t("invalidEmail"));
     }
 
     if (field.type === "tel") {
       // For tel, we might want to validate length, but keeping it simple
-      validator = (validator as z.ZodString).min(5, "Invalid phone number");
+      validator = (validator as z.ZodString).min(5, t("invalidPhone"));
     }
 
     if (field.type === "file") {
@@ -65,7 +66,7 @@ const generateSchema = (fields: FieldConfig[]) => {
       validator = validator.optional();
     } else {
       if (field.type !== "file") {
-        validator = (validator as z.ZodString).min(1, `${field.label} is required`);
+        validator = (validator as z.ZodString).min(1, `${field.label} ${t("fieldRequired")}`);
       }
     }
 
@@ -81,16 +82,17 @@ const generateSchema = (fields: FieldConfig[]) => {
 };
 
 const FormDefault = ({ content }: { content: FormContent }) => {
+  const t = useTranslations("Forms");
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
   const fields = content.fields || [];
-  const title = content.title || "CONTACT US";
+  const title = content.title || t("contactUs");
   const subtitle = content.subtitle;
-  const submitLabel = content.submitLabel || "SUBMIT";
-  const successMessage = content.successMessage || "Thank you for your submission!";
+  const submitLabel = content.submitLabel || t("submit");
+  const successMessage = content.successMessage || t("thankYouSubmission");
 
-  const formSchema = useMemo(() => generateSchema(fields), [fields]);
+  const formSchema = useMemo(() => generateSchema(fields, t), [fields, t]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -116,12 +118,12 @@ const FormDefault = ({ content }: { content: FormContent }) => {
           <h2 className="text-2xl font-light uppercase tracking-widest">{title}</h2>
           <div className="p-8 bg-secondary/10 rounded-lg">
             <p className="text-lg text-foreground/80">{successMessage}</p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="mt-6 uppercase tracking-widest"
               onClick={() => setSubmitted(false)}
             >
-              Send Another
+              {t("sendAnother")}
             </Button>
           </div>
         </div>
@@ -152,63 +154,65 @@ const FormDefault = ({ content }: { content: FormContent }) => {
 
                 if (field.type === "tel") {
                   return (
-                    <div key={field.name} className={`${colSpan} grid grid-cols-[50px_1fr] gap-1 items-end`}>
-                      <FormField
-                        control={form.control}
-                        name={`${field.name}_code`}
-                        render={({ field: codeField }) => (
-                          <FormItem>
-                            <Select
-                              onValueChange={codeField.onChange}
-                              defaultValue={codeField.value as string}
-                            >
+                    <div key={field.name} className={colSpan}>
+                      <FormLabel className="uppercase text-xs tracking-widest text-foreground/80 mb-2 block">
+                        {field.label}
+                      </FormLabel>
+                      <div className="grid grid-cols-[50px_1fr] gap-1 items-end">
+                        <FormField
+                          control={form.control}
+                          name={`${field.name}_code`}
+                          render={({ field: codeField }) => (
+                            <FormItem>
+                              <Select
+                                onValueChange={codeField.onChange}
+                                defaultValue={codeField.value as string}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus:ring-0 shadow-none bg-transparent dark:bg-transparent">
+                                    <SelectValue placeholder={t("code")} />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="+971">
+                                    <span className="flex items-center gap-2">
+                                      <span className="text-lg">🇦🇪</span>
+                                    </span>
+                                  </SelectItem>
+                                  <SelectItem value="+1">
+                                    <span className="flex items-center gap-2">
+                                      <span className="text-lg">🇺🇸</span>
+                                    </span>
+                                  </SelectItem>
+                                  <SelectItem value="+44">
+                                    <span className="flex items-center gap-2">
+                                      <span className="text-lg">🇬🇧</span>
+                                    </span>
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={field.name}
+                          render={({ field: inputField }) => (
+                            <FormItem>
                               <FormControl>
-                                <SelectTrigger className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus:ring-0 shadow-none bg-transparent dark:bg-transparent">
-                                  <SelectValue placeholder="Code" />
-                                </SelectTrigger>
+                                <Input
+                                  placeholder={field.placeholder || ""}
+                                  {...inputField}
+                                  value={inputField.value as string || ""}
+                                  className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-foreground/50 shadow-none bg-transparent dark:bg-transparent"
+                                />
                               </FormControl>
-                              <SelectContent>
-                                <SelectItem value="+971">
-                                  <span className="flex items-center gap-2">
-                                    <span className="text-lg">🇦🇪</span>
-                                  </span>
-                                </SelectItem>
-                                <SelectItem value="+1">
-                                  <span className="flex items-center gap-2">
-                                    <span className="text-lg">🇺🇸</span>
-                                  </span>
-                                </SelectItem>
-                                <SelectItem value="+44">
-                                  <span className="flex items-center gap-2">
-                                    <span className="text-lg">🇬🇧</span>
-                                  </span>
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={field.name}
-                        render={({ field: inputField }) => (
-                          <FormItem>
-                            <FormLabel className="uppercase text-xs tracking-widest text-foreground/80">
-                              {field.label}
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={field.placeholder || ""}
-                                {...inputField}
-                                value={inputField.value as string || ""}
-                                className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-foreground/50 shadow-none bg-transparent dark:bg-transparent"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   );
                 }
@@ -238,7 +242,7 @@ const FormDefault = ({ content }: { content: FormContent }) => {
                               >
                                 <FormControl>
                                   <SelectTrigger className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus:ring-0 shadow-none bg-transparent dark:bg-transparent">
-                                    <SelectValue placeholder={field.placeholder || "Select..."} />
+                                    <SelectValue placeholder={field.placeholder || t("selectPlaceholder")} />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -270,10 +274,10 @@ const FormDefault = ({ content }: { content: FormContent }) => {
                                     htmlFor={`file-${field.name}`}
                                     className="cursor-pointer bg-secondary/20 hover:bg-secondary/30 text-foreground px-4 py-2 text-xs uppercase tracking-widest transition-colors rounded-sm"
                                   >
-                                    Choose File
+                                    {t("chooseFile")}
                                   </label>
                                   <span className="ml-4 text-sm text-muted-foreground">
-                                    {fileNames[field.name] || "No file chosen"}
+                                    {fileNames[field.name] || t("noFileChosen")}
                                   </span>
                                 </div>
                               </div>

@@ -16,6 +16,7 @@ import { PlusIcon } from "lucide-react";
 import { saveTheme } from "@/server/actions/theme";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 // Define the main colors for each theme
 const themeColors: Record<
@@ -81,6 +82,7 @@ const ThemeTable = () => {
   const currentTheme = useThemeStore((state) => state.theme);
   const setTheme = useThemeStore((state) => state.setTheme);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("Themes");
 
   const handleCheckboxChange = (themeName: ThemeName) => {
     // Apply the selected theme
@@ -92,7 +94,7 @@ const ThemeTable = () => {
       const result = await saveTheme(themeName);
 
       if (result.success) {
-        toast.success("Theme saved successfully!");
+        toast.success(t("themeSaved"));
       } else {
         toast.error(result.error || "Failed to save theme");
       }
@@ -101,24 +103,24 @@ const ThemeTable = () => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-end items-end w-full mb-2 ">
+      <div className="flex justify-start items-end w-full mb-2 ">
         <Button
           onClick={() => handleChangeThemeAction(currentTheme)}
           disabled={isPending}
         >
-          {isPending ? "Saving..." : "Apply"}
-          <PlusIcon className="w-4 h-4 ml-2" />
+          {isPending ? t("saving") : t("apply")}
+          <PlusIcon className="w-4 h-4 ms-2" />
         </Button>
       </div>
       <Table>
         <TableHeader>
           <TableRow className="bg-muted">
-            <TableHead className="w-[50px]">Select</TableHead>
-            <TableHead>Theme Name</TableHead>
-            <TableHead>Primary</TableHead>
-            <TableHead>Secondary</TableHead>
-            <TableHead>Background</TableHead>
-            <TableHead>Accent</TableHead>
+            <TableHead className="w-[50px]">{t("select")}</TableHead>
+            <TableHead>{t("themeName")}</TableHead>
+            <TableHead>{t("primary")}</TableHead>
+            <TableHead>{t("secondary")}</TableHead>
+            <TableHead>{t("background")}</TableHead>
+            <TableHead>{t("accent")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

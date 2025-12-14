@@ -12,6 +12,16 @@ async function main() {
     include: {
       headerLinks: {
         orderBy: { order: "asc" },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          order: true,
+          parentId: true,
+          headerId: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       },
     },
   });

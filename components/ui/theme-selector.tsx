@@ -16,16 +16,13 @@ export function ThemeSelector() {
   const setTheme = useThemeStore((state) => state.setTheme);
   const mounted = useThemeStore((state) => state.mounted);
 
+  // Don't render anything until mounted to prevent hydration mismatch
   if (!mounted) {
     return (
-      <Select disabled>
-        <SelectTrigger className="w-[180px]">
-          <div className="flex items-center gap-2">
-            <Palette className="h-4 w-4" />
-            <span>Loading...</span>
-          </div>
-        </SelectTrigger>
-      </Select>
+      <div className="w-[180px] h-9 flex items-center justify-center gap-2 rounded-md border border-input bg-transparent px-3 text-sm">
+        <Palette className="h-4 w-4" />
+        <span>Loading...</span>
+      </div>
     );
   }
 

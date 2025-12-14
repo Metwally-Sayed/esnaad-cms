@@ -12,11 +12,11 @@ export function ProjectStats({ stats }: ProjectStatsProps) {
   // Always render the section wrapper to ensure the ID exists for scrolling
   // If no stats, render minimal empty section
   if (!stats || stats.length === 0) {
-    return <section id="amenities" className="min-h-screen snap-start bg-[#F3EFE7] py-4" />;
+    return <section id="amenities" className="min-h-screen snap-start bg-background py-4" />;
   }
 
   return (
-    <section id="amenities" className="min-h-screen snap-start bg-[#F3EFE7] py-12 sm:py-16 flex items-center">
+    <section id="amenities" className="min-h-screen snap-start bg-background py-12 sm:py-16 flex items-center">
       <div className="container mx-auto px-4 sm:px-6 w-full">
         <div className="grid grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4">
           {stats.map((stat, index) => (

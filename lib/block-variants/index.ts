@@ -20,7 +20,9 @@ import { aboutDefinition } from "./variants/about";
 import { ctaDefinition } from "./variants/cta";
 import { featuresDefinition } from "./variants/features";
 import { formDefinition } from "./variants/form";
+import { galleryDefinition } from "./variants/gallery";
 import { heroDefinition } from "./variants/hero";
+import { mediaCardsDefinition } from "./variants/media-cards";
 
 // Re-export types
 export * from "./types";
@@ -31,10 +33,13 @@ const BLOCK_VARIANT_REGISTRY: BlockVariantRegistry = {
   CTA: ctaDefinition,
   FEATURES: featuresDefinition,
   ABOUT: aboutDefinition,
+  GALLERY: galleryDefinition,
+  MEDIA_CARDS: mediaCardsDefinition,
   // Placeholder definitions for other types - extend as needed
   TEXT: createPlaceholderDefinition("TEXT", "Text", "Rich text content block"),
   IMAGE: createPlaceholderDefinition("IMAGE", "Image", "Single image with caption"),
-  GALLERY: createPlaceholderDefinition("GALLERY", "Gallery", "Image gallery or carousel"),
+  PROJECT_DETAILS: createPlaceholderDefinition("PROJECT_DETAILS", "Project Details", "Auto-generated project detail page"),
+  MEDIA_DETAILS: createPlaceholderDefinition("MEDIA_DETAILS", "Media Details", "Auto-generated media detail page"),
   VIDEO: createPlaceholderDefinition("VIDEO", "Video", "Embedded video player"),
   HIGHLIGHTS: createPlaceholderDefinition("HIGHLIGHTS", "Highlights", "Key statistics or metrics"),
   TESTIMONIALS: createPlaceholderDefinition("TESTIMONIALS", "Testimonials", "Customer testimonials"),

@@ -46,10 +46,10 @@ const PagesTable = async () => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-end items-end w-full mb-2">
+      <div className="flex items-end justify-start w-full mb-2">
         <Link href="/admin/pages/create">
           <Button>
-            <PlusIcon className="w-4 h-4 ml-2" />
+            <PlusIcon className="w-4 h-4 ms-2" />
             {t("create_new_page")}
           </Button>
         </Link>
@@ -63,7 +63,7 @@ const PagesTable = async () => {
             <TableHead>{t("footer")}</TableHead>
             <TableHead>{t("blocks")}</TableHead>
             <TableHead>{t("updated")}</TableHead>
-            <TableHead className="text-right">{t("actions")}</TableHead>
+            <TableHead className="text-end">{t("actions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -108,7 +108,7 @@ const PagesTable = async () => {
                 <TableCell className="text-sm text-muted-foreground">
                   {new Date(page.updatedAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-end">
                   <Link href={`/admin/pages/${page.id}/edit`}>
                     <Button variant="outline" size="sm">
                       {commonT("edit")}

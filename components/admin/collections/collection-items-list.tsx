@@ -62,7 +62,7 @@ export function CollectionItemsList({
             <TableRow>
               <TableHead className="w-[50px]">{t('order')}</TableHead>
               <TableHead>{t('contentPreview')}</TableHead>
-              <TableHead className="text-right">{t('actions')}</TableHead>
+              <TableHead className="text-end">{t('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -86,7 +86,7 @@ export function CollectionItemsList({
                             key={key}
                             className="inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium text-muted-foreground"
                           >
-                            <span className="font-semibold mr-1">{key}:</span>
+                            <span className="font-semibold me-1">{key}:</span>
                             <span className="truncate max-w-[150px]">
                               {String(value)}
                             </span>
@@ -99,8 +99,8 @@ export function CollectionItemsList({
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                  <TableCell className="text-end">
+                    <div className="flex gap-2 justify-end">
                       <Button
                         variant="ghost"
                         size="icon"

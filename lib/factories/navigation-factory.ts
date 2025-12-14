@@ -64,6 +64,11 @@ export function createNavigationActions<TType extends "header" | "footer">(
             [defaultField]: {
               include: {
                 [linksField]: {
+                  include: {
+                    children: {
+                      orderBy: { order: "asc" as const },
+                    },
+                  },
                   orderBy: { order: "asc" as const },
                 },
               },
@@ -101,6 +106,11 @@ export function createNavigationActions<TType extends "header" | "footer">(
           where: { id },
           include: {
             [linksField]: {
+              include: {
+                children: {
+                  orderBy: { order: "asc" as const },
+                },
+              },
               orderBy: { order: "asc" as const },
             },
           },
@@ -136,6 +146,11 @@ export function createNavigationActions<TType extends "header" | "footer">(
             [type]: {
               include: {
                 [linksField]: {
+                  include: {
+                    children: {
+                      orderBy: { order: "asc" as const },
+                    },
+                  },
                   orderBy: { order: "asc" as const },
                 },
               },
@@ -165,6 +180,11 @@ export function createNavigationActions<TType extends "header" | "footer">(
             [defaultField]: {
               include: {
                 [linksField]: {
+                  include: {
+                    children: {
+                      orderBy: { order: "asc" as const },
+                    },
+                  },
                   orderBy: { order: "asc" as const },
                 },
               },

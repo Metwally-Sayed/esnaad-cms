@@ -74,7 +74,7 @@ function Collapsible({
   );
 }
 
-export const AdminSidebar = memo(() => {
+export const AdminSidebar = memo(({ side = "left" }: { side?: "left" | "right" }) => {
   const { theme, setTheme } = useTheme();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const t = useTranslations("Sidebar");
@@ -98,7 +98,7 @@ export const AdminSidebar = memo(() => {
   ], [t]);
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" side={side}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

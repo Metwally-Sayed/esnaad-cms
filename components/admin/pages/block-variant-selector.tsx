@@ -51,7 +51,7 @@ export default function BlockVariantSelector({
       <DialogTrigger asChild>
         {trigger || (
           <Button variant="outline" size="sm">
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="me-2 h-4 w-4" />
             Add Block
           </Button>
         )}
@@ -71,7 +71,7 @@ export default function BlockVariantSelector({
                 key={blockType.type}
                 onClick={() => setSelectedType(blockType.type)}
                 className={cn(
-                  "flex flex-col items-start rounded-lg border p-4 text-left transition-colors hover:bg-muted/50",
+                  "flex flex-col items-start rounded-lg border p-4 text-start transition-colors hover:bg-muted/50",
                   "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 )}
               >
@@ -110,7 +110,7 @@ export default function BlockVariantSelector({
                   key={variant.id}
                   onClick={() => handleSelectVariant(variant)}
                   className={cn(
-                    "flex flex-col items-start rounded-lg border p-4 text-left transition-colors hover:bg-muted/50",
+                    "flex flex-col items-start rounded-lg border p-4 text-start transition-colors hover:bg-muted/50",
                     "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   )}
                 >

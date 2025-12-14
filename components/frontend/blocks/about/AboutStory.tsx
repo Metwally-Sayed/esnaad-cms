@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useTranslations, useLocale } from "next-intl";
 
 type Paragraph = {
   text?: string;
@@ -10,6 +11,30 @@ type Paragraph = {
 
 type AboutStoryProps = {
   content: {
+    en?: {
+      sectionTitle?: string;
+      subtitle?: string;
+      image?: string;
+      imageAlt?: string;
+      paragraphs?: Paragraph[];
+      customColors?: boolean;
+      backgroundColor?: string;
+      titleColor?: string;
+      subtitleColor?: string;
+      textColor?: string;
+    };
+    ar?: {
+      sectionTitle?: string;
+      subtitle?: string;
+      image?: string;
+      imageAlt?: string;
+      paragraphs?: Paragraph[];
+      customColors?: boolean;
+      backgroundColor?: string;
+      titleColor?: string;
+      subtitleColor?: string;
+      textColor?: string;
+    };
     sectionTitle?: string;
     subtitle?: string;
     image?: string;
@@ -25,12 +50,25 @@ type AboutStoryProps = {
 };
 
 export default function AboutStory({ content, className }: AboutStoryProps) {
-  const useCustomColors = content.customColors === true;
-  const paragraphs = content.paragraphs;
-  const bgColor = content.backgroundColor;
-  const titleColor = content.titleColor;
-  const subtitleColor = content.subtitleColor;
-  const textColor = content.textColor;
+  const t = useTranslations("About");
+  const locale = useLocale();
+
+  // Get locale-specific content from nested structure
+  const localeContent = locale === "ar" ? content.ar : content.en;
+
+  // Use locale-specific content if available, fallback to root level
+  const sectionTitle = localeContent?.sectionTitle ?? content.sectionTitle;
+  const subtitle = localeContent?.subtitle ?? content.subtitle;
+  const image = localeContent?.image ?? content.image;
+  const imageAlt = localeContent?.imageAlt ?? content.imageAlt;
+  const paragraphs = localeContent?.paragraphs ?? content.paragraphs;
+  const customColors = localeContent?.customColors ?? content.customColors ?? false;
+  const bgColor = localeContent?.backgroundColor ?? content.backgroundColor;
+  const titleColor = localeContent?.titleColor ?? content.titleColor;
+  const subtitleColor = localeContent?.subtitleColor ?? content.subtitleColor;
+  const textColor = localeContent?.textColor ?? content.textColor;
+
+  const useCustomColors = customColors === true;
 
   const sectionStyle = useCustomColors ? { backgroundColor: bgColor } : undefined;
   const titleStyle = useCustomColors ? { color: titleColor } : undefined;
@@ -55,7 +93,7 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          {content.sectionTitle && (
+          {sectionTitle && (
             <h2
               className={cn(
                 "font-serif text-3xl tracking-[0.2em] md:text-4xl lg:text-5xl",
@@ -63,10 +101,10 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
               )}
               style={titleStyle}
             >
-              {content.sectionTitle}
+              {sectionTitle}
             </h2>
           )}
-          {content.subtitle && (
+          {subtitle && (
             <p
               className={cn(
                 "mt-4 font-serif text-xl tracking-[0.15em] md:text-2xl",
@@ -74,7 +112,7 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
               )}
               style={subtitleStyle}
             >
-              {content.subtitle}
+              {subtitle}
             </p>
           )}
         </motion.div>
@@ -89,10 +127,10 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            {content.image && (
+            {image && (
               <Image
-                src={content.image}
-                alt={content.imageAlt || "About image"}
+                src={image}
+                alt={imageAlt || t("aboutImage")}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"

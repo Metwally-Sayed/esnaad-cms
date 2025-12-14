@@ -27,7 +27,7 @@ export function ProjectConcept({
   labels,
 }: ProjectConceptProps) {
   return (
-    <section className="min-h-screen snap-start px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 bg-[#F3EFE7] flex items-center">
+    <section className="min-h-screen snap-start px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 bg-background flex items-center">
       <div className="mx-auto max-w-7xl w-full">
         {/* Description */}
         <motion.p

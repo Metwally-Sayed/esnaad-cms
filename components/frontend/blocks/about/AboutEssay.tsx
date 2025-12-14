@@ -3,9 +3,26 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useTranslations, useLocale } from "next-intl";
 
 type AboutEssayProps = {
   content: {
+    en?: {
+      paragraphs?: { text?: string }[];
+      image?: string;
+      imageAlt?: string;
+      customColors?: boolean;
+      backgroundColor?: string;
+      textColor?: string;
+    };
+    ar?: {
+      paragraphs?: { text?: string }[];
+      image?: string;
+      imageAlt?: string;
+      customColors?: boolean;
+      backgroundColor?: string;
+      textColor?: string;
+    };
     paragraphs?: { text?: string }[];
     image?: string;
     imageAlt?: string;
@@ -17,12 +34,25 @@ type AboutEssayProps = {
 };
 
 export default function AboutEssay({ content, className }: AboutEssayProps) {
-  const paragraphs = content.paragraphs ?? [];
-  const useCustomColors = content.customColors === true;
+  const t = useTranslations("About");
+  const locale = useLocale();
+
+  // Get locale-specific content from nested structure
+  const localeContent = locale === "ar" ? content.ar : content.en;
+
+  // Use locale-specific content if available, fallback to root level
+  const paragraphs = localeContent?.paragraphs ?? content.paragraphs ?? [];
+  const image = localeContent?.image ?? content.image;
+  const imageAlt = localeContent?.imageAlt ?? content.imageAlt;
+  const customColors = localeContent?.customColors ?? content.customColors ?? false;
+  const backgroundColor = localeContent?.backgroundColor ?? content.backgroundColor;
+  const textColor = localeContent?.textColor ?? content.textColor;
+
+  const useCustomColors = customColors === true;
   const sectionStyle = useCustomColors
-    ? { backgroundColor: content.backgroundColor }
+    ? { backgroundColor }
     : undefined;
-  const textStyle = useCustomColors ? { color: content.textColor } : undefined;
+  const textStyle = useCustomColors ? { color: textColor } : undefined;
 
   return (
     <section
@@ -57,10 +87,10 @@ export default function AboutEssay({ content, className }: AboutEssayProps) {
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          {content.image && (
+          {image && (
             <Image
-              src={content.image}
-              alt={content.imageAlt || "About image"}
+              src={image}
+              alt={imageAlt || t("aboutImage")}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"

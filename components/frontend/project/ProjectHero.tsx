@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type ProjectHeroProps = {
   heroImage: string;
@@ -29,10 +29,26 @@ export function ProjectHero({ heroImage, title, tabs = ["Location", "Units", "Am
     }, 100);
   };
 
+  const containerRef = useRef<HTMLElement>(null);
+  
+  // Track scroll progress of the hero section
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Transform values for parallax effect
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.5]);
+
   return (
-    <section className="relative h-screen w-full overflow-hidden snap-start">
+    <section ref={containerRef} className="relative h-screen w-full overflow-hidden snap-start">
       {/* Background Image */}
-      <div className="absolute inset-0">
+      <motion.div 
+        className="absolute inset-0"
+        style={{ y, scale, opacity }}
+      >
         <Image
           src={heroImage}
           alt={title}
@@ -41,7 +57,7 @@ export function ProjectHero({ heroImage, title, tabs = ["Location", "Units", "Am
           priority
           sizes="100vw"
         />
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 sm:px-6">

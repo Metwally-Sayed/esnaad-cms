@@ -1,6 +1,7 @@
 import PageBlockRenderer, {
     type PageBlockWithBlock,
 } from "@/components/frontend/blocks/PageBlockRenderer";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getPageBySlug } from "@/server/actions/page";
 import { notFound } from "next/navigation";
 
@@ -9,10 +10,14 @@ type Props = {
     slug?: string[];
     locale: string;
   }>;
+  searchParams: Promise<{
+    type?: string;
+  }>;
 };
 
-const PageBySlug = async ({ params }: Props) => {
+const PageBySlug = async ({ params, searchParams }: Props) => {
   const resolvedParams = params ? await params : undefined;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const slugArray = resolvedParams?.slug ?? [];
 
   // Join the slug array to create the full path
@@ -29,9 +34,16 @@ const PageBySlug = async ({ params }: Props) => {
     notFound();
   }
 
-  // If page is linked to a collection item, automatically inject PROJECT_DETAILS block
+  // If page is linked to a collection item, automatically inject details block
   if (page.collectionItem && page.blocks.length === 0) {
-    const projectDetailsBlock: PageBlockWithBlock = {
+    // Determine block type based on collection slug
+    const collectionSlug = page.collectionItem.collection.slug;
+    const blockType = collectionSlug === "media" ? "MEDIA_DETAILS" : "PROJECT_DETAILS";
+    const blockName = collectionSlug === "media"
+      ? "Auto-generated Media Details"
+      : "Auto-generated Project Details";
+
+    const detailsBlock: PageBlockWithBlock = {
       id: `auto-${page.id}`,
       pageId: page.id,
       blockId: `auto-block-${page.id}`,
@@ -40,8 +52,8 @@ const PageBySlug = async ({ params }: Props) => {
       updatedAt: new Date(),
       block: {
         id: `auto-block-${page.id}`,
-        name: "Auto-generated Project Details",
-        type: "PROJECT_DETAILS",
+        name: blockName,
+        type: blockType,
         variant: "default",
         content: page.collectionItem.content,
         isGlobal: false,
@@ -52,7 +64,11 @@ const PageBySlug = async ({ params }: Props) => {
 
     return (
       <main className="bg-background">
-        <PageBlockRenderer block={projectDetailsBlock} locale={resolvedParams?.locale || 'en'} />
+        <PageBlockRenderer
+          block={detailsBlock}
+          locale={resolvedParams?.locale || 'en'}
+          searchParams={resolvedSearchParams}
+        />
       </main>
     );
   }
@@ -72,7 +88,13 @@ const PageBySlug = async ({ params }: Props) => {
     <main className="bg-background">
       {renderableBlocks.length ? (
         renderableBlocks.map((block) => (
-          <PageBlockRenderer key={block.id} block={block} locale={resolvedParams?.locale || 'en'} />
+          <ScrollReveal key={block.id} width="100%" className="w-full">
+            <PageBlockRenderer
+              block={block}
+              locale={resolvedParams?.locale || 'en'}
+              searchParams={resolvedSearchParams}
+            />
+          </ScrollReveal>
         ))
       ) : (
         <div className="mx-auto max-w-4xl px-4 py-24 text-center text-muted-foreground">

@@ -71,7 +71,7 @@ export function CreateCollectionDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus className="mr-2 h-4 w-4" /> {t('new')}
+          <Plus className="me-2 h-4 w-4" /> {t('new')}
         </Button>
       </DialogTrigger>
       <DialogContent>

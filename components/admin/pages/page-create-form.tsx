@@ -58,6 +58,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import BlockContentEditor from "./block-content-editor";
 import { AvailableBlock, SelectedBlock } from "./types";
+import { useTranslations } from "next-intl";
 
 type InitialPageBlock = {
   id: string;
@@ -119,29 +120,6 @@ const resolveInitialValues = (
   return mergeVariantDefaults(type as BlockType, variant, existing);
 };
 
-const getBlockPreview = (content: Record<string, unknown> | null) => {
-  if (!content || Array.isArray(content)) {
-    return "Reusable block with custom content.";
-  }
-
-  const title = content["title"];
-  if (typeof title === "string" && title.length) {
-    return title;
-  }
-
-  const subtitle = content["subtitle"];
-  if (typeof subtitle === "string" && subtitle.length) {
-    return subtitle;
-  }
-
-  const description = content["description"];
-  if (typeof description === "string" && description.length) {
-    return description;
-  }
-
-  return "Composable content block.";
-};
-
 const buildInitialSelectedBlocks = (
   initialPage?: InitialPageData,
 ): SelectedBlock[] => {
@@ -168,6 +146,30 @@ const buildInitialSelectedBlocks = (
 };
 
 const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
+  const t = useTranslations("PageEditor");
+
+  const getBlockPreview = useCallback((content: Record<string, unknown> | null) => {
+    if (!content || Array.isArray(content)) {
+      return t("reusableBlock");
+    }
+
+    const title = content["title"];
+    if (typeof title === "string" && title.length) {
+      return title;
+    }
+
+    const subtitle = content["subtitle"];
+    if (typeof subtitle === "string" && subtitle.length) {
+      return subtitle;
+    }
+
+    const description = content["description"];
+    if (typeof description === "string" && description.length) {
+      return description;
+    }
+
+    return t("composableBlock");
+  }, [t]);
 
   const editingPageId = initialPage?.id ?? null;
   const isEditing = Boolean(editingPageId);
@@ -307,7 +309,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
   const handleFormSubmit = useCallback(
     (values: PageDetailsFormValues) => {
       if (selectedBlocks.length === 0) {
-        toast.error("Add at least one block to compose the page.");
+        toast.error(t("addBlockError"));
         return;
       }
 
@@ -331,13 +333,13 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
 
         if (result.success) {
           toast.success(
-            isEditing ? "Page updated successfully." : "Page created successfully.",
+            isEditing ? t("pageUpdatedSuccess") : t("pageCreatedSuccess"),
           );
           if (!isEditing) {
             resetForm();
           }
         } else {
-          toast.error(result.error ?? "Failed to create page.");
+          toast.error(result.error ?? t("createError"));
         }
       });
     },
@@ -359,7 +361,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Page details</CardTitle>
+                <CardTitle>{t("pageDetails")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <FormField
@@ -367,10 +369,10 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Page title</FormLabel>
+                      <FormLabel>{t("pageTitle")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Homepage"
+                          placeholder={t("titlePlaceholder")}
                           {...field}
                           onChange={(event) => {
                             const nextValue = event.target.value;
@@ -424,15 +426,15 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Short description</FormLabel>
+                      <FormLabel>{t("shortDescription")}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Summarize this page for editors…"
+                          placeholder={t("descriptionPlaceholder")}
                           {...field}
                         />
                       </FormControl>
                       <FormDescription>
-                        Internal note for your team. Optional but helpful.
+                        {t("internalNote")}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -468,13 +470,12 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Selected blocks</CardTitle>
+                <CardTitle>{t("selectedBlocks")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {selectedBlocks.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
-                    No blocks added yet. Pick a block from the library to start
-                    composing this page.
+                    {t("noBlocksYet")} {t("addFirstBlock")}
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -502,8 +503,8 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                           onClick={() => toggleEditor(block.instanceId)}
                         >
                           {editingBlockId === block.instanceId
-                            ? "Hide settings"
-                            : "Customize"}
+                            ? t("hideSettings")
+                            : t("customize")}
                         </Button>
                       </div>
                       <div className="flex items-center gap-1">
@@ -512,7 +513,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleMoveBlock(block.instanceId, "up")}
-                          aria-label="Move up"
+                          aria-label={t("moveUp")}
                         >
                           <ArrowUp className="size-4" />
                         </Button>
@@ -521,7 +522,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleMoveBlock(block.instanceId, "down")}
-                          aria-label="Move down"
+                          aria-label={t("moveDown")}
                         >
                           <ArrowDown className="size-4" />
                         </Button>
@@ -530,7 +531,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleRemoveBlock(block.instanceId)}
-                          aria-label="Remove block"
+                          aria-label={t("removeBlock")}
                         >
                           <Trash2 className="size-4" />
                         </Button>
@@ -562,7 +563,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <Layers className="size-4" />
-                    Block library
+                    {t("blockLibrary")}
                   </span>
                   <BlockVariantSelector onSelect={handleAddNewBlock} />
                 </CardTitle>
@@ -570,10 +571,10 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
               <CardContent className="space-y-4">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <div className="relative flex-1">
-                    <Search className="text-muted-foreground absolute left-2 top-1/2 size-4 -translate-y-1/2" />
+                    <Search className="text-muted-foreground absolute start-2 top-1/2 size-4 -translate-y-1/2" />
                     <Input
-                      placeholder="Search blocks"
-                      className="pl-8"
+                      placeholder={t("searchBlocks")}
+                      className="ps-8"
                       value={searchQuery}
                       onChange={(event) => setSearchQuery(event.target.value)}
                     />
@@ -583,19 +584,19 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                     onValueChange={(value) => setTypeFilter(value)}
                   >
                     <SelectTrigger className="min-w-[140px]">
-                      <SelectValue placeholder="Filter" />
+                      <SelectValue placeholder={t("filter")} />
                     </SelectTrigger>
                     <SelectContent>
                       {blockTypeOptions.map((type) => (
                         <SelectItem key={type} value={type}>
-                          {type === "all" ? "All types" : type}
+                          {type === "all" ? t("allTypes") : type}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="max-h-[600px] space-y-3 overflow-y-auto pr-1">
+                <div className="max-h-[600px] space-y-3 overflow-y-auto pe-1">
                   {filteredBlocks.length === 0 && (
                     <p className="text-sm text-muted-foreground">
                       No blocks match your filters.
@@ -638,7 +639,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
           </div>
         </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex  gap-3">
           <Button
             type="button"
             variant="outline"
@@ -648,7 +649,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
             Reset
           </Button>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Creating..." : "Create page"}
+            {isPending ? t("creating") : t("createPage")}
           </Button>
         </div>
       </form>

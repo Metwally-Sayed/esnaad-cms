@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { getAvailableBlocks } from "@/server/actions/block";
 import { getPageWithBlocks } from "@/server/actions/page";
@@ -12,6 +13,7 @@ type EditPageProps = {
 
 const EditPage = async ({ params }: EditPageProps) => {
   const { pageId } = await params;
+  const t = await getTranslations("PageEditor");
 
   const [blocksResult, page] = await Promise.all([
     getAvailableBlocks(),
@@ -54,12 +56,11 @@ const EditPage = async ({ params }: EditPageProps) => {
     <div className="space-y-6">
       <div className="max-w-2xl space-y-2">
         <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
-          Pages
+          {t("pages")}
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight">Edit page</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{t("editPage")}</h1>
         <p className="text-muted-foreground">
-          Update the metadata and reorder blocks. Changes apply immediately once
-          saved.
+          {t("editDescription")}
         </p>
       </div>
 

@@ -16,6 +16,7 @@ import { ChevronDown, ChevronRight, Edit, PlusIcon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { LinkEditorDialog } from "../globals/link-editor-dialog";
+import { useTranslations } from "next-intl";
 
 interface NavigationItem {
   id: string;
@@ -61,6 +62,7 @@ export function NavigationTable({
   getById,
   updateLinks,
 }: NavigationTableProps) {
+  const t = useTranslations(type === "header" ? "Headers" : "Footers");
   const [items, setItems] = useState<NavigationItem[]>([]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [currentGlobalId, setCurrentGlobalId] = useState<string | null>(null);
@@ -137,7 +139,7 @@ export function NavigationTable({
       const result = await setAsGlobal(selectedItemId);
 
       if (result.success) {
-        toast.success(`${title} applied successfully!`);
+        toast.success(t(type === "header" ? "headerApplied" : "footerApplied"));
         setCurrentGlobalId(selectedItemId);
         // Update items to reflect new global status
         setItems((prev) =>
@@ -199,10 +201,10 @@ export function NavigationTable({
 
   return (
     <div className="w-full">
-      <div className="flex justify-end items-end w-full mb-2">
+      <div className="flex justify-start items-end w-full mb-2">
         <Button onClick={handleApply} disabled={isPending || !selectedItemId}>
-          {isPending ? "Saving..." : "Apply"}
-          <PlusIcon className="ml-2 h-4 w-4" />
+          {isPending ? t("saving") : t("apply")}
+          <PlusIcon className="ms-2 h-4 w-4" />
         </Button>
       </div>
 
@@ -210,10 +212,10 @@ export function NavigationTable({
         <TableHeader>
           <TableRow className="bg-muted">
             <TableHead className="w-[50px]"></TableHead>
-            <TableHead className="w-[50px]">Select</TableHead>
-            <TableHead>{title} Name</TableHead>
-            <TableHead>Links Count</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead className="w-[50px]">{t("select")}</TableHead>
+            <TableHead>{t("name")}</TableHead>
+            <TableHead>{t("linksCount")}</TableHead>
+            <TableHead>{t("status")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -248,7 +250,7 @@ export function NavigationTable({
                   <TableCell>
                     {item.isGlobal && (
                       <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                        Global
+                        {t("global")}
                       </span>
                     )}
                   </TableCell>
@@ -260,16 +262,16 @@ export function NavigationTable({
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <h4 className="text-sm font-semibold">
-                            {title} Links
+                            {t(type === "header" ? "headerLinks" : "footerLinks")}
                           </h4>
                           <LinkEditorDialog
-                            title={`Edit ${title} Links`}
+                            title={t("editLinks")}
                             initialLinks={details.links}
                             onSave={(links) => handleSaveLinks(item.id, links)}
                             trigger={
                               <Button variant="outline" size="sm">
-                                <Edit className="mr-2 h-4 w-4" />
-                                Edit Links
+                                <Edit className="me-2 h-4 w-4" />
+                                {t("editLinks")}
                               </Button>
                             }
                           />
@@ -291,7 +293,7 @@ export function NavigationTable({
                           </div>
                         ) : (
                           <p className="text-sm text-muted-foreground">
-                            No links configured
+                            {t("noLinks")}
                           </p>
                         )}
                       </div>

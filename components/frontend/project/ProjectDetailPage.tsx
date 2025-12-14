@@ -51,7 +51,11 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
 
   return (
     <div>
-      <ProjectHero heroImage={data.heroImage} title={data.title} />
+      <ProjectHero
+        heroImage={data.heroImage}
+        title={data.title}
+        tabs={[t('location'), t('units'), t('amenities'), t('services')]}
+      />
 
       <ProjectConcept
         description={data.conceptDescription}

@@ -122,7 +122,7 @@ const ListField = ({
             field.maxItems !== undefined && items.length >= field.maxItems
           }
         >
-          <Plus className="mr-1 size-4" />
+          <Plus className="me-1 size-4" />
           Add {field.itemLabel ?? "item"}
         </Button>
       </div>
@@ -150,7 +150,7 @@ const ListField = ({
               onClick={() => handleRemove(index)}
               disabled={!canRemove}
             >
-              <Trash2 className="mr-1 size-4" />
+              <Trash2 className="me-1 size-4" />
               Remove
             </Button>
           </div>

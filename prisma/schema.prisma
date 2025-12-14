@@ -225,6 +225,8 @@ enum BlockType {
   CUSTOM
   ABOUT
   PROJECT_DETAILS
+  MEDIA_DETAILS
+  MEDIA_CARDS
 
   @@map("block_type")
 }
@@ -255,4 +257,20 @@ model CollectionItem {
 
   @@index([collectionId])
   @@map("collection_item")
+}
+
+model Media {
+  id            String   @id @default(cuid())
+  nameEn        String
+  nameAr        String
+  descriptionEn Json?
+  descriptionAr Json?
+  slug          String   @unique
+  order         Int      @default(0)
+  type          String
+  image         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("media")
 }

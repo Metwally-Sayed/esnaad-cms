@@ -109,7 +109,7 @@ export default function CollectionsPage() {
                     <TableCell>{collection._count.items}</TableCell>
                     <TableCell>{new Date(collection.updatedAt).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex jgap-2">
                         <Button variant="ghost" size="icon" asChild>
                           <Link href={`/admin/collections/${collection.id}`}>
                             <Edit className="h-4 w-4" />

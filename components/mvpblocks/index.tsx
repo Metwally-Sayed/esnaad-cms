@@ -8,10 +8,14 @@ import { usePathname } from "next/navigation";
 
 export default function AdminDashboard({
   children,
+  locale,
 }: Readonly<{
   children: React.ReactNode;
+  locale: string;
 }>) {
   const pathname = usePathname();
+  const isRTL = locale === 'ar';
+
   console.log(pathname);
 
   const title = pathnameHandle(pathname);
@@ -19,7 +23,7 @@ export default function AdminDashboard({
 
   return (
     <SidebarProvider>
-      <AdminSidebar />
+      <AdminSidebar side={isRTL ? "right" : "left"} />
       <SidebarInset>
         <DashboardHeader title={title} />
 

@@ -3,20 +3,23 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 
 export function ProjectFloorPlans() {
+  const t = useTranslations("Project");
+
   // Placeholder data - in a real app this would come from props
   const plans = [
     {
-      title: "1 TO 4TH FLOOR",
-      subtitle: "KEY PLAN LEVEL",
+      title: t('floorRange1'),
+      subtitle: t('keyPlanLevel'),
       image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?q=80&w=2574&auto=format&fit=crop", // Placeholder
     },
     {
-      title: "5TH TO 8TH FLOOR",
-      subtitle: "KEY PLAN LEVEL",
+      title: t('floorRange2'),
+      subtitle: t('keyPlanLevel'),
       image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?q=80&w=2574&auto=format&fit=crop", // Placeholder
     },
   ];
@@ -35,7 +38,7 @@ export function ProjectFloorPlans() {
     <section id="units" className="min-h-screen snap-start bg-background py-20 flex items-center">
       <div className="container mx-auto px-4 w-full">
         <h2 className="mb-12 font-serif text-3xl text-foreground md:text-4xl">
-          FLOOR PLANS
+          {t('floorPlans')}
         </h2>
 
         <div className="relative flex flex-col items-center">

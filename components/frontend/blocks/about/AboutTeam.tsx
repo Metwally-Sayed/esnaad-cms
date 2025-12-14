@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useTranslations, useLocale } from "next-intl";
 
 type Member = {
   name?: string;
@@ -13,6 +14,26 @@ type Member = {
 
 type AboutTeamProps = {
   content: {
+    en?: {
+      sectionTitle?: string;
+      subtitle?: string;
+      description?: string;
+      members?: Member[];
+      customColors?: boolean;
+      backgroundColor?: string;
+      titleColor?: string;
+      textColor?: string;
+    };
+    ar?: {
+      sectionTitle?: string;
+      subtitle?: string;
+      description?: string;
+      members?: Member[];
+      customColors?: boolean;
+      backgroundColor?: string;
+      titleColor?: string;
+      textColor?: string;
+    };
     sectionTitle?: string;
     subtitle?: string;
     description?: string;
@@ -26,14 +47,29 @@ type AboutTeamProps = {
 };
 
 export default function AboutTeam({ content, className }: AboutTeamProps) {
-  const members = content.members || [];
-  const useCustomColors = content.customColors === true;
+  const t = useTranslations("About");
+  const locale = useLocale();
+
+  // Get locale-specific content from nested structure
+  const localeContent = locale === "ar" ? content.ar : content.en;
+
+  // Use locale-specific content if available, fallback to root level
+  const sectionTitle = localeContent?.sectionTitle ?? content.sectionTitle;
+  const subtitle = localeContent?.subtitle ?? content.subtitle;
+  const description = localeContent?.description ?? content.description;
+  const members = (localeContent?.members ?? content.members) || [];
+  const customColors = localeContent?.customColors ?? content.customColors ?? false;
+  const backgroundColor = localeContent?.backgroundColor ?? content.backgroundColor;
+  const titleColor = localeContent?.titleColor ?? content.titleColor;
+  const textColor = localeContent?.textColor ?? content.textColor;
+
+  const useCustomColors = customColors === true;
 
   const sectionStyle = useCustomColors
-    ? { backgroundColor: content.backgroundColor }
+    ? { backgroundColor }
     : undefined;
-  const titleStyle = useCustomColors ? { color: content.titleColor } : undefined;
-  const textStyle = useCustomColors ? { color: content.textColor } : undefined;
+  const titleStyle = useCustomColors ? { color: titleColor } : undefined;
+  const textStyle = useCustomColors ? { color: textColor } : undefined;
 
   return (
     <section
@@ -53,7 +89,7 @@ export default function AboutTeam({ content, className }: AboutTeamProps) {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          {content.sectionTitle && (
+          {sectionTitle && (
             <h2
               className={cn(
                 "font-serif text-3xl tracking-[0.2em] md:text-4xl",
@@ -61,10 +97,10 @@ export default function AboutTeam({ content, className }: AboutTeamProps) {
               )}
               style={titleStyle}
             >
-              {content.sectionTitle}
+              {sectionTitle}
             </h2>
           )}
-          {content.subtitle && (
+          {subtitle && (
             <p
               className={cn(
                 "mt-4 font-serif text-xl tracking-[0.1em]",
@@ -72,10 +108,10 @@ export default function AboutTeam({ content, className }: AboutTeamProps) {
               )}
               style={textStyle}
             >
-              {content.subtitle}
+              {subtitle}
             </p>
           )}
-          {content.description && (
+          {description && (
             <p
               className={cn(
                 "mx-auto mt-6 max-w-2xl",
@@ -83,7 +119,7 @@ export default function AboutTeam({ content, className }: AboutTeamProps) {
               )}
               style={textStyle}
             >
-              {content.description}
+              {description}
             </p>
           )}
         </motion.div>
@@ -103,7 +139,7 @@ export default function AboutTeam({ content, className }: AboutTeamProps) {
                 <div className="relative mx-auto mb-4 h-48 w-48 overflow-hidden rounded-full">
                   <Image
                     src={member.photo}
-                    alt={member.name || "Team member"}
+                    alt={member.name || t("teamMember")}
                     fill
                     className="object-cover"
                   />

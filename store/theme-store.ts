@@ -14,7 +14,7 @@ interface ThemeState {
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
   theme: CMS_CONFIG.defaultTheme,
-  isDark: false,
+  isDark: true,
   mounted: false,
 
   setTheme: (theme) => {
@@ -51,7 +51,9 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   initializeTheme: () => {
     if (typeof window !== "undefined") {
       const savedTheme = (localStorage.getItem("theme-name") || CMS_CONFIG.defaultTheme) as ThemeName;
-      const savedMode = localStorage.getItem("theme-mode") === "dark";
+      const savedModeValue = localStorage.getItem("theme-mode");
+      // Default to dark mode if no saved preference
+      const savedMode = savedModeValue === null ? true : savedModeValue === "dark";
 
       set({
         theme: savedTheme,

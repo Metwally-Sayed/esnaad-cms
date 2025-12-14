@@ -13,7 +13,7 @@ export default async function FrontLayout({
   return (
     <>
       <HeaderRenderer locale={locale} />
-      <main className="w-full pt-16 sm:pt-20">{children}</main>
+      <main className="w-full">{children}</main>
       <FooterRenderer locale={locale} />
     </>
   );

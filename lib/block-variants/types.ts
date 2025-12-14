@@ -68,6 +68,9 @@ export const BLOCK_TYPE_VALUES = [
   "CODE",
   "CUSTOM",
   "ABOUT",
+  "PROJECT_DETAILS",
+  "MEDIA_DETAILS",
+  "MEDIA_CARDS",
 ] as const;
 
 export type BlockType = (typeof BLOCK_TYPE_VALUES)[number];

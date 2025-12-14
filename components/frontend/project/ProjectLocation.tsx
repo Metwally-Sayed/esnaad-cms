@@ -25,7 +25,7 @@ export function ProjectLocation({
   labels,
 }: ProjectLocationProps) {
   return (
-    <section id="location" className="min-h-screen snap-start bg-[#F3EFE7] px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 flex items-center">
+    <section id="location" className="min-h-screen snap-start bg-background px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 flex items-center">
       <div className="mx-auto max-w-7xl w-full">
         <div className="grid gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left Content */}

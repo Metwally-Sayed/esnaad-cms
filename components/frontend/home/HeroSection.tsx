@@ -1,8 +1,13 @@
+"use client";
+
 import { CTAFactory, type CTAContent } from "@/components/frontend/blocks/cta";
 import {
-  HighlightFactory,
-  type HighlightsContent,
+    HighlightFactory,
+    type HighlightsContent,
 } from "@/components/frontend/blocks/highlights";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 type HeroSectionProps = {
   brand: {
@@ -57,25 +62,43 @@ const HeroSection = ({
   const mediaSource = media?.src ?? DEFAULT_VIDEO;
   const mimeType = inferMimeType(mediaSource);
 
+  const containerRef = useRef<HTMLElement>(null);
+  
+  // Track scroll progress of the hero section
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Transform values for parallax effect
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.5]);
+
   return (
-    <section className="relative isolate h-[720px] md:h-[920px] lg:min-h-[70vh] w-full overflow-hidden bg-black text-white">
-      {mediaType === "image" ? (
-        <div
-          className="absolute inset-0 h-full w-full bg-cover bg-center"
-          style={{ backgroundImage: `url(${mediaSource})` }}
-        />
-      ) : (
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster={media?.poster}
-        >
-          <source src={mediaSource} type={mimeType} />
-        </video>
-      )}
+    <section ref={containerRef} className="relative isolate h-[720px] md:h-[920px] lg:min-h-[70vh] w-full overflow-hidden bg-black text-white">
+      <motion.div
+        className="absolute inset-0 h-full w-full"
+        style={{ y, scale, opacity }}
+      >
+        {mediaType === "image" ? (
+          <div
+            className="absolute inset-0 h-full w-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${mediaSource})` }}
+          />
+        ) : (
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster={media?.poster}
+          >
+            <source src={mediaSource} type={mimeType} />
+          </video>
+        )}
+      </motion.div>
 
       <div className="relative z-10 flex h-full flex-col px-4 pb-12 pt-8 sm:px-10 lg:px-24">
         <div className="mt-auto grid gap-6 text-white">
@@ -87,16 +110,20 @@ const HeroSection = ({
             }
           >
             {location ? (
-              <p className="text-xs uppercase tracking-[0.7em] text-white/70">
-                {location}
-              </p>
+              <ScrollReveal mode="fade-in" delay={0.2}>
+                <p className="text-xs uppercase tracking-[0.7em] text-white/70">
+                  {location}
+                </p>
+              </ScrollReveal>
             ) : null}
             <div className="mt-4 space-y-2 font-serif text-3xl uppercase tracking-[0.4em] sm:text-4xl">
               {headline.map((line) => (
                 <div key={line} className="space-y-1">
+                <ScrollReveal mode="slide-right" staggerChildren={0.1}>
                   {chunkLine(line).map((chunk) => (
                     <p key={`${line}-${chunk}`}>{chunk}</p>
                   ))}
+                </ScrollReveal>
                 </div>
               ))}
             </div>

@@ -311,7 +311,7 @@ export function CollectionItemDialog({
                   className="h-8 text-destructive hover:bg-destructive/10"
                   onClick={() => handleRemoveField(field.id)}
                 >
-                  <X className="h-4 w-4 mr-1" />
+                  <X className="h-4 w-4 me-1" />
                   {t('remove')}
                 </Button>
               </div>
@@ -372,7 +372,7 @@ export function CollectionItemDialog({
           ))}
 
           <Button onClick={handleAddField} variant="outline" className="w-full border-dashed">
-            <Plus className="mr-2 h-4 w-4" /> {t('addField')}
+            <Plus className="me-2 h-4 w-4" /> {t('addField')}
           </Button>
         </div>
 

@@ -3,9 +3,30 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useTranslations, useLocale } from "next-intl";
 
 type AboutVisionProps = {
   content: {
+    en?: {
+      heading?: string;
+      paragraphs?: { text?: string }[];
+      image?: string;
+      imageAlt?: string;
+      backgroundColor?: string;
+      customColors?: boolean;
+      titleColor?: string;
+      textColor?: string;
+    };
+    ar?: {
+      heading?: string;
+      paragraphs?: { text?: string }[];
+      image?: string;
+      imageAlt?: string;
+      backgroundColor?: string;
+      customColors?: boolean;
+      titleColor?: string;
+      textColor?: string;
+    };
     heading?: string;
     paragraphs?: { text?: string }[];
     image?: string;
@@ -19,13 +40,28 @@ type AboutVisionProps = {
 };
 
 export default function AboutVision({ content, className }: AboutVisionProps) {
-  const paragraphs = content.paragraphs ?? [];
-  const useCustomColors = content.customColors === true;
+  const t = useTranslations("About");
+  const locale = useLocale();
+
+  // Get locale-specific content from nested structure
+  const localeContent = locale === "ar" ? content.ar : content.en;
+
+  // Use locale-specific content if available, fallback to root level
+  const heading = localeContent?.heading ?? content.heading;
+  const paragraphs = localeContent?.paragraphs ?? content.paragraphs ?? [];
+  const image = localeContent?.image ?? content.image;
+  const imageAlt = localeContent?.imageAlt ?? content.imageAlt;
+  const customColors = localeContent?.customColors ?? content.customColors ?? false;
+  const backgroundColor = localeContent?.backgroundColor ?? content.backgroundColor;
+  const titleColor = localeContent?.titleColor ?? content.titleColor;
+  const textColor = localeContent?.textColor ?? content.textColor;
+
+  const useCustomColors = customColors === true;
   const sectionStyle = useCustomColors
-    ? { backgroundColor: content.backgroundColor }
+    ? { backgroundColor }
     : undefined;
-  const titleStyle = useCustomColors ? { color: content.titleColor } : undefined;
-  const textStyle = useCustomColors ? { color: content.textColor } : undefined;
+  const titleStyle = useCustomColors ? { color: titleColor } : undefined;
+  const textStyle = useCustomColors ? { color: textColor } : undefined;
 
   return (
     <section
@@ -37,7 +73,7 @@ export default function AboutVision({ content, className }: AboutVisionProps) {
       style={sectionStyle}
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-10">
-        {content.heading && (
+        {heading && (
           <motion.h3
             className={cn(
               "text-center font-serif text-lg uppercase tracking-[0.18em] md:text-xl font-bold",
@@ -49,7 +85,7 @@ export default function AboutVision({ content, className }: AboutVisionProps) {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            {content.heading}
+            {heading}
           </motion.h3>
         )}
 
@@ -61,10 +97,10 @@ export default function AboutVision({ content, className }: AboutVisionProps) {
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
-            {content.image && (
+            {image && (
               <Image
-                src={content.image}
-                alt={content.imageAlt || "About image"}
+                src={image}
+                alt={imageAlt || t("aboutImage")}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 55vw"

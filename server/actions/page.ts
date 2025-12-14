@@ -25,7 +25,11 @@ export async function getPageBySlug({ slug }: { slug: string }) {
         },
         header: true,
         footer: true,
-        collectionItem: true,
+        collectionItem: {
+          include: {
+            collection: true,
+          },
+        },
       },
     });
 

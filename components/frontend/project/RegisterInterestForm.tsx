@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function RegisterInterestForm() {
+  const t = useTranslations("Forms");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,13 +27,13 @@ export function RegisterInterestForm() {
       <div className="container mx-auto px-4 w-full">
         <div className="mx-auto max-w-md">
           <h2 className="mb-8 text-center font-serif text-3xl text-foreground">
-            REGISTER YOUR INTEREST
+            {t("registerInterest")}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm uppercase tracking-wider text-foreground">
-                NAME
+                {t("name")}
               </Label>
               <Input
                 id="name"
@@ -45,7 +47,7 @@ export function RegisterInterestForm() {
 
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm uppercase tracking-wider text-foreground">
-                EMAIL
+                {t("email")}
               </Label>
               <Input
                 id="email"
@@ -59,7 +61,7 @@ export function RegisterInterestForm() {
 
             <div className="space-y-2">
               <Label htmlFor="phone" className="text-sm uppercase tracking-wider text-foreground">
-                PHONE
+                {t("phone")}
               </Label>
               <Input
                 id="phone"
@@ -73,7 +75,7 @@ export function RegisterInterestForm() {
 
             <div className="space-y-2">
               <Label className="text-sm uppercase tracking-wider text-foreground">
-                PREFERRED MODE OF CONTACT
+                {t("preferredContact")}
               </Label>
               <RadioGroup
                 value={formData.contactMode}
@@ -83,13 +85,13 @@ export function RegisterInterestForm() {
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="whatsapp" id="whatsapp" />
                   <Label htmlFor="whatsapp" className="text-sm text-foreground cursor-pointer">
-                    Whatsapp
+                    {t("whatsapp")}
                   </Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="phone" id="phone" />
                   <Label htmlFor="phone" className="text-sm text-foreground cursor-pointer">
-                    Phone
+                    {t("phone")}
                   </Label>
                 </div>
               </RadioGroup>
@@ -99,7 +101,7 @@ export function RegisterInterestForm() {
               type="submit"
               className="w-full rounded-full border border-foreground bg-transparent py-6 text-sm uppercase tracking-widest text-foreground hover:bg-foreground hover:text-background"
             >
-              SEND MESSAGE
+              {t("sendMessage")}
             </Button>
           </form>
         </div>

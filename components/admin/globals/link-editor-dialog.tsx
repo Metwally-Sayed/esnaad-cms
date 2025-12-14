@@ -234,7 +234,7 @@ export function LinkEditorDialog({
             </div>
 
             <Button onClick={handleAddLink} className="w-full" variant="secondary">
-              <Plus className="mr-2 h-4 w-4" /> Add Link
+              <Plus className="me-2 h-4 w-4" /> Add Link
             </Button>
           </div>
 

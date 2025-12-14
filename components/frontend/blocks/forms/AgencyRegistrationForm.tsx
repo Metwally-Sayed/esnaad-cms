@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -82,15 +83,16 @@ const generateSchema = (fields: FieldConfig[]) => {
 };
 
 const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
+  const t = useTranslations("Forms");
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
   const fields = content.fields || [];
-  const title = content.title || "AGENCY REGISTRATION";
-  const subtitle = content.subtitle || "WELCOME TO THE REAL ESTATE BROKERAGE REGISTRATION PORTAL";
+  const title = content.title || t("agencyRegistration");
+  const subtitle = content.subtitle || t("agencyWelcome");
   const introText = content.introText;
-  const submitLabel = content.submitLabel || "REGISTER NOW";
-  const successMessage = content.successMessage || "Thank you for your registration request!";
+  const submitLabel = content.submitLabel || t("registerNow");
+  const successMessage = content.successMessage || t("thankYouRegistration");
 
   const formSchema = useMemo(() => generateSchema(fields), [fields]);
 
@@ -119,12 +121,12 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
           <h2 className="text-3xl font-serif font-light uppercase tracking-[0.1em] text-foreground">{title}</h2>
           <div className="p-8 bg-secondary/10 rounded-sm border border-border">
             <p className="text-lg text-foreground/80 font-serif">{successMessage}</p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="mt-6 uppercase tracking-widest border-border hover:bg-secondary/10 transition-colors rounded-none"
               onClick={() => setSubmitted(false)}
             >
-              Send Another
+              {t("sendAnother")}
             </Button>
           </div>
         </div>
@@ -164,63 +166,65 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
 
                 if (field.type === "tel") {
                   return (
-                    <div key={field.name} className={`${colSpan} grid grid-cols-[60px_1fr] gap-2 items-end`}>
-                      <FormField
-                        control={form.control}
-                        name={`${field.name}_code`}
-                        render={({ field: codeField }) => (
-                          <FormItem>
-                            <Select
-                              onValueChange={codeField.onChange}
-                              defaultValue={codeField.value as string}
-                            >
+                    <div key={field.name} className={colSpan}>
+                      <FormLabel className="uppercase text-xs tracking-[0.1em] text-black/60 dark:text-white/60 mb-2 block font-serif">
+                        {field.label}
+                      </FormLabel>
+                      <div className="grid grid-cols-[60px_1fr] gap-0.5 items-end">
+                        <FormField
+                          control={form.control}
+                          name={`${field.name}_code`}
+                          render={({ field: codeField }) => (
+                            <FormItem>
+                              <Select
+                                onValueChange={codeField.onChange}
+                                defaultValue={codeField.value as string}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus:ring-0 shadow-none bg-transparent h-10 text-foreground">
+                                    <SelectValue placeholder={t("code")} />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent className="bg-background border-border">
+                                  <SelectItem value="+971">
+                                    <span className="flex items-center gap-2">
+                                      <span className="text-lg">🇦🇪</span>
+                                    </span>
+                                  </SelectItem>
+                                  <SelectItem value="+1">
+                                    <span className="flex items-center gap-2">
+                                      <span className="text-lg">🇺🇸</span>
+                                    </span>
+                                  </SelectItem>
+                                  <SelectItem value="+44">
+                                    <span className="flex items-center gap-2">
+                                      <span className="text-lg">🇬🇧</span>
+                                    </span>
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={field.name}
+                          render={({ field: inputField }) => (
+                            <FormItem>
                               <FormControl>
-                                <SelectTrigger className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus:ring-0 shadow-none bg-transparent h-10 text-foreground">
-                                  <SelectValue placeholder="Code" />
-                                </SelectTrigger>
+                                <Input
+                                  placeholder={field.placeholder || ""}
+                                  {...inputField}
+                                  value={inputField.value as string || ""}
+                                  className="border-t-0 border-x-0 border-b border-border rounded-none px-1 focus-visible:ring-0 focus-visible:border-foreground shadow-none bg-transparent h-10 text-base text-foreground placeholder:text-muted-foreground"
+                                />
                               </FormControl>
-                              <SelectContent className="bg-[#1a1a1a] border-white/10 text-white">
-                                <SelectItem value="+971">
-                                  <span className="flex items-center gap-2">
-                                    <span className="text-lg">🇦🇪</span>
-                                  </span>
-                                </SelectItem>
-                                <SelectItem value="+1">
-                                  <span className="flex items-center gap-2">
-                                    <span className="text-lg">🇺🇸</span>
-                                  </span>
-                                </SelectItem>
-                                <SelectItem value="+44">
-                                  <span className="flex items-center gap-2">
-                                    <span className="text-lg">🇬🇧</span>
-                                  </span>
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={field.name}
-                        render={({ field: inputField }) => (
-                          <FormItem>
-                            <FormLabel className="uppercase text-xs tracking-[0.1em] text-black/60 dark:text-white/60 mb-1 block font-serif">
-                              {field.label}
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={field.placeholder || ""}
-                                {...inputField}
-                                value={inputField.value as string || ""}
-                                className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-foreground shadow-none bg-transparent h-10 text-base text-foreground placeholder:text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   );
                 }
@@ -241,7 +245,7 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
                                 placeholder={field.placeholder || ""}
                                 {...formField}
                                 value={formField.value as string || ""}
-                                className="min-h-[100px] border-t-0 border-x-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-foreground shadow-none resize-none bg-transparent text-base text-foreground placeholder:text-muted-foreground"
+                                className="min-h-[100px] border-t-0 border-x-0 border-b border-border rounded-none px-1 focus-visible:ring-0 focus-visible:border-foreground shadow-none resize-none bg-transparent text-base text-foreground placeholder:text-muted-foreground"
                               />
                             ) : field.type === "select" ? (
                               <Select
@@ -249,8 +253,8 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
                                 defaultValue={formField.value as string}
                               >
                                 <FormControl>
-                                  <SelectTrigger className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus:ring-0 shadow-none bg-transparent h-10 text-base text-foreground">
-                                    <SelectValue placeholder={field.placeholder || "Select..."} />
+                                  <SelectTrigger className="w-full border-t-0 border-x-0 border-b border-border rounded-none px-1 focus:ring-0 shadow-none bg-transparent h-10 text-base text-foreground">
+                                    <SelectValue placeholder={field.placeholder || t("selectPlaceholder")} />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -281,10 +285,10 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
                                     htmlFor={`file-${field.name}`}
                                     className="cursor-pointer bg-secondary/10 hover:bg-secondary/20 text-foreground px-6 py-2 text-xs uppercase tracking-[0.1em] transition-colors rounded-sm border border-border font-serif"
                                   >
-                                    Choose File
+                                    {t("chooseFile")}
                                   </label>
                                   <span className="text-sm text-muted-foreground italic font-serif">
-                                    {fileNames[field.name] || "No file chosen"}
+                                    {fileNames[field.name] || t("noFileChosen")}
                                   </span>
                                 </div>
                               </div>
@@ -294,7 +298,7 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
                                 placeholder={field.placeholder || ""}
                                 {...formField}
                                 value={formField.value as string || ""}
-                                className="border-t-0 border-x-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-foreground shadow-none bg-transparent h-10 text-base text-foreground placeholder:text-muted-foreground"
+                                className="border-t-0 border-x-0 border-b border-border rounded-none px-1 focus-visible:ring-0 focus-visible:border-foreground shadow-none bg-transparent h-10 text-base text-foreground placeholder:text-muted-foreground"
                               />
                             )}
                           </FormControl>

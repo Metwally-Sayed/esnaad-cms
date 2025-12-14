@@ -3,6 +3,7 @@ import { CTAFactory, type CTAContent } from "@/components/frontend/blocks/cta";
 import ProjectCards from "@/components/frontend/blocks/features/ProjectCards";
 import FeaturesSection from "@/components/frontend/blocks/FeaturesSection";
 import { FormFactory } from "@/components/frontend/blocks/forms";
+import { GalleryFactory } from "@/components/frontend/blocks/gallery";
 import { HeroFactory } from "@/components/frontend/blocks/hero";
 import HeroBlock from "@/components/frontend/blocks/HeroBlock";
 import {
@@ -10,13 +11,24 @@ import {
     type HighlightsContent,
 } from "@/components/frontend/blocks/highlights";
 import { BlockType, type Block, type PageBlock } from "@prisma/client";
+import MediaCards from "./media/MediaCards";
+import MediaCardsWithFilters from "./media/MediaCardsWithFilters";
+import MediaDetailsPage from "./media/MediaDetailsPage";
 import ProjectDetailsBlock from "./ProjectDetailsBlock";
 
 type PageBlockWithBlock = PageBlock & {
   block: Block;
 };
 
-const PageBlockRenderer = async ({ block, locale }: { block: PageBlockWithBlock, locale: string }) => {
+const PageBlockRenderer = async ({
+  block,
+  locale,
+  searchParams
+}: {
+  block: PageBlockWithBlock;
+  locale: string;
+  searchParams?: { type?: string };
+}) => {
   const rawContent = (block.block.content ?? {}) as Record<string, unknown>;
   
   // Handle localized vs legacy content
@@ -28,6 +40,11 @@ const PageBlockRenderer = async ({ block, locale }: { block: PageBlockWithBlock,
     content = rawContent['en'] as Record<string, unknown>;
   } 
   // Else use rawContent (legacy flat structure or already legacy)
+
+  console.log(`[PageBlockRenderer] Block: ${block.block.name} | Locale: ${locale}`);
+  console.log(`[PageBlockRenderer] Has AR content?`, !!rawContent['ar']);
+  console.log(`[PageBlockRenderer] Has EN content?`, !!rawContent['en']);
+  console.log(`[PageBlockRenderer] Resolved Content keys:`, Object.keys(content || {}));
 
   const variant = block.block.variant || "default";
 
@@ -64,8 +81,24 @@ const PageBlockRenderer = async ({ block, locale }: { block: PageBlockWithBlock,
       return <AboutFactory variant={variant} content={content} />;
     case "FORM":
       return <FormFactory variant={variant} content={content} />;
+    case "GALLERY":
+      return <GalleryFactory variant={variant} content={content} />;
     case BlockType.PROJECT_DETAILS:
       return <ProjectDetailsBlock content={content} />;
+    case BlockType.MEDIA_DETAILS:
+      return <MediaDetailsPage content={content} />;
+    case BlockType.MEDIA_CARDS:
+      // If showFilters is enabled or searchParams exist, use the filtering version
+      if (content.showFilters !== false || searchParams?.type) {
+        return (
+          <MediaCardsWithFilters
+            content={content}
+            variant={variant}
+            urlFilterType={searchParams?.type}
+          />
+        );
+      }
+      return <MediaCards content={content} variant={variant} />;
     default:
       return (
         <section className="px-4 py-16">

@@ -1,9 +1,11 @@
 "use client";
 
-import { HeroVariantProps } from "./index";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { motion, useScroll, useTransform } from "framer-motion";
+import Link from "next/link";
+import { useRef } from "react";
+import { HeroVariantProps } from "./index";
 
 const inferMimeType = (src: string) => {
   const lowerSrc = src.toLowerCase();
@@ -33,13 +35,30 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
   const heightClass = minHeight ? `min-h-[${minHeight}px]` : "min-h-screen";
   const heightStyle = minHeight ? { minHeight: `${minHeight}px` } : undefined;
 
+  const containerRef = useRef<HTMLElement>(null);
+  
+  // Track scroll progress of the hero section
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Transform values for parallax effect
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.5]);
+
   return (
     <section
+      ref={containerRef}
       className={cn("relative overflow-hidden", heightClass, className)}
       style={heightStyle}
     >
       {/* Video Background */}
-      <div className="absolute inset-0 z-0">
+      <motion.div 
+        className="absolute inset-0 z-0"
+        style={{ y, scale, opacity }}
+      >
         <video
           autoPlay
           loop
@@ -50,7 +69,7 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
         >
           <source src={videoUrl} type={mimeType} />
         </video>
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div
