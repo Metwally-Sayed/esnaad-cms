@@ -14,6 +14,13 @@ export const createCollectionSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   hasProfilePages: z.boolean().optional().default(false),
   profilePageSlugPattern: z.string().optional(),
+  fields: z.array(z.object({
+    key: z.string(),
+    type: z.enum(["text", "textarea", "number", "image", "boolean"]),
+    required: z.boolean().optional(),
+    isFixed: z.boolean().optional(),
+    description: z.string().optional()
+  })).optional(),
 });
 
 export const updateCollectionSchema = z.object({
@@ -25,6 +32,13 @@ export const updateCollectionSchema = z.object({
     .optional(),
   hasProfilePages: z.boolean().optional(),
   profilePageSlugPattern: z.string().optional(),
+  fields: z.array(z.object({
+    key: z.string(),
+    type: z.enum(["text", "textarea", "number", "image", "boolean"]),
+    required: z.boolean().optional(),
+    isFixed: z.boolean().optional(),
+    description: z.string().optional()
+  })).optional(),
 });
 
 export const createCollectionItemSchema = z.object({

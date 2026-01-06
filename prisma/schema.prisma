@@ -76,15 +76,22 @@ model Theme {
 }
 
 model GlobalSettings {
-  id              String   @id @default("global")
-  siteName        String?
-  siteDescription String?
-  defaultHeaderId String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  defaultFooterId String?
-  defaultFooter   Footer?  @relation("DefaultFooter", fields: [defaultFooterId], references: [id])
-  defaultHeader   Header?  @relation("DefaultHeader", fields: [defaultHeaderId], references: [id])
+  id                    String   @id @default("global")
+  siteName              String?
+  siteDescription       String?
+  defaultHeaderId       String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  defaultFooterId       String?
+  defaultAuthor         String?
+  defaultOgImage        String?
+  defaultOgLocale       String?  @default("en_US")
+  defaultOgSiteName     String?
+  defaultRobots         String?  @default("index,follow")
+  defaultTwitterCreator String?
+  defaultTwitterSite    String?
+  defaultFooter         Footer?  @relation("DefaultFooter", fields: [defaultFooterId], references: [id])
+  defaultHeader         Header?  @relation("DefaultHeader", fields: [defaultHeaderId], references: [id])
 
   @@map("global_settings")
 }
@@ -104,13 +111,13 @@ model Header {
 model HeaderLink {
   id        String       @id @default(cuid())
   name      String
-  nameAr    String?
   slug      String
   order     Int          @default(0)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   headerId  String
   parentId  String?
+  nameAr    String?
   header    Header       @relation(fields: [headerId], references: [id], onDelete: Cascade)
   parent    HeaderLink?  @relation("HeaderLinkChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children  HeaderLink[] @relation("HeaderLinkChildren")
@@ -119,19 +126,56 @@ model HeaderLink {
 }
 
 model Page {
-  id             String          @id @default(cuid())
-  title          String
-  slug           String          @unique
-  description    String?
-  published      Boolean         @default(false)
-  headerId       String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  footerId       String?
-  footer         Footer?         @relation(fields: [footerId], references: [id])
-  header         Header?         @relation(fields: [headerId], references: [id])
-  blocks         PageBlock[]
-  collectionItem CollectionItem? @relation("CollectionItemPage")
+  id                     String          @id @default(cuid())
+  title                  String
+  slug                   String          @unique
+  description            String?
+  published              Boolean         @default(false)
+  headerId               String?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  footerId               String?
+  alternateLanguages     Json?
+  author                 String?
+  breadcrumbTitle        String?
+  canonicalUrl           String?
+  category               String?
+  focusKeyword           String?
+  metaRobots             String?
+  modifiedDate           DateTime?
+  nofollow               Boolean         @default(false)
+  noindex                Boolean         @default(false)
+  ogArticleAuthor        String?
+  ogArticleModifiedTime  DateTime?
+  ogArticlePublishedTime DateTime?
+  ogArticleSection       String?
+  ogArticleTags          String[]        @default([])
+  ogDescription          String?
+  ogImage                String?
+  ogLocale               String?         @default("en_US")
+  ogLocaleAlternate      String[]        @default([])
+  ogSiteName             String?
+  ogTitle                String?
+  ogType                 String?         @default("website")
+  ogUrl                  String?
+  publishedDate          DateTime?
+  robots                 String?         @default("index,follow")
+  seoDescription         String?
+  seoKeywords            String[]        @default([])
+  seoTitle               String?
+  structuredData         Json?
+  tags                   String[]        @default([])
+  twitterCard            String?         @default("summary_large_image")
+  twitterCreator         String?
+  twitterDescription     String?
+  twitterImage           String?
+  twitterImageAlt        String?
+  twitterSite            String?
+  twitterTitle           String?
+  collectionItem         CollectionItem? @relation("CollectionItemPage")
+  footer                 Footer?         @relation(fields: [footerId], references: [id])
+  header                 Header?         @relation(fields: [headerId], references: [id])
+  blocks                 PageBlock[]
 
   @@map("page")
 }
@@ -155,11 +199,11 @@ model Block {
   id         String      @id @default(cuid())
   name       String
   type       BlockType
-  variant    String      @default("default")
   content    Json
   isGlobal   Boolean     @default(false)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  variant    String      @default("default")
   pageBlocks PageBlock[]
 
   @@index([type])
@@ -182,18 +226,63 @@ model Footer {
 model FooterLink {
   id        String       @id @default(cuid())
   name      String
-  nameAr    String?
   slug      String
   order     Int          @default(0)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   footerId  String
   parentId  String?
+  nameAr    String?
   footer    Footer       @relation(fields: [footerId], references: [id], onDelete: Cascade)
   parent    FooterLink?  @relation("FooterLinkChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children  FooterLink[] @relation("FooterLinkChildren")
 
   @@map("footer_link")
+}
+
+model Collection {
+  id                     String           @id @default(cuid())
+  name                   String
+  slug                   String           @unique
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+  hasProfilePages        Boolean          @default(false)
+  profilePageSlugPattern String?
+  fields                 Json?
+  items                  CollectionItem[]
+
+  @@map("collection")
+}
+
+model CollectionItem {
+  id           String     @id @default(cuid())
+  collectionId String
+  content      Json
+  order        Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  pageId       String?    @unique
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  page         Page?      @relation("CollectionItemPage", fields: [pageId], references: [id])
+
+  @@index([collectionId])
+  @@map("collection_item")
+}
+
+model Media {
+  id            String   @id @default(cuid())
+  nameEn        String
+  nameAr        String
+  descriptionEn Json?
+  descriptionAr Json?
+  slug          String   @unique
+  order         Int      @default(0)
+  type          String
+  image         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("media")
 }
 
 enum EnumTheme {
@@ -214,7 +303,6 @@ enum BlockType {
   GALLERY
   VIDEO
   CTA
-  HIGHLIGHTS
   TESTIMONIALS
   FEATURES
   PRICING
@@ -223,54 +311,11 @@ enum BlockType {
   SPACER
   CODE
   CUSTOM
+  HIGHLIGHTS
   ABOUT
   PROJECT_DETAILS
   MEDIA_DETAILS
   MEDIA_CARDS
 
   @@map("block_type")
-}
-
-model Collection {
-  id                     String           @id @default(cuid())
-  name                   String
-  slug                   String           @unique
-  hasProfilePages        Boolean          @default(false)
-  profilePageSlugPattern String?
-  items                  CollectionItem[]
-  createdAt              DateTime         @default(now())
-  updatedAt              DateTime         @updatedAt
-
-  @@map("collection")
-}
-
-model CollectionItem {
-  id           String     @id @default(cuid())
-  collectionId String
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  content      Json
-  order        Int        @default(0)
-  pageId       String?    @unique
-  page         Page?      @relation("CollectionItemPage", fields: [pageId], references: [id], onDelete: SetNull)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
-  @@index([collectionId])
-  @@map("collection_item")
-}
-
-model Media {
-  id            String   @id @default(cuid())
-  nameEn        String
-  nameAr        String
-  descriptionEn Json?
-  descriptionAr Json?
-  slug          String   @unique
-  order         Int      @default(0)
-  type          String
-  image         String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@map("media")
 }

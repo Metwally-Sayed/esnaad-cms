@@ -5,12 +5,11 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  locale: string;
   currentType?: string;
   availableTypes: string[];
 };
 
-export default function MediaFilters({ locale, currentType, availableTypes }: Props) {
+export default function MediaFilters({ currentType, availableTypes }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

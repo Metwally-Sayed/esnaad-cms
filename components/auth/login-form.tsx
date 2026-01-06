@@ -34,7 +34,7 @@ export default function LoginForm() {
       console.log(values);
       const { email_6646807918: email, pass_2886323765: password } = values;
 
-      const { data, error } = await authClient.signIn.email({
+      const { error } = await authClient.signIn.email({
         email,
         password,
       });

@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, useInView, Variant } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 type ScrollRevealProps = {
   children: React.ReactNode;
@@ -10,8 +9,6 @@ type ScrollRevealProps = {
   delay?: number;
   duration?: number;
   className?: string;
-  viewportAmount?: number;
-  staggerChildren?: number;
 };
 
 export const ScrollReveal = ({
@@ -21,66 +18,64 @@ export const ScrollReveal = ({
   delay = 0,
   duration = 0.5,
   className = "",
-  viewportAmount = 0.2,
-  staggerChildren = 0,
 }: ScrollRevealProps) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px", amount: "some" });
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const getVariants = (): { hidden: Variant; visible: Variant } => {
-    switch (mode) {
-      case "fade-in":
-        return {
-          hidden: { opacity: 0, scale: 0.98 },
-          visible: { opacity: 1, scale: 1 },
-        };
-      case "slide-left":
-        return {
-          hidden: { opacity: 0, x: -50 },
-          visible: { opacity: 1, x: 0 },
-        };
-      case "slide-right":
-        return {
-          hidden: { opacity: 0, x: 50 },
-          visible: { opacity: 1, x: 0 },
-        };
-      case "pop":
-        return {
-          hidden: { opacity: 0, scale: 0.8 },
-          visible: { opacity: 1, scale: 1 },
-        };
-      case "fade-up":
-      default:
-        return {
-          hidden: { opacity: 0, y: 40 },
-          visible: { opacity: 1, y: 0 },
-        };
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Once visible, stop observing
+          observer.unobserve(element);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -100px 0px",
+      }
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const getAnimationClass = () => {
+    const base = "transition-all";
+    const delayClass = delay > 0 ? `delay-[${delay * 1000}ms]` : "";
+    const durationClass = `duration-[${duration * 1000}ms]`;
+
+    if (!isVisible) {
+      switch (mode) {
+        case "fade-in":
+          return `${base} ${delayClass} ${durationClass} opacity-0 scale-95`;
+        case "slide-left":
+          return `${base} ${delayClass} ${durationClass} opacity-0 -translate-x-12`;
+        case "slide-right":
+          return `${base} ${delayClass} ${durationClass} opacity-0 translate-x-12`;
+        case "pop":
+          return `${base} ${delayClass} ${durationClass} opacity-0 scale-75`;
+        case "fade-up":
+        default:
+          return `${base} ${delayClass} ${durationClass} opacity-0 translate-y-10`;
+      }
     }
+
+    return `${base} ${delayClass} ${durationClass} opacity-100 translate-x-0 translate-y-0 scale-100`;
   };
 
-  const variants = getVariants();
-
   return (
-    <motion.div
+    <div
       ref={ref}
       style={{ width }}
-      className={className}
-      variants={{
-        hidden: variants.hidden,
-        visible: {
-          ...variants.visible,
-          transition: {
-            duration,
-            delay,
-            ease: [0.25, 0.4, 0.25, 1], // easeOutQuad-ish
-            staggerChildren: staggerChildren
-          },
-        },
-      }}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
+      className={`${getAnimationClass()} ${className}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };

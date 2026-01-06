@@ -99,7 +99,7 @@ export default async function IndustryUpdate({
 
               {/* Description */}
               {item.description && (
-                <p className="text-center text-base leading-relaxed text-foreground/80 transition-colors group-hover:text-foreground">
+                <p className="line-clamp-3 overflow-hidden text-ellipsis text-center text-base leading-relaxed text-foreground/80 transition-colors group-hover:text-foreground">
                   {item.description}
                 </p>
               )}

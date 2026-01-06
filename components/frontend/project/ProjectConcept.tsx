@@ -26,15 +26,21 @@ export function ProjectConcept({
   brochureUrl,
   labels,
 }: ProjectConceptProps) {
+  console.log("🎨 ProjectConcept rendering", {
+    description: description?.substring(0, 50),
+    imageCount: images?.length,
+    featuresCount: features?.length
+  });
+
   return (
-    <section className="min-h-screen snap-start px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 bg-background flex items-center">
+    <section id="concept" className="min-h-screen snap-start px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 bg-background flex items-center">
       <div className="mx-auto max-w-7xl w-full">
         {/* Description */}
         <motion.p
           className="mx-auto max-w-4xl text-center font-serif text-base sm:text-lg md:text-xl leading-relaxed text-foreground"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           {description}
@@ -47,7 +53,7 @@ export function ProjectConcept({
             className="grid grid-cols-3 gap-2 sm:gap-4"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             {images.slice(0, 6).map((image, index) => (
@@ -71,7 +77,7 @@ export function ProjectConcept({
             className="flex flex-col justify-center space-y-6 sm:space-y-8"
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-[0.08em] sm:tracking-[0.1em]">

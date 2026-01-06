@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CMS_CONFIG } from "@/config/cms.config";
 import type { ActionResponse } from "@/lib/types/action-response";
 import { failure, success } from "@/lib/types/action-response";

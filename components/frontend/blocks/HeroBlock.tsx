@@ -119,9 +119,9 @@ const HeroBlock = ({ content }: { content: HeroContent }) => {
   const mediaType: "video" | "image" =
     content.mediaType === "image" ? "image" : "video";
   const mediaUrl =
-    content.mediaUrl ??
-    (content as any).videoUrl ??
-    content.backgroundImage ??
+    (typeof content.mediaUrl === "string" && content.mediaUrl) ||
+    (typeof content.videoUrl === "string" && content.videoUrl) ||
+    (typeof content.backgroundImage === "string" && content.backgroundImage) ||
     "/hero-panel.svg";
 
   return (

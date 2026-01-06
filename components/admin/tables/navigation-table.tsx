@@ -3,20 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import type { ActionResponse } from "@/lib/types/action-response";
 import type { NavigationLinkInput } from "@/lib/types/navigation";
 import { ChevronDown, ChevronRight, Edit, PlusIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { LinkEditorDialog } from "../globals/link-editor-dialog";
-import { useTranslations } from "next-intl";
 
 interface NavigationItem {
   id: string;
@@ -55,7 +55,6 @@ interface NavigationTableProps {
  */
 export function NavigationTable({
   type,
-  title,
   getAll,
   setAsGlobal,
   getCurrentGlobalId,
@@ -65,7 +64,6 @@ export function NavigationTable({
   const t = useTranslations(type === "header" ? "Headers" : "Footers");
   const [items, setItems] = useState<NavigationItem[]>([]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [currentGlobalId, setCurrentGlobalId] = useState<string | null>(null);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [itemDetails, setItemDetails] = useState<
     Record<string, NavigationItemDetails>
@@ -89,7 +87,7 @@ export function NavigationTable({
       // Fetch current global item ID
       const currentResult = await getCurrentGlobalId();
       if (currentResult.success && currentResult.data) {
-        setCurrentGlobalId(currentResult.data);
+
         setSelectedItemId(currentResult.data);
       }
 
@@ -140,7 +138,7 @@ export function NavigationTable({
 
       if (result.success) {
         toast.success(t(type === "header" ? "headerApplied" : "footerApplied"));
-        setCurrentGlobalId(selectedItemId);
+
         // Update items to reflect new global status
         setItems((prev) =>
           prev.map((item) => ({

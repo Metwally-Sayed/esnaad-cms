@@ -1,24 +1,19 @@
 import { AboutFactory } from "@/components/frontend/blocks/about";
 import { CTAFactory, type CTAContent } from "@/components/frontend/blocks/cta";
-import ProjectCards from "@/components/frontend/blocks/features/ProjectCards";
 import FeaturesSection from "@/components/frontend/blocks/FeaturesSection";
+import { ProjectCards } from "@/components/frontend/blocks/features";
 import { FormFactory } from "@/components/frontend/blocks/forms";
 import { GalleryFactory } from "@/components/frontend/blocks/gallery";
-import { HeroFactory } from "@/components/frontend/blocks/hero";
 import HeroBlock from "@/components/frontend/blocks/HeroBlock";
+import { HeroFactory } from "@/components/frontend/blocks/hero";
+import { MediaCards, MediaCardsWithFilters, MediaDetailsPage } from "@/components/frontend/blocks/media";
+import { type PageBlockWithBlock } from "@/components/frontend/blocks/types";
 import {
     HighlightFactory,
     type HighlightsContent,
 } from "@/components/frontend/blocks/highlights";
-import { BlockType, type Block, type PageBlock } from "@prisma/client";
-import MediaCards from "./media/MediaCards";
-import MediaCardsWithFilters from "./media/MediaCardsWithFilters";
-import MediaDetailsPage from "./media/MediaDetailsPage";
+import { BlockType } from "@prisma/client";
 import ProjectDetailsBlock from "./ProjectDetailsBlock";
-
-type PageBlockWithBlock = PageBlock & {
-  block: Block;
-};
 
 const PageBlockRenderer = async ({
   block,
@@ -30,21 +25,44 @@ const PageBlockRenderer = async ({
   searchParams?: { type?: string };
 }) => {
   const rawContent = (block.block.content ?? {}) as Record<string, unknown>;
-  
+
   // Handle localized vs legacy content
   let content = rawContent;
+
   if (rawContent[locale] && typeof rawContent[locale] === 'object') {
     content = rawContent[locale] as Record<string, unknown>;
+
+    // For non-English locales, merge media fields from English
+    // Media fields (image, video, backgroundImage, etc.) are shared
+    if (locale !== 'en' && rawContent['en'] && typeof rawContent['en'] === 'object') {
+      const enContent = rawContent['en'] as Record<string, unknown>;
+
+      // List of field names that are typically media/shared fields
+      const mediaFieldKeys = Object.keys(enContent).filter(key => {
+        const lowerKey = key.toLowerCase();
+        return (
+          lowerKey.includes('image') ||
+          lowerKey.includes('video') ||
+          lowerKey.includes('media') ||
+          lowerKey.includes('icon') ||
+          lowerKey.includes('url') ||
+          lowerKey.includes('src') ||
+          lowerKey.includes('poster') ||
+          lowerKey.includes('background')
+        );
+      });
+
+      // Merge media fields from English (always use EN media, ignore locale-specific media)
+      mediaFieldKeys.forEach(key => {
+        // Always override media fields with English version (they should be shared)
+        content[key] = enContent[key];
+      });
+    }
   } else if (rawContent['en'] && typeof rawContent['en'] === 'object') {
     // Fallback to English if current locale missing
     content = rawContent['en'] as Record<string, unknown>;
-  } 
+  }
   // Else use rawContent (legacy flat structure or already legacy)
-
-  console.log(`[PageBlockRenderer] Block: ${block.block.name} | Locale: ${locale}`);
-  console.log(`[PageBlockRenderer] Has AR content?`, !!rawContent['ar']);
-  console.log(`[PageBlockRenderer] Has EN content?`, !!rawContent['en']);
-  console.log(`[PageBlockRenderer] Resolved Content keys:`, Object.keys(content || {}));
 
   const variant = block.block.variant || "default";
 
@@ -118,5 +136,5 @@ const PageBlockRenderer = async ({
   }
 };
 
-export type { PageBlockWithBlock };
+export type { PageBlockWithBlock } from "./types";
 export default PageBlockRenderer;

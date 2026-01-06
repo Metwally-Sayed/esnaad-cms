@@ -68,7 +68,7 @@ export function MediaCardsStandard({
                   {locale === "ar" ? item.nameAr : item.nameEn}
                 </h3>
                 {(item.descriptionEn || item.descriptionAr) && (
-                  <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                  <p className="line-clamp-2 overflow-hidden text-ellipsis text-sm leading-relaxed text-muted-foreground">
                     {locale === "ar"
                       ? typeof item.descriptionAr === "string"
                         ? item.descriptionAr

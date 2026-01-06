@@ -86,7 +86,7 @@ const FormDefault = ({ content }: { content: FormContent }) => {
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  const fields = content.fields || [];
+  const fields = useMemo(() => content.fields || [], [content.fields]);
   const title = content.title || t("contactUs");
   const subtitle = content.subtitle;
   const submitLabel = content.submitLabel || t("submit");
@@ -96,13 +96,13 @@ const FormDefault = ({ content }: { content: FormContent }) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: fields.reduce((acc, field) => {
+    defaultValues: fields.reduce<Record<string, string>>((acc, field) => {
       acc[field.name] = "";
       if (field.type === "tel") {
         acc[`${field.name}_code`] = "+971";
       }
       return acc;
-    }, {} as Record<string, any>),
+    }, {}),
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -148,7 +148,7 @@ const FormDefault = ({ content }: { content: FormContent }) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
-              {fields.map((field, index) => {
+          {fields.map((field) => {
                 const isHalf = field.width === "half";
                 const colSpan = isHalf ? "md:col-span-1" : "md:col-span-2";
 

@@ -2,63 +2,64 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ArrowDown,
-  ArrowUp,
-  Layers,
-  Plus,
-  Search,
-  Trash2,
+    ArrowDown,
+    ArrowUp,
+    Layers,
+    Plus,
+    Search,
+    Trash2,
 } from "lucide-react";
 import {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-  type FormEvent,
+    useCallback,
+    useMemo,
+    useRef,
+    useState,
+    useTransition,
+    type FormEvent,
 } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createPage, updatePage } from "@/server/actions/page";
 import {
-  getVariantSchema,
-  mergeVariantDefaults,
-  getDefaultVariant,
-  BlockType,
-  BlockVariantSchema,
+    BlockType,
+    BlockVariantSchema,
+    getVariantSchema,
+    mergeVariantDefaults,
 } from "@/lib/block-variants";
 import {
-  pageDetailsSchema,
-  type PageDetailsFormValues,
+    pageDetailsSchema,
+    type PageDetailsFormValues,
 } from "@/lib/validators/page";
+import type { CreatePageInput } from "@/server/actions/page";
+import { createPage, updatePage } from "@/server/actions/page";
 import BlockVariantSelector from "./block-variant-selector";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import BlockContentEditor from "./block-content-editor";
-import { AvailableBlock, SelectedBlock } from "./types";
 import { useTranslations } from "next-intl";
+import BlockContentEditor from "./block-content-editor";
+import { PageMetadataSection } from "./page-metadata-section";
+import { AvailableBlock, SelectedBlock } from "./types";
 
 type InitialPageBlock = {
   id: string;
@@ -80,6 +81,44 @@ type InitialPageData = {
   description: string | null;
   published: boolean;
   blocks: InitialPageBlock[];
+  // Metadata fields
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoKeywords?: string[];
+  focusKeyword?: string | null;
+  ogTitle?: string | null;
+  ogDescription?: string | null;
+  ogImage?: string | null;
+  ogType?: string | null;
+  ogUrl?: string | null;
+  ogSiteName?: string | null;
+  ogLocale?: string | null;
+  ogLocaleAlternate?: string[];
+  ogArticleAuthor?: string | null;
+  ogArticlePublishedTime?: Date | null;
+  ogArticleModifiedTime?: Date | null;
+  ogArticleSection?: string | null;
+  ogArticleTags?: string[];
+  twitterCard?: string | null;
+  twitterTitle?: string | null;
+  twitterDescription?: string | null;
+  twitterImage?: string | null;
+  twitterImageAlt?: string | null;
+  twitterSite?: string | null;
+  twitterCreator?: string | null;
+  canonicalUrl?: string | null;
+  robots?: string | null;
+  metaRobots?: string | null;
+  alternateLanguages?: unknown;
+  author?: string | null;
+  publishedDate?: Date | null;
+  modifiedDate?: Date | null;
+  category?: string | null;
+  tags?: string[];
+  structuredData?: unknown;
+  breadcrumbTitle?: string | null;
+  noindex?: boolean;
+  nofollow?: boolean;
 };
 
 interface PageCreateFormProps {
@@ -214,13 +253,57 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
   }, []);
 
   const form = useForm<PageDetailsFormValues>({
-    resolver: zodResolver(pageDetailsSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(pageDetailsSchema) as any,
     defaultValues: initialPage
       ? {
           title: initialPage.title,
           slug: initialPage.slug,
           description: initialPage.description ?? "",
           published: initialPage.published,
+          metadata: {
+            seoTitle: initialPage.seoTitle ?? "",
+            seoDescription: initialPage.seoDescription ?? "",
+            seoKeywords: initialPage.seoKeywords ?? [],
+            focusKeyword: initialPage.focusKeyword ?? "",
+            ogTitle: initialPage.ogTitle ?? "",
+            ogDescription: initialPage.ogDescription ?? "",
+            ogImage: initialPage.ogImage ?? "",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ogType: (initialPage.ogType as any) ?? "website",
+            ogUrl: initialPage.ogUrl ?? "",
+            ogSiteName: initialPage.ogSiteName ?? "",
+            ogLocale: initialPage.ogLocale ?? "en_US",
+            ogLocaleAlternate: initialPage.ogLocaleAlternate ?? [],
+            ogArticleAuthor: initialPage.ogArticleAuthor ?? "",
+            ogArticlePublishedTime: initialPage.ogArticlePublishedTime ?? null,
+            ogArticleModifiedTime: initialPage.ogArticleModifiedTime ?? null,
+            ogArticleSection: initialPage.ogArticleSection ?? "",
+            ogArticleTags: initialPage.ogArticleTags ?? [],
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            twitterCard: (initialPage.twitterCard as any) ?? "summary_large_image",
+            twitterTitle: initialPage.twitterTitle ?? "",
+            twitterDescription: initialPage.twitterDescription ?? "",
+            twitterImage: initialPage.twitterImage ?? "",
+            twitterImageAlt: initialPage.twitterImageAlt ?? "",
+            twitterSite: initialPage.twitterSite ?? "",
+            twitterCreator: initialPage.twitterCreator ?? "",
+            canonicalUrl: initialPage.canonicalUrl ?? "",
+            robots: initialPage.robots ?? "index,follow",
+            metaRobots: initialPage.metaRobots ?? "",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            alternateLanguages: (initialPage.alternateLanguages as any) ?? [],
+            author: initialPage.author ?? "",
+            publishedDate: initialPage.publishedDate ?? null,
+            modifiedDate: initialPage.modifiedDate ?? null,
+            category: initialPage.category ?? "",
+            tags: initialPage.tags ?? [],
+            structuredData: initialPage.structuredData ?? null,
+            breadcrumbTitle: initialPage.breadcrumbTitle ?? "",
+            noindex: initialPage.noindex ?? false,
+            nofollow: initialPage.nofollow ?? false,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any,
         }
       : defaultValues,
   });
@@ -308,28 +391,24 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
 
   const handleFormSubmit = useCallback(
     (values: PageDetailsFormValues) => {
-      if (selectedBlocks.length === 0) {
-        toast.error(t("addBlockError"));
-        return;
-      }
-
       startTransition(async () => {
-        const payload = {
+        const payload: CreatePageInput = {
           ...values,
           slug: buildSlug(values.slug),
           blocks: selectedBlocks.map((block, index) => ({
             blockId: block.blockId,
             order: index,
             name: block.name,
-            type: block.type,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            type: block.type as any,
             variant: block.variant,
             content: block.values ?? {},
           })),
         };
 
         const result = editingPageId
-          ? await updatePage(editingPageId, payload as any)
-          : await createPage(payload as any);
+          ? await updatePage(editingPageId, payload)
+          : await createPage(payload);
 
         if (result.success) {
           toast.success(
@@ -343,7 +422,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
         }
       });
     },
-    [editingPageId, isEditing, resetForm, selectedBlocks, startTransition]
+    [editingPageId, isEditing, resetForm, selectedBlocks, startTransition, t]
   );
 
   const handleSubmitEvent = useCallback(
@@ -467,6 +546,9 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
                 />
               </CardContent>
             </Card>
+
+            {/* SEO & Metadata Section */}
+            <PageMetadataSection />
 
             <Card>
               <CardHeader>

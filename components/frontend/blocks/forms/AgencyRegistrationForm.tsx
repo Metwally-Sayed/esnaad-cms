@@ -87,7 +87,7 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  const fields = content.fields || [];
+  const fields = useMemo(() => content.fields || [], [content.fields]);
   const title = content.title || t("agencyRegistration");
   const subtitle = content.subtitle || t("agencyWelcome");
   const introText = content.introText;
@@ -98,14 +98,14 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: fields.reduce((acc, field) => {
+    defaultValues: fields.reduce<Record<string, string>>((acc, field) => {
       if (field.type === "section-header") return acc;
       acc[field.name] = "";
       if (field.type === "tel") {
         acc[`${field.name}_code`] = "+971";
       }
       return acc;
-    }, {} as Record<string, any>),
+    }, {}),
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -138,6 +138,11 @@ const AgencyRegistrationForm = ({ content }: { content: FormContent }) => {
     <section className="py-12 sm:py-20 px-4 bg-background overflow-x-hidden">
       <div className="max-w-4xl mx-auto w-full">
         <div className="text-center mb-12 sm:mb-16 space-y-6">
+          {subtitle ? (
+            <p className="text-muted-foreground text-sm sm:text-base">
+              {subtitle}
+            </p>
+          ) : null}
           {introText && (
             <div className="mt-8 sm:mt-12 max-w-3xl mx-auto px-2">
               <p className="text-center text-sm sm:text-base md:text-lg uppercase leading-relaxed tracking-[0.05em] text-black dark:text-white font-serif font-light">

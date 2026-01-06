@@ -16,7 +16,7 @@ export type BlockFieldBase = {
 };
 
 export type BlockTextField = BlockFieldBase & {
-  type: "text" | "textarea" | "image" | "url" | "number" | "color";
+  type: "text" | "textarea" | "image" | "video" | "media" | "url" | "number" | "color";
 };
 
 export type BlockSelectField = BlockFieldBase & {

@@ -23,27 +23,33 @@ import {
 } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import type { Prisma } from "@prisma/client";
+
+type CollectionWithCount = Prisma.CollectionGetPayload<{
+  include: { _count: { select: { items: true } } };
+}>;
 
 export default function CollectionsPage() {
-  const [collections, setCollections] = useState<any[]>([]);
+  const [collections, setCollections] = useState<CollectionWithCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [collectionToDelete, setCollectionToDelete] = useState<{ id: string; name: string } | null>(null);
 
-  useEffect(() => {
-    loadCollections();
-  }, []);
-
-  const loadCollections = async () => {
+  const loadCollections = useCallback(async () => {
     setIsLoading(true);
     const result = await getAllCollections();
     if (result.success && result.data) {
       setCollections(result.data);
     }
     setIsLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadCollections();
+  }, [loadCollections]);
 
   const openDeleteDialog = (id: string, name: string) => {
     setCollectionToDelete({ id, name });

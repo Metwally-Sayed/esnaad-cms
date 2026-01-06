@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -13,15 +14,17 @@ interface CardTransform {
 type Card3dProps = {
   title: string;
   description: string;
-  link?: string;
   image?: string;
 };
 
-const Card3d = ({ title, description, link, image }: Card3dProps) => {
+const Card3d = ({ title, description, image }: Card3dProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
   const lastMousePosition = useRef({ x: 0, y: 0 });
+  const imageSrc =
+    image ||
+    "https://cdn.shadcnstudio.com/ss-assets/components/card/image-10.png?width=350&format=auto";
 
   useEffect(() => {
     const card = cardRef.current;
@@ -118,14 +121,17 @@ const Card3d = ({ title, description, link, image }: Card3dProps) => {
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 text-sm">
-        <img
-          ref={imageRef}
-          src="https://cdn.shadcnstudio.com/ss-assets/components/card/image-10.png?width=350&format=auto"
-          alt="Banner"
-          className="aspect-video w-full rounded-md object-cover"
-          width={500}
-          height={500}
-        />
+        <div className="relative aspect-video w-full overflow-hidden rounded-md">
+          <Image
+            ref={imageRef}
+            src={imageSrc}
+            alt="Banner"
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+        </div>
         <p>{description}</p>
       </CardContent>
     </Card>

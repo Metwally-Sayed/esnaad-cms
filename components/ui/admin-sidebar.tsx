@@ -30,7 +30,6 @@ import {
     Users,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
 import { memo, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 function Collapsible({
@@ -75,7 +74,6 @@ function Collapsible({
 }
 
 export const AdminSidebar = memo(({ side = "left" }: { side?: "left" | "right" }) => {
-  const { theme, setTheme } = useTheme();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const t = useTranslations("Sidebar");
 

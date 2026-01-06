@@ -27,6 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import { deleteMediaItem, type MediaItem } from "@/server/actions/media";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface MediaTableProps {
   items: MediaItem[];
@@ -51,9 +52,9 @@ export function MediaTable({ items }: MediaTableProps) {
       } else {
         toast.error(result.error || t("messages.deleteError"));
       }
-    } catch (error) {
+    } catch {
       toast.error(t("messages.deleteError"));
-    } finally{
+    } finally {
       setIsDeleting(false);
       setDeleteId(null);
     }
@@ -120,10 +121,12 @@ export function MediaTable({ items }: MediaTableProps) {
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="h-12 w-16 overflow-hidden rounded border">
-                      <img
+                      <Image
                         src={item.image}
                         alt={item.nameEn}
+                        fill
                         className="h-full w-full object-cover"
+                        sizes="64px"
                       />
                     </div>
                   </TableCell>

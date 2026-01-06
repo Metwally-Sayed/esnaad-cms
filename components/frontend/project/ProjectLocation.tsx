@@ -33,7 +33,7 @@ export function ProjectLocation({
             className="space-y-6 sm:space-y-10"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-[0.08em] sm:tracking-[0.1em]">
@@ -75,7 +75,7 @@ export function ProjectLocation({
             className="relative h-[350px] sm:h-[450px] md:h-[600px] overflow-hidden rounded-lg"
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             <iframe

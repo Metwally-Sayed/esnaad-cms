@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { MediaItem } from "@/server/actions/media";
+import Image from "next/image";
 
 interface CardTransform {
   rotateX: number;
@@ -150,15 +151,26 @@ function Media3dCard({
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
           {item.image && (
-            <img
-              ref={imageRef}
-              src={item.image}
-              alt={title}
-              className={cn("w-full rounded-md object-cover", getAspectRatioClass(imageStyle))}
-            />
+            <div
+              className={cn(
+                "relative w-full overflow-hidden rounded-md",
+                getAspectRatioClass(imageStyle)
+              )}
+            >
+              <Image
+                ref={imageRef}
+                src={item.image}
+                alt={title}
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+            </div>
           )}
           {description && (
-            <p className="line-clamp-3 text-muted-foreground">{description}</p>
+            <p className="line-clamp-2 overflow-hidden text-ellipsis text-muted-foreground">
+              {description}
+            </p>
           )}
           <div className="flex items-center gap-2">
             <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">

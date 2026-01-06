@@ -1,4 +1,5 @@
 import { getAllMediaItems } from "@/server/actions/media";
+import type { MediaItem } from "@/server/actions/media";
 import { getLocale, getTranslations } from "next-intl/server";
 import { MediaCardsStandard } from "./MediaCardsStandard";
 import { MediaCards3d } from "./MediaCards3d";
@@ -28,7 +29,7 @@ export default async function MediaCardsWithFilters({
   const t = await getTranslations("gallery");
 
   // Fetch media items if collection is specified
-  let items: any[] = [];
+  let items: MediaItem[] = [];
   let allTypes: string[] = [];
 
   if (content.collectionId) {
@@ -83,7 +84,6 @@ export default async function MediaCardsWithFilters({
         <div className="border-b bg-muted/30">
           <div className="py-6">
             <MediaFilters
-              locale={locale}
               currentType={urlFilterType}
               availableTypes={allTypes}
             />

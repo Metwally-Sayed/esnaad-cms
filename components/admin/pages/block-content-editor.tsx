@@ -1,4 +1,5 @@
 ﻿"use client";
+/* eslint-disable react-hooks/rules-of-hooks */
 
 import { Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -22,6 +23,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { MediaPicker } from "@/components/admin/media/media-picker";
 
 import { SelectedBlock } from "./types";
 
@@ -40,7 +42,7 @@ const FieldDescription = ({ text }: { text?: string }) => {
   return <p className="text-xs text-muted-foreground">{text}</p>;
 };
 
-const TextField = ({
+const _TextField = ({
   value,
   onChange,
   placeholder,
@@ -175,9 +177,10 @@ interface FieldRendererProps {
   field: BlockSchemaField;
   value: unknown;
   onChange: (value: unknown) => void;
+  locale?: "en" | "ar";
 }
 
-const FieldRenderer = ({ field, value, onChange }: FieldRendererProps) => {
+const FieldRenderer = ({ field, value, onChange, locale = "en" }: FieldRendererProps) => {
   if (field.type === "list") {
     return <ListField field={field} value={value} onChange={onChange} />;
   }
@@ -185,19 +188,85 @@ const FieldRenderer = ({ field, value, onChange }: FieldRendererProps) => {
   const resolved =
     typeof value === "string" || typeof value === "number" ? value : "";
 
+  // Media fields (image, video, media, url) are shared across languages
+  const isMediaField = ["image", "video", "media", "url"].includes(field.type);
+
+  if (isMediaField && locale === "ar") {
+    return (
+      <div className="space-y-1.5">
+        <p className="text-sm font-medium" dir="rtl">{field.label}</p>
+        <div className="p-4 bg-muted/20 rounded-lg text-sm text-muted-foreground text-center">
+          <p>⚠️ {field.label} is shared across languages. Edit in English tab.</p>
+        </div>
+        <FieldDescription text={field.description} />
+      </div>
+    );
+  }
+
   switch (field.type) {
-    case "text":
     case "image":
+      return (
+        <div className="space-y-1.5">
+          <MediaPicker
+            value={String(resolved)}
+            onChange={(next) => onChange(next)}
+            accept="image"
+            label={field.label}
+            placeholder={field.placeholder}
+          />
+          <FieldDescription text={field.description} />
+        </div>
+      );
+    case "video":
+      return (
+        <div className="space-y-1.5">
+          <MediaPicker
+            value={String(resolved)}
+            onChange={(next) => onChange(next)}
+            accept="video"
+            label={field.label}
+            placeholder={field.placeholder}
+          />
+          <FieldDescription text={field.description} />
+        </div>
+      );
+    case "media":
+      return (
+        <div className="space-y-1.5">
+          <MediaPicker
+            value={String(resolved)}
+            onChange={(next) => onChange(next)}
+            accept="all"
+            label={field.label}
+            placeholder={field.placeholder}
+          />
+          <FieldDescription text={field.description} />
+        </div>
+      );
     case "url":
+      return (
+        <div className="space-y-1.5">
+          <MediaPicker
+            value={String(resolved)}
+            onChange={(next) => onChange(next)}
+            accept="all"
+            label={field.label}
+            placeholder={field.placeholder}
+          />
+          <FieldDescription text={field.description} />
+        </div>
+      );
+    case "text":
     case "number":
       return (
         <div className="space-y-1.5">
-          <p className="text-sm font-medium">{field.label}</p>
-          <TextField
+          <p className="text-sm font-medium" dir={locale === "ar" ? "rtl" : "ltr"}>{field.label}</p>
+          <Input
             value={String(resolved)}
-            onChange={(next) => onChange(next)}
+            onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
-            multiline={false}
+            type={field.type === "number" ? "number" : "text"}
+            dir={locale === "ar" ? "rtl" : "ltr"}
           />
           <FieldDescription text={field.description} />
         </div>
@@ -226,12 +295,12 @@ const FieldRenderer = ({ field, value, onChange }: FieldRendererProps) => {
     case "textarea":
       return (
         <div className="space-y-1.5">
-          <p className="text-sm font-medium">{field.label}</p>
-          <TextField
+          <p className="text-sm font-medium" dir={locale === "ar" ? "rtl" : "ltr"}>{field.label}</p>
+          <Textarea
             value={String(resolved)}
-            onChange={(next) => onChange(next)}
+            onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
-            multiline
+            dir={locale === "ar" ? "rtl" : "ltr"}
           />
           <FieldDescription text={field.description} />
         </div>
@@ -380,29 +449,34 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
   }, [fullValues, locale]);
 
   const handleFieldChange = (name: string, value: unknown) => {
+    // Check if this is a media field that should be shared
+    const field = schema?.fields.find(f => f.name === name);
+    const isMediaField = field && ["image", "video", "media", "url"].includes(field.type);
+
     // Construct new locale-specific values
     const newLocaleValues = {
       ...safeValues,
       [name]: value,
     };
 
-    // Update the full content object
-    // If legacy structure, we migrate it on write
-    const nextFullValues = {
-      ...fullValues,
-      [locale]: newLocaleValues,
-      // Preserve other locale if it exists, or migrate legacy data to 'en' if we are editing 'ar' (complex case, simplified below)
-    };
+    // If it's a media field, save to EN only (media fields are shared)
+    if (isMediaField) {
+      const enValues = (fullValues.en as Record<string, unknown>) || {};
+      const arValues = (fullValues.ar as Record<string, unknown>) || {};
 
-    // Ensure we don't lose the OTHER locale's data
-    // If fullValues was legacy, we should probably instantiate both keys?
-    // But migration script handled existing data.
-    // If creating NEW block, fullValues is empty.
-    
-    onChange({
-      ...fullValues,
-      [locale]: newLocaleValues,
-    });
+      onChange({
+        ...fullValues,
+        en: { ...enValues, [name]: value },
+        // Don't save media to AR, it will be merged from EN on render
+        ar: arValues,
+      });
+    } else {
+      // Text fields are locale-specific
+      onChange({
+        ...fullValues,
+        [locale]: newLocaleValues,
+      });
+    }
   };
 
   if (!schema) {
@@ -454,7 +528,7 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
         // Hide color fields when customColors is false
         const isColorField = field.name === "backgroundColor" || field.name === "titleColor" || field.name === "textColor";
         const customColorsEnabled = safeValues.customColors === true;
-        
+
         if (isColorField && !customColorsEnabled) {
           return null;
         }
@@ -465,6 +539,7 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
             field={field}
             value={safeValues[field.name]}
             onChange={(next) => handleFieldChange(field.name, next)}
+            locale={locale}
           />
         );
       })}

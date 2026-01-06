@@ -11,26 +11,45 @@ import {
 } from "@/components/ui/table";
 import { deleteCollectionItem } from "@/server/actions/collection";
 import { Edit, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CollectionItemDialog } from "./collection-item-dialog";
-import { useTranslations } from "next-intl";
+
+
+type FieldType = "text" | "textarea" | "number" | "image" | "video" | "media" | "boolean";
+
+interface FieldConfig {
+  key: string;
+  type: FieldType;
+  required?: boolean;
+  isFixed?: boolean;
+  description?: string;
+}
 
 interface CollectionItemsListProps {
   collectionId: string;
   collectionSlug?: string;
   hasProfilePages?: boolean;
-  items: any[];
+  fields?: FieldConfig[] | null;
+  items: CollectionItemPreview[];
 }
+
+type CollectionItemPreview = {
+  id: string;
+  order: number;
+  content: Record<string, unknown>;
+};
 
 export function CollectionItemsList({
   collectionId,
   collectionSlug,
   hasProfilePages,
+  fields,
   items,
 }: CollectionItemsListProps) {
-  const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [editingItem, setEditingItem] = useState<CollectionItemPreview | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
   const t = useTranslations("Collections.table");
@@ -49,7 +68,7 @@ export function CollectionItemsList({
     }
   };
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: CollectionItemPreview) => {
     setEditingItem(item);
     setIsDialogOpen(true);
   };
@@ -73,53 +92,76 @@ export function CollectionItemsList({
                 </TableCell>
               </TableRow>
             ) : (
-              items.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.order}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-2">
-                      {Object.entries(item.content)
-                        .filter(([key]) => key !== "_schema")
-                        .slice(0, 3)
-                        .map(([key, value]) => (
-                          <span
-                            key={key}
-                            className="inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium text-muted-foreground"
-                          >
-                            <span className="font-semibold me-1">{key}:</span>
-                            <span className="truncate max-w-[150px]">
-                              {String(value)}
-                            </span>
+              items.map((item) => {
+                // Extract the actual field content from localized structure
+                // Content can be either: { en: {...}, ar: {...} } or flat {...}
+                let displayContent = item.content;
+
+                // If content has locale keys (en/ar), use English as default for preview
+                if (item.content.en && typeof item.content.en === 'object') {
+                  displayContent = item.content.en as Record<string, unknown>;
+                } else if (item.content.ar && typeof item.content.ar === 'object') {
+                  displayContent = item.content.ar as Record<string, unknown>;
+                }
+
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.order}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-2">
+                        {Object.entries(displayContent)
+                          .filter(([key]) => key !== "_schema")
+                          .slice(0, 3)
+                          .map(([key, value]) => {
+                            // Handle different value types for better display
+                            let displayValue = String(value);
+                            if (typeof value === 'object' && value !== null) {
+                              displayValue = '[Object]';
+                            } else if (typeof value === 'string' && value.length > 50) {
+                              displayValue = value.substring(0, 50) + '...';
+                            }
+
+                            return (
+                              <span
+                                key={key}
+                                className="inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium text-muted-foreground"
+                              >
+                                <span className="font-semibold me-1">{key}:</span>
+                                <span className="truncate max-w-[150px]">
+                                  {displayValue}
+                                </span>
+                              </span>
+                            );
+                          })}
+                        {Object.keys(displayContent).length > 3 && (
+                          <span className="text-xs text-muted-foreground self-center">
+                            +{Object.keys(displayContent).length - 3} more
                           </span>
-                        ))}
-                      {Object.keys(item.content).length > 4 && (
-                        <span className="text-xs text-muted-foreground self-center">
-                          ...
-                        </span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-end">
-                    <div className="flex gap-2 justify-end">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(item)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-end">
+                      <div className="flex gap-2 justify-end">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
@@ -129,7 +171,8 @@ export function CollectionItemsList({
         collectionId={collectionId}
         collectionSlug={collectionSlug}
         hasProfilePages={hasProfilePages}
-        item={editingItem}
+        fields={fields}
+        item={editingItem || undefined}
         open={isDialogOpen}
         onOpenChange={(open) => {
           setIsDialogOpen(open);

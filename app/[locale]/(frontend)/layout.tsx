@@ -1,5 +1,4 @@
-import { FooterRenderer } from "@/components/admin/globals/footers/footer-renderer";
-import { HeaderRenderer } from "@/components/admin/globals/headers/header-renderer";
+import { MarketingShell } from "./_components/marketing-shell";
 
 export default async function FrontLayout({
   children,
@@ -11,10 +10,6 @@ export default async function FrontLayout({
   const { locale } = await params;
   
   return (
-    <>
-      <HeaderRenderer locale={locale} />
-      <main className="w-full">{children}</main>
-      <FooterRenderer locale={locale} />
-    </>
+    <MarketingShell locale={locale}>{children}</MarketingShell>
   );
 }

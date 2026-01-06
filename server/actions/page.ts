@@ -50,7 +50,7 @@ const pageBlockSchema = z.object({
 });
 
 const createPageSchema = pageDetailsSchema.extend({
-  blocks: z.array(pageBlockSchema).min(1, "Please select at least one block."),
+  blocks: z.array(pageBlockSchema),
 });
 
 export type CreatePageInput = z.infer<typeof createPageSchema>;
@@ -74,15 +74,62 @@ export async function createPage(input: CreatePageInput) {
     : `/${pageData.slug}`.toLowerCase();
 
   try {
+    const { metadata, ...corePageData } = pageData;
+
     const createdPage = await prisma.page.create({
       data: {
-        title: pageData.title,
+        title: corePageData.title,
         slug: normalizedSlug.replace(/\/{2,}/g, "/"),
         description:
-          pageData.description && pageData.description.length > 0
-            ? pageData.description
+          corePageData.description && corePageData.description.length > 0
+            ? corePageData.description
             : null,
-        published: pageData.published,
+        published: corePageData.published,
+        // Basic SEO Metadata
+        seoTitle: metadata?.seoTitle || null,
+        seoDescription: metadata?.seoDescription || null,
+        seoKeywords: metadata?.seoKeywords || [],
+        focusKeyword: metadata?.focusKeyword || null,
+        // Open Graph
+        ogTitle: metadata?.ogTitle || null,
+        ogDescription: metadata?.ogDescription || null,
+        ogImage: metadata?.ogImage || null,
+        ogType: metadata?.ogType || "website",
+        ogUrl: metadata?.ogUrl || null,
+        ogSiteName: metadata?.ogSiteName || null,
+        ogLocale: metadata?.ogLocale || "en_US",
+        ogLocaleAlternate: metadata?.ogLocaleAlternate || [],
+        // Open Graph Article
+        ogArticleAuthor: metadata?.ogArticleAuthor || null,
+        ogArticlePublishedTime: metadata?.ogArticlePublishedTime || null,
+        ogArticleModifiedTime: metadata?.ogArticleModifiedTime || null,
+        ogArticleSection: metadata?.ogArticleSection || null,
+        ogArticleTags: metadata?.ogArticleTags || [],
+        // Twitter Card
+        twitterCard: metadata?.twitterCard || "summary_large_image",
+        twitterTitle: metadata?.twitterTitle || null,
+        twitterDescription: metadata?.twitterDescription || null,
+        twitterImage: metadata?.twitterImage || null,
+        twitterImageAlt: metadata?.twitterImageAlt || null,
+        twitterSite: metadata?.twitterSite || null,
+        twitterCreator: metadata?.twitterCreator || null,
+        // Technical SEO
+        canonicalUrl: metadata?.canonicalUrl || null,
+        robots: metadata?.robots || "index,follow",
+        metaRobots: metadata?.metaRobots || null,
+        alternateLanguages: metadata?.alternateLanguages || [],
+        // Content Metadata
+        author: metadata?.author || null,
+        publishedDate: metadata?.publishedDate || null,
+        modifiedDate: metadata?.modifiedDate || null,
+        category: metadata?.category || null,
+        tags: metadata?.tags || [],
+        // Structured Data
+        structuredData: metadata?.structuredData || null,
+        // Advanced
+        breadcrumbTitle: metadata?.breadcrumbTitle || null,
+        noindex: metadata?.noindex || false,
+        nofollow: metadata?.nofollow || false,
       },
     });
 
@@ -203,17 +250,64 @@ export async function updatePage(pageId: string, input: CreatePageInput) {
     : `/${pageData.slug}`.toLowerCase();
 
   try {
+    const { metadata, ...corePageData } = pageData;
+
     const updatedPage = await prisma.$transaction(async (tx) => {
       const targetPage = await tx.page.update({
         where: { id: pageId },
         data: {
-          title: pageData.title,
+          title: corePageData.title,
           slug: normalizedSlug.replace(/\/{2,}/g, "/"),
           description:
-            pageData.description && pageData.description.length > 0
-              ? pageData.description
+            corePageData.description && corePageData.description.length > 0
+              ? corePageData.description
               : null,
-          published: pageData.published,
+          published: corePageData.published,
+          // Basic SEO Metadata
+          seoTitle: metadata?.seoTitle || null,
+          seoDescription: metadata?.seoDescription || null,
+          seoKeywords: metadata?.seoKeywords || [],
+          focusKeyword: metadata?.focusKeyword || null,
+          // Open Graph
+          ogTitle: metadata?.ogTitle || null,
+          ogDescription: metadata?.ogDescription || null,
+          ogImage: metadata?.ogImage || null,
+          ogType: metadata?.ogType || "website",
+          ogUrl: metadata?.ogUrl || null,
+          ogSiteName: metadata?.ogSiteName || null,
+          ogLocale: metadata?.ogLocale || "en_US",
+          ogLocaleAlternate: metadata?.ogLocaleAlternate || [],
+          // Open Graph Article
+          ogArticleAuthor: metadata?.ogArticleAuthor || null,
+          ogArticlePublishedTime: metadata?.ogArticlePublishedTime || null,
+          ogArticleModifiedTime: metadata?.ogArticleModifiedTime || null,
+          ogArticleSection: metadata?.ogArticleSection || null,
+          ogArticleTags: metadata?.ogArticleTags || [],
+          // Twitter Card
+          twitterCard: metadata?.twitterCard || "summary_large_image",
+          twitterTitle: metadata?.twitterTitle || null,
+          twitterDescription: metadata?.twitterDescription || null,
+          twitterImage: metadata?.twitterImage || null,
+          twitterImageAlt: metadata?.twitterImageAlt || null,
+          twitterSite: metadata?.twitterSite || null,
+          twitterCreator: metadata?.twitterCreator || null,
+          // Technical SEO
+          canonicalUrl: metadata?.canonicalUrl || null,
+          robots: metadata?.robots || "index,follow",
+          metaRobots: metadata?.metaRobots || null,
+          alternateLanguages: metadata?.alternateLanguages || [],
+          // Content Metadata
+          author: metadata?.author || null,
+          publishedDate: metadata?.publishedDate || null,
+          modifiedDate: metadata?.modifiedDate || null,
+          category: metadata?.category || null,
+          tags: metadata?.tags || [],
+          // Structured Data
+          structuredData: metadata?.structuredData || null,
+          // Advanced
+          breadcrumbTitle: metadata?.breadcrumbTitle || null,
+          noindex: metadata?.noindex || false,
+          nofollow: metadata?.nofollow || false,
         },
       });
 

@@ -1,5 +1,68 @@
 import { z } from "zod/v3";
 
+// Alternate language schema for hreflang
+export const alternateLanguageSchema = z.object({
+  lang: z.string(),
+  url: z.string().url(),
+});
+
+// Metadata schema for comprehensive SEO
+export const pageMetadataSchema = z.object({
+  // Basic SEO
+  seoTitle: z.string().trim().max(60, "SEO title should be 50-60 characters").optional().or(z.literal("")),
+  seoDescription: z.string().trim().max(160, "SEO description should be 150-160 characters").optional().or(z.literal("")),
+  seoKeywords: z.array(z.string()).optional().default([]),
+  focusKeyword: z.string().trim().optional().or(z.literal("")),
+
+  // Open Graph
+  ogTitle: z.string().trim().max(95, "OG title should be under 95 characters").optional().or(z.literal("")),
+  ogDescription: z.string().trim().max(200, "OG description should be under 200 characters").optional().or(z.literal("")),
+  ogImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  ogType: z.enum(["website", "article", "product", "profile"]).optional(),
+  ogUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  ogSiteName: z.string().trim().optional().or(z.literal("")),
+  ogLocale: z.string().optional(),
+  ogLocaleAlternate: z.array(z.string()).optional().default([]),
+
+  // Open Graph Article
+  ogArticleAuthor: z.string().trim().optional().or(z.literal("")),
+  ogArticlePublishedTime: z.coerce.date().optional().nullable(),
+  ogArticleModifiedTime: z.coerce.date().optional().nullable(),
+  ogArticleSection: z.string().trim().optional().or(z.literal("")),
+  ogArticleTags: z.array(z.string()).optional().default([]),
+
+  // Twitter Card
+  twitterCard: z.enum(["summary", "summary_large_image", "app", "player"]).optional(),
+  twitterTitle: z.string().trim().max(70, "Twitter title should be under 70 characters").optional().or(z.literal("")),
+  twitterDescription: z.string().trim().max(200, "Twitter description should be under 200 characters").optional().or(z.literal("")),
+  twitterImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  twitterImageAlt: z.string().trim().max(420, "Alt text too long").optional().or(z.literal("")),
+  twitterSite: z.string().trim().optional().or(z.literal("")),
+  twitterCreator: z.string().trim().optional().or(z.literal("")),
+
+  // Technical SEO
+  canonicalUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  robots: z.string().optional(),
+  metaRobots: z.string().optional().or(z.literal("")),
+  alternateLanguages: z.array(alternateLanguageSchema).optional(),
+
+  // Content Metadata
+  author: z.string().trim().optional().or(z.literal("")),
+  publishedDate: z.coerce.date().optional().nullable(),
+  modifiedDate: z.coerce.date().optional().nullable(),
+  category: z.string().trim().optional().or(z.literal("")),
+  tags: z.array(z.string()).optional().default([]),
+
+  // Structured Data
+  structuredData: z.any().optional(), // JSON-LD schema
+
+  // Advanced
+  breadcrumbTitle: z.string().trim().optional().or(z.literal("")),
+  noindex: z.boolean().optional().default(false),
+  nofollow: z.boolean().optional().default(false),
+});
+
+// Main page schema
 export const pageDetailsSchema = z.object({
   title: z
     .string()
@@ -21,6 +84,9 @@ export const pageDetailsSchema = z.object({
     .optional()
     .or(z.literal("")),
   published: z.boolean(),
+  // Include metadata
+  metadata: pageMetadataSchema.optional(),
 });
 
 export type PageDetailsFormValues = z.infer<typeof pageDetailsSchema>;
+export type PageMetadataFormValues = z.infer<typeof pageMetadataSchema>;

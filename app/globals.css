@@ -1119,3 +1119,91 @@
   --font-serif: var(--font-app-serif);
   --font-mono: var(--font-app-mono);
 }
+
+/* Header Burger */
+.header__burger {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end; /* Right aligned as per screenshot */
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 50;
+}
+
+.header__burger:hover {
+  /* transform: scale(1.05); Removed as per user request */
+}
+
+.header__burger-line {
+  height: 2px;
+  margin: 3px 0;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), margin-right 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transform-origin: center;
+}
+
+/* Staggered Widths (Resting State - Short, Long, Short) */
+.header__burger .header__burger-line:nth-child(1) {
+  width: 28px;
+}
+.header__burger .header__burger-line:nth-child(2) {
+  width: 40px;
+}
+.header__burger .header__burger-line:nth-child(3) {
+  width: 28px;
+}
+
+/* Hover State - Invert widths & shrink mid from right */
+.header__burger:hover .header__burger-line:nth-child(1) {
+  width: 40px;
+  transform: translateY(-2px);
+}
+
+.header__burger:hover .header__burger-line:nth-child(2) {
+  width: 28px;
+  margin-right: 12px; /* Moves line to left, simulating "cut from right" */
+}
+
+.header__burger:hover .header__burger-line:nth-child(3) {
+  width: 40px;
+  transform: translateY(2px);
+}
+
+/* Active State (X) - Must be full width and equal */
+.header__burger.header__burger--opened {
+  align-items: center; /* Center align when opened for the X */
+}
+
+.header__burger.header__burger--opened .header__burger-line {
+  width: 40px;
+  margin-right: 0; /* Reset margin */
+}
+
+.header__burger.header__burger--opened .header__burger-line:first-child {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.header__burger.header__burger--opened .header__burger-line:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+  width: 40px;
+  margin-right: 0;
+}
+
+.header__burger.header__burger--opened .header__burger-line:last-child {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

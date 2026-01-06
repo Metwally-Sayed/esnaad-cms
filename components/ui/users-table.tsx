@@ -2,6 +2,7 @@
 
 import { memo } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   TrendingUp,
@@ -82,13 +83,13 @@ export const UsersTable = memo(({ onAddUser }: UsersTableProps) => {
             className="group hover:bg-accent/50 flex flex-col items-start gap-4 rounded-lg p-4 transition-colors sm:flex-row sm:items-center"
           >
             <div className="flex w-full items-center gap-4 sm:w-auto">
-              <div className="relative">
-                <img
+              <div className="relative h-10 w-10">
+                <Image
                   src={user.avatar}
                   alt={user.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
+                  fill
+                  className="rounded-full object-cover"
+                  sizes="40px"
                 />
                 <div
                   className={`border-background absolute -right-1 -bottom-1 h-3 w-3 rounded-full border-2 ${

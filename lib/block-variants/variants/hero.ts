@@ -34,7 +34,7 @@ const heroAdvanced: BlockVariantSchema = {
       ],
     },
     {
-      type: "text",
+      type: "media",
       name: "mediaUrl",
       label: "Video URL or image path",
       placeholder: "https://cdn.coverr.co/video.mp4 or /images/hero.jpg",
@@ -151,7 +151,7 @@ const heroCenteredVideo: BlockVariantSchema = {
       defaultValue: "Build modern experiences with our CMS foundation.",
     },
     {
-      type: "text",
+      type: "video",
       name: "videoUrl",
       label: "Video URL",
       placeholder: "https://cdn.coverr.co/video.mp4",

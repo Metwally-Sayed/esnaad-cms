@@ -3,6 +3,7 @@ import { getLocale } from "next-intl/server";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type MediaDetailsContent = {
   nameEn?: string;
@@ -42,7 +43,7 @@ export default async function MediaDetailsPage({
       : null;
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className={cn("min-h-screen bg-background", className)}>
       {/* Back Button */}
       <div className="container mx-auto px-4 pt-24 pb-6">
         <Button variant="ghost" size="sm" asChild>

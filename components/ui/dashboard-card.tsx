@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import type { ComponentType } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp } from 'lucide-react';
 
@@ -10,7 +11,7 @@ interface DashboardCardProps {
     value: string;
     change: string;
     changeType: 'positive' | 'negative';
-    icon: any;
+    icon: ComponentType<{ className?: string }>;
     color: string;
     bgColor: string;
   };

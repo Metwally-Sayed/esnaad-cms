@@ -25,11 +25,22 @@ export function RichTextEditor({
     // Extract text from JSONContent (simplified - gets first paragraph)
     if (initialValue.content && Array.isArray(initialValue.content)) {
       return initialValue.content
-        .map((node: any) => {
-          if (node.content && Array.isArray(node.content)) {
-            return node.content.map((n: any) => n.text || "").join("");
-          }
-          return "";
+        .map((node) => {
+          const nodeContent =
+            node &&
+            typeof node === "object" &&
+            "content" in node &&
+            Array.isArray((node as { content?: unknown }).content)
+              ? ((node as { content?: unknown }).content as unknown[])
+              : [];
+
+          return nodeContent
+            .map((child) =>
+              child && typeof child === "object" && "text" in child
+                ? ((child as { text?: string }).text ?? "")
+                : ""
+            )
+            .join("");
         })
         .join("\n");
     }

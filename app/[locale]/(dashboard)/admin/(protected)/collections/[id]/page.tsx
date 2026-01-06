@@ -21,6 +21,11 @@ export default async function CollectionDetailPage({
 
   const collection = result.data;
 
+  // Serialize fields for client component (Next.js requires explicit JSON serialization for client components)
+  const serializedFields = collection.fields
+    ? JSON.parse(JSON.stringify(collection.fields))
+    : null;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -34,11 +39,15 @@ export default async function CollectionDetailPage({
           </p>
         </div>
         <div className="flex gap-2">
-          <EditCollectionDialog collection={collection} />
+          <EditCollectionDialog collection={{
+            ...collection,
+            fields: serializedFields
+          }} />
           <CollectionItemDialog
             collectionId={collection.id}
             collectionSlug={collection.slug}
             hasProfilePages={collection.hasProfilePages}
+            fields={serializedFields}
             trigger={
               <Button>
                 <Plus className="mr-2 h-4 w-4" /> Add Item
@@ -52,7 +61,11 @@ export default async function CollectionDetailPage({
         collectionId={collection.id}
         collectionSlug={collection.slug}
         hasProfilePages={collection.hasProfilePages}
-        items={collection.items}
+        fields={serializedFields}
+        items={collection.items.map(item => ({
+            ...item,
+            content: item.content as Record<string, unknown>
+        }))}
       />
     </div>
   );

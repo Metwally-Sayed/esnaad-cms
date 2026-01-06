@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RichTextEditor } from "@/components/ui/editor/rich-text-editor";
+import { MediaPicker } from "@/components/admin/media/media-picker";
 import { createMediaItem, updateMediaItem, type MediaItem } from "@/server/actions/media";
 import type { JSONContent } from "novel";
 import { toast } from "sonner";
@@ -65,6 +66,13 @@ export function MediaForm({ item, mode }: MediaFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate that an image is provided
+    if (!image) {
+      toast.error("Please upload an image or provide an image URL");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -91,7 +99,7 @@ export function MediaForm({ item, mode }: MediaFormProps) {
       } else {
         toast.error(result.error || tCommon("error"));
       }
-    } catch (error) {
+    } catch {
       toast.error(t(`messages.${mode === "create" ? "createError" : "updateError"}`));
     } finally {
       setIsSubmitting(false);
@@ -161,24 +169,16 @@ export function MediaForm({ item, mode }: MediaFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">{t("form.image")} *</Label>
-            <Input
-              id="image"
+            <MediaPicker
               value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
+              onChange={setImage}
+              accept="all"
+              label={`${t("form.image")} *`}
               placeholder={t("form.imagePlaceholder")}
-              type="url"
             />
-            {image && (
-              <div className="mt-2 aspect-video w-full max-w-md overflow-hidden rounded-lg border">
-                <img
-                  src={image}
-                  alt="Preview"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
+            <p className="text-sm text-muted-foreground">
+              Upload an image or video (max 10MB). Supported formats: JPEG, PNG, GIF, WebP, MP4
+            </p>
           </div>
         </CardContent>
       </Card>

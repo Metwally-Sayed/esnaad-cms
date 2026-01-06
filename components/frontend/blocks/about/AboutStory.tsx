@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
+import { useEffect, useState } from "react";
 
 type Paragraph = {
   text?: string;
@@ -52,6 +53,25 @@ type AboutStoryProps = {
 export default function AboutStory({ content, className }: AboutStoryProps) {
   const t = useTranslations("About");
   const locale = useLocale();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Check if dark mode is active
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+
+    checkDarkMode();
+
+    // Watch for dark mode changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Get locale-specific content from nested structure
   const localeContent = locale === "ar" ? content.ar : content.en;
@@ -70,16 +90,16 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
 
   const useCustomColors = customColors === true;
 
-  const sectionStyle = useCustomColors ? { backgroundColor: bgColor } : undefined;
-  const titleStyle = useCustomColors ? { color: titleColor } : undefined;
-  const subtitleStyle = useCustomColors ? { color: subtitleColor } : undefined;
-  const textStyle = useCustomColors ? { color: textColor } : undefined;
+  // Don't apply inline styles in dark mode - let Tailwind classes take over
+  const sectionStyle = useCustomColors && !isDarkMode ? { backgroundColor: bgColor } : undefined;
+  const titleStyle = useCustomColors && !isDarkMode ? { color: titleColor } : undefined;
+  const subtitleStyle = useCustomColors && !isDarkMode ? { color: subtitleColor } : undefined;
+  const textStyle = useCustomColors && !isDarkMode ? { color: textColor } : undefined;
 
   return (
     <section
       className={cn(
-        "pt-16 md:pt-24",
-        !useCustomColors && "bg-background",
+        "pt-16 md:pt-24 bg-background",
         className
       )}
       style={sectionStyle}
@@ -95,10 +115,7 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
         >
           {sectionTitle && (
             <h2
-              className={cn(
-                "font-serif text-3xl tracking-[0.2em] md:text-4xl lg:text-5xl",
-                !useCustomColors && "text-foreground"
-              )}
+              className="font-serif text-3xl tracking-[0.2em] md:text-4xl lg:text-5xl text-foreground"
               style={titleStyle}
             >
               {sectionTitle}
@@ -106,10 +123,7 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
           )}
           {subtitle && (
             <p
-              className={cn(
-                "mt-4 font-serif text-xl tracking-[0.15em] md:text-2xl",
-                !useCustomColors && "text-muted-foreground"
-              )}
+              className="mt-4 font-serif text-xl tracking-[0.15em] md:text-2xl text-muted-foreground"
               style={subtitleStyle}
             >
               {subtitle}
@@ -144,10 +158,7 @@ export default function AboutStory({ content, className }: AboutStoryProps) {
             {paragraphs?.map((paragraph, index) => (
               <motion.p
                 key={index}
-                className={cn(
-                  "text-base leading-relaxed md:text-lg",
-                  !useCustomColors && "text-muted-foreground"
-                )}
+                className="text-base leading-relaxed md:text-lg text-muted-foreground"
                 style={textStyle}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}

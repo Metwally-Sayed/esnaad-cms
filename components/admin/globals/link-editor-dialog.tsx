@@ -143,7 +143,7 @@ export function LinkEditorDialog({
       await onSave(orderedLinks);
       setOpen(false);
       toast.success("Links updated successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to save links");
     } finally {
       setIsLoading(false);

@@ -475,7 +475,14 @@
       "defaultHeaderId": "cmi8vuhu400001856rf3snarm",
       "createdAt": "2025-11-21T13:15:16.276Z",
       "updatedAt": "2025-11-21T13:15:16.276Z",
-      "defaultFooterId": "cmi8vujbv000i1856x8854t22"
+      "defaultFooterId": "cmi8vujbv000i1856x8854t22",
+      "defaultOgImage": "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&h=630&q=80",
+      "defaultOgSiteName": "Esnaad CMS",
+      "defaultOgLocale": "en_US",
+      "defaultTwitterSite": "@esnaadcms",
+      "defaultTwitterCreator": "@esnaadcms",
+      "defaultAuthor": "Esnaad Team",
+      "defaultRobots": "index,follow"
     }
   ],
   "pages": [

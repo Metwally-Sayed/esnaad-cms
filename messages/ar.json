@@ -261,7 +261,11 @@
     "floorPlans": "مخططات الطوابق",
     "keyPlanLevel": "مستوى المخطط الرئيسي",
     "floorRange1": "من الطابق 1 إلى 4",
-    "floorRange2": "من الطابق 5 إلى 8"
+    "floorRange2": "من الطابق 5 إلى 8",
+    "size": "المساحة",
+    "bathrooms": "الحمامات",
+    "price": "السعر",
+    "features": "المميزات"
   },
   "Auth": {
     "login": "تسجيل الدخول",

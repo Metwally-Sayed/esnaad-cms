@@ -1,13 +1,12 @@
 "use client";
 
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { cn } from "@/lib/utils";
 import { useHeaderStore } from "@/store/header-store";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 interface AnimatedMenuIconProps {
   isOpen: boolean;
@@ -18,56 +17,32 @@ interface AnimatedMenuIconProps {
 
 const AnimatedMenuIcon = ({ isOpen, onClick, className, hasScrolled }: AnimatedMenuIconProps) => {
   return (
-    <button
+    <div
       onClick={onClick}
       className={cn(
-        "relative z-50 flex h-12 w-12 sm:h-14 sm:w-14 flex-col items-center justify-center rounded-full transition-all duration-300 touch-manipulation group",
-        hasScrolled
-          ? "bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 hover:scale-105 active:scale-95"
-          : "bg-white/10 hover:bg-white/20 active:bg-white/25 hover:scale-105 active:scale-95",
+        "header__burger",
+        isOpen && "header__burger--opened",
+        hasScrolled ? "text-foreground" : "text-white",
         className
       )}
+      id="js-burger"
+      data-arts-cursor="true"
+      data-arts-cursor-scale="1.7"
+      data-arts-cursor-magnetic="true"
+      data-arts-cursor-hide-native="true"
       aria-label={isOpen ? "Close menu" : "Open menu"}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onClick();
+        }
+      }}
     >
-      <div className="relative w-6 h-6 sm:w-7 sm:h-7">
-        <motion.span
-          className={cn(
-            "absolute h-0.5 w-full rounded-full left-0 origin-center transition-colors duration-300",
-            hasScrolled ? "bg-foreground" : "bg-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]"
-          )}
-          animate={
-            isOpen
-              ? { rotate: 45, top: "50%", translateY: "-50%" }
-              : { rotate: 0, top: "20%", translateY: "0%" }
-          }
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        />
-        <motion.span
-          className={cn(
-            "absolute h-0.5 w-full rounded-full left-0 top-1/2 -translate-y-1/2 transition-colors duration-300",
-            hasScrolled ? "bg-foreground" : "bg-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]"
-          )}
-          animate={
-            isOpen
-              ? { opacity: 0, width: "0%" }
-              : { opacity: 1, width: "100%" }
-          }
-          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-        />
-        <motion.span
-          className={cn(
-            "absolute h-0.5 w-full rounded-full left-0 origin-center transition-colors duration-300",
-            hasScrolled ? "bg-foreground" : "bg-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]"
-          )}
-          animate={
-            isOpen
-              ? { rotate: -45, bottom: "50%", translateY: "50%" }
-              : { rotate: 0, bottom: "20%", translateY: "0%" }
-          }
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        />
-      </div>
-    </button>
+      <div className={cn("header__burger-line", hasScrolled ? "bg-foreground" : "bg-white")}></div>
+      <div className={cn("header__burger-line", hasScrolled ? "bg-foreground" : "bg-white")}></div>
+      <div className={cn("header__burger-line", hasScrolled ? "bg-foreground" : "bg-white")}></div>
+    </div>
   );
 };
 
@@ -76,6 +51,14 @@ interface NavLink {
   href: string;
   children?: NavLink[];
 }
+
+type DbLink = {
+  name: string;
+  nameAr?: string | null;
+  slug?: string | null;
+  href?: string | null;
+  children?: DbLink[];
+};
 
 interface MainHeaderProps {
   logo?: React.ReactNode;
@@ -121,7 +104,7 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
   
 
   // Helper function to map database links to NavLink format
-  const mapLinksToNavLinks = (dbLinks: any[]): NavLink[] => {
+  const mapLinksToNavLinks = (dbLinks: DbLink[]): NavLink[] => {
     // We need to know the current locale to pick correct name
     // Since MainHeader is a client component, we should probably receive locale as a prop or infer from path
     // But better to receive it.
@@ -151,7 +134,8 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
 
       return {
         name: displayName,
-        href: link.slug || link.href,
+        // Ensure href is always a string, falling back to "#" if missing
+        href: link.slug || link.href || "#",
         children: link.children ? mapLinksToNavLinks(link.children) : undefined
       };
     });
@@ -334,7 +318,7 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
           />
 
           {/* Theme Toggler */}
-          <AnimatedThemeToggler
+          {/* <AnimatedThemeToggler
             className={cn(
               "h-10 w-10 sm:h-11 sm:w-11 transition-all duration-300 rounded-full inline-flex items-center justify-center",
               hasScrolled
@@ -342,7 +326,7 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
                 : "bg-white/10 hover:bg-white/20 active:bg-white/25 text-white",
               "[&_svg]:h-4 [&_svg]:w-4 sm:[&_svg]:h-5 sm:[&_svg]:w-5"
             )}
-          />
+          /> */}
 
           {/* Menu Button */}
           <div ref={menuButtonRef}>
@@ -461,7 +445,7 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
               >
                 {/* Theme and Language Controls */}
                 <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-center gap-2">
+                  {/* <div className="flex flex-col items-center gap-2">
                     <LanguageSwitcher
                       currentLocale={locale || "en"}
                       className="h-12 w-12 sm:h-14 sm:w-14 bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 text-foreground"
@@ -469,14 +453,14 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
                     <span className="text-[0.6rem] sm:text-xs font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] opacity-70">
                       Language
                     </span>
-                  </div>
+                  </div> */}
 
-                  <div className="flex flex-col items-center gap-2">
+                  {/* <div className="flex flex-col items-center gap-2">
                     <AnimatedThemeToggler className="h-12 w-12 sm:h-14 sm:w-14 rounded-full inline-flex items-center justify-center bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 text-foreground [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-6 sm:[&_svg]:w-6" />
                     <span className="text-[0.6rem] sm:text-xs font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] opacity-70">
                       Theme
                     </span>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Social Links */}

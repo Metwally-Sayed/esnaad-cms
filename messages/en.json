@@ -261,7 +261,11 @@
     "floorPlans": "Floor Plans",
     "keyPlanLevel": "Key Plan Level",
     "floorRange1": "1 TO 4TH FLOOR",
-    "floorRange2": "5TH TO 8TH FLOOR"
+    "floorRange2": "5TH TO 8TH FLOOR",
+    "size": "Size",
+    "bathrooms": "Bathrooms",
+    "price": "Price",
+    "features": "Features"
   },
   "Auth": {
     "login": "Login",

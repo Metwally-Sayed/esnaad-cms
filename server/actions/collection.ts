@@ -143,7 +143,18 @@ export async function createCollectionItem(
     let pageId: string | undefined;
     if (collection.hasProfilePages && collection.profilePageSlugPattern) {
       const content = (validated.content || {}) as Record<string, unknown>;
-      const itemSlug = content.slug as string | undefined;
+
+      // Extract data from localized structure if present
+      let itemData = content;
+      if (content.en && typeof content.en === 'object') {
+        itemData = content.en as Record<string, unknown>;
+      } else if (content.ar && typeof content.ar === 'object') {
+        itemData = content.ar as Record<string, unknown>;
+      }
+
+      const itemSlug = itemData.slug as string | undefined;
+      const itemTitle = itemData.title as string | undefined;
+      const itemDescription = itemData.description as string | undefined;
 
       if (itemSlug) {
         // Generate page slug from pattern
@@ -152,9 +163,9 @@ export async function createCollectionItem(
         // Create the page
         const page = await prisma.page.create({
           data: {
-            title: (content.title as string) || itemSlug,
+            title: itemTitle || itemSlug,
             slug: pageSlug,
-            description: (content.description as string) || undefined,
+            description: itemDescription || undefined,
             published: true,
           },
         });
@@ -213,7 +224,17 @@ export async function updateCollectionItem(
 
     // Handle page updates if profile pages are enabled
     if (existingItem.collection.hasProfilePages && existingItem.collection.profilePageSlugPattern) {
-      const itemSlug = content.slug as string | undefined;
+      // Extract data from localized structure if present
+      let itemData = content;
+      if (content.en && typeof content.en === 'object') {
+        itemData = content.en as Record<string, unknown>;
+      } else if (content.ar && typeof content.ar === 'object') {
+        itemData = content.ar as Record<string, unknown>;
+      }
+
+      const itemSlug = itemData.slug as string | undefined;
+      const itemTitle = itemData.title as string | undefined;
+      const itemDescription = itemData.description as string | undefined;
 
       if (itemSlug) {
         const pageSlug = existingItem.collection.profilePageSlugPattern.replace("[slug]", itemSlug);
@@ -223,18 +244,18 @@ export async function updateCollectionItem(
           await prisma.page.update({
             where: { id: existingItem.pageId },
             data: {
-              title: (content.title as string) || itemSlug,
+              title: itemTitle || itemSlug,
               slug: pageSlug,
-              description: (content.description as string) || undefined,
+              description: itemDescription || undefined,
             },
           });
         } else {
           // Create page if it doesn't exist
           const page = await prisma.page.create({
             data: {
-              title: (content.title as string) || itemSlug,
+              title: itemTitle || itemSlug,
               slug: pageSlug,
-              description: (content.description as string) || undefined,
+              description: itemDescription || undefined,
               published: true,
             },
           });
@@ -268,6 +289,87 @@ export async function updateCollectionItem(
     }
     return failure("Failed to update item");
   }
+}
+
+// --- Frontend collection helpers (used by marketing blocks) ---
+
+export type ProjectCard = {
+  title?: string;
+  image?: string;
+  link?: string;
+  actionLabel?: string;
+  actionType?: "button" | "link";
+};
+
+export async function getProjectCards({
+  collectionId,
+  locale,
+}: {
+  collectionId?: string;
+  locale: string;
+}): Promise<ProjectCard[]> {
+  if (!collectionId) {
+    return [];
+  }
+
+  const items = await prisma.collectionItem.findMany({
+    where: { collectionId },
+    orderBy: { order: "asc" },
+  });
+
+  return items.map((item) => {
+    const rawContent = item.content as Record<string, unknown>;
+
+    let data: unknown = rawContent;
+    const localeContent = rawContent[locale];
+    const fallbackContent = rawContent["en"];
+    if (localeContent && typeof localeContent === "object") {
+      data = localeContent;
+    } else if (fallbackContent && typeof fallbackContent === "object") {
+      data = fallbackContent;
+    }
+
+    const typedData = data as {
+      title?: string;
+      image?: string;
+      slug?: string;
+      link?: string;
+      actionLabel?: string;
+      actionType?: "button" | "link";
+    };
+
+    let finalLink = typedData.link;
+    if (!finalLink && typedData.slug) {
+      finalLink = `/projects/${typedData.slug}`;
+    }
+
+    return {
+      title: typedData.title,
+      image: typedData.image,
+      link: finalLink,
+      actionLabel: typedData.actionLabel,
+      actionType: typedData.actionType,
+    };
+  });
+}
+
+export type PhilosophyItemContent = {
+  image?: string;
+  title?: string;
+  description?: string;
+};
+
+export async function getPhilosophyItems(collectionId?: string) {
+  if (!collectionId) {
+    return [];
+  }
+
+  const collectionItems = await prisma.collectionItem.findMany({
+    where: { collectionId },
+    orderBy: { order: "asc" },
+  });
+
+  return collectionItems.map((item) => item.content as PhilosophyItemContent);
 }
 
 export async function deleteCollectionItem(itemId: string) {

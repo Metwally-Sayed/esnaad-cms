@@ -109,6 +109,14 @@ const HeroSection = ({
                 : ""
             }
           >
+            {brand?.name ? (
+              <ScrollReveal mode="fade-in" delay={0.1}>
+                <p className="text-xs uppercase tracking-[0.5em] text-white/70">
+                  {brand.name}
+                  {brand.descriptor ? ` — ${brand.descriptor}` : ""}
+                </p>
+              </ScrollReveal>
+            ) : null}
             {location ? (
               <ScrollReveal mode="fade-in" delay={0.2}>
                 <p className="text-xs uppercase tracking-[0.7em] text-white/70">
@@ -119,7 +127,7 @@ const HeroSection = ({
             <div className="mt-4 space-y-2 font-serif text-3xl uppercase tracking-[0.4em] sm:text-4xl">
               {headline.map((line) => (
                 <div key={line} className="space-y-1">
-                <ScrollReveal mode="slide-right" staggerChildren={0.1}>
+                <ScrollReveal mode="slide-right">
                   {chunkLine(line).map((chunk) => (
                     <p key={`${line}-${chunk}`}>{chunk}</p>
                   ))}
@@ -150,11 +158,11 @@ const HeroSection = ({
             </div>
           ) : null}
 
-          {/* {contactLabel ? (
-            <p className="text-sm uppercase tracking-[0.4em] text-white/80">
+          {contactLabel ? (
+            <p className="text-xs uppercase tracking-[0.4em] text-white/70">
               {contactLabel}
             </p>
-          ) : null} */}
+          ) : null}
         </div>
       </div>
     </section>

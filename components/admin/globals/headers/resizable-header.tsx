@@ -1,13 +1,14 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { useHeaderStore } from "@/store/header-store";
 import { Menu, X } from "lucide-react";
 import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
+    AnimatePresence,
+    motion,
+    useMotionValueEvent,
+    useScroll,
 } from "motion/react";
-import { useHeaderStore } from "@/store/header-store";
+import Image from "next/image";
 
 import React, { useState } from "react";
 
@@ -48,8 +49,7 @@ interface MobileNavMenuProps {
   children: React.ReactNode;
   className?: string;
   isOpen: boolean;
-  onClose: () => void;
-  visible?: boolean;
+  onClose?: () => void;
 }
 
 export const Navbar = ({ children, className }: NavbarProps) => {
@@ -221,7 +221,6 @@ export const MobileNavMenu = ({
   className,
   isOpen,
   onClose,
-  visible,
 }: MobileNavMenuProps) => {
   return (
     <AnimatePresence>
@@ -235,14 +234,17 @@ export const MobileNavMenu = ({
             className
           )}
         >
-          {React.Children.map(children, (child) =>
-            React.isValidElement(child)
-              ? React.cloneElement(
-                  child as React.ReactElement<{ visible?: boolean }>,
-                  { visible: true }
-                )
-              : child
-          )}
+          {onClose ? (
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-background transition hover:bg-white/20"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          ) : null}
+          {children}
         </motion.div>
       )}
     </AnimatePresence>
@@ -271,11 +273,13 @@ export const NavbarLogo = ({ visible }: { visible?: boolean }) => {
       href="#"
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 font-serif text-lg uppercase tracking-[0.3em]"
     >
-      <img
+      <Image
         src="https://assets.aceternity.com/logo-dark.png"
         alt="logo"
         width={30}
         height={30}
+        className="h-[30px] w-[30px]"
+        priority
       />
       <span className={cn(
         "font-medium transition-colors",
