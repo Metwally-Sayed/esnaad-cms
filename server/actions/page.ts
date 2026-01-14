@@ -3,13 +3,11 @@
 import prisma from "@/lib/prisma";
 import { pageDetailsSchema } from "@/lib/validators/page";
 import { BlockType, Prisma } from "@prisma/client";
+import { updateTag } from "next/cache";
 import { z } from "zod/v3";
 
 export async function getPageBySlug({ slug }: { slug: string }) {
-  console.log("getPageBySlug called with:", slug);
   try {
-    const count = await prisma.page.count();
-    console.log("Total pages in DB:", count);
     const page = await prisma.page.findUnique({
       where: {
         slug,
@@ -156,6 +154,10 @@ export async function createPage(input: CreatePageInput) {
     await prisma.pageBlock.createMany({
       data: createdBlocks,
     });
+
+    // Invalidate cache for all pages and this specific page
+    updateTag("pages");
+    updateTag(`page-${normalizedSlug.replace(/\/{2,}/g, "/")}`);
 
     return {
       success: true,
@@ -351,6 +353,10 @@ export async function updatePage(pageId: string, input: CreatePageInput) {
 
       return targetPage;
     });
+
+    // Invalidate cache for all pages and this specific page
+    updateTag("pages");
+    updateTag(`page-${normalizedSlug.replace(/\/{2,}/g, "/")}`);
 
     return {
       success: true,

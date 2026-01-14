@@ -93,7 +93,8 @@ const HeroSection = ({
             loop
             muted
             playsInline
-            poster={media?.poster}
+            poster={media?.poster || ""}
+            suppressHydrationWarning
           >
             <source src={mediaSource} type={mimeType} />
           </video>

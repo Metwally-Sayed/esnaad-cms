@@ -8,7 +8,7 @@ export default async function FrontLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  
+
   return (
     <MarketingShell locale={locale}>{children}</MarketingShell>
   );
