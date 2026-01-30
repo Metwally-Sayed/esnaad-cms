@@ -8,21 +8,32 @@ export const alternateLanguageSchema = z.object({
 
 // Metadata schema for comprehensive SEO
 export const pageMetadataSchema = z.object({
-  // Basic SEO
+  // Basic SEO (English)
   seoTitle: z.string().trim().max(60, "SEO title should be 50-60 characters").optional().or(z.literal("")),
   seoDescription: z.string().trim().max(160, "SEO description should be 150-160 characters").optional().or(z.literal("")),
   seoKeywords: z.array(z.string()).optional().default([]),
   focusKeyword: z.string().trim().optional().or(z.literal("")),
 
-  // Open Graph
+  // Basic SEO (Arabic)
+  seoTitleAr: z.string().trim().max(60, "SEO title should be 50-60 characters").optional().or(z.literal("")),
+  seoDescriptionAr: z.string().trim().max(160, "SEO description should be 150-160 characters").optional().or(z.literal("")),
+  seoKeywordsAr: z.array(z.string()).optional().default([]),
+  focusKeywordAr: z.string().trim().optional().or(z.literal("")),
+
+  // Open Graph (English)
   ogTitle: z.string().trim().max(95, "OG title should be under 95 characters").optional().or(z.literal("")),
   ogDescription: z.string().trim().max(200, "OG description should be under 200 characters").optional().or(z.literal("")),
-  ogImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  ogImage: z.string().refine((val) => !val || val.startsWith('/') || val.startsWith('http'), "Must be a valid URL or path").optional().or(z.literal("")),
   ogType: z.enum(["website", "article", "product", "profile"]).optional(),
   ogUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   ogSiteName: z.string().trim().optional().or(z.literal("")),
   ogLocale: z.string().optional(),
   ogLocaleAlternate: z.array(z.string()).optional().default([]),
+
+  // Open Graph (Arabic)
+  ogTitleAr: z.string().trim().max(95, "OG title should be under 95 characters").optional().or(z.literal("")),
+  ogDescriptionAr: z.string().trim().max(200, "OG description should be under 200 characters").optional().or(z.literal("")),
+  ogImageAr: z.string().refine((val) => !val || val.startsWith('/') || val.startsWith('http'), "Must be a valid URL or path").optional().or(z.literal("")),
 
   // Open Graph Article
   ogArticleAuthor: z.string().trim().optional().or(z.literal("")),
@@ -31,14 +42,18 @@ export const pageMetadataSchema = z.object({
   ogArticleSection: z.string().trim().optional().or(z.literal("")),
   ogArticleTags: z.array(z.string()).optional().default([]),
 
-  // Twitter Card
+  // Twitter Card (English)
   twitterCard: z.enum(["summary", "summary_large_image", "app", "player"]).optional(),
   twitterTitle: z.string().trim().max(70, "Twitter title should be under 70 characters").optional().or(z.literal("")),
   twitterDescription: z.string().trim().max(200, "Twitter description should be under 200 characters").optional().or(z.literal("")),
-  twitterImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  twitterImage: z.string().refine((val) => !val || val.startsWith('/') || val.startsWith('http'), "Must be a valid URL or path").optional().or(z.literal("")),
   twitterImageAlt: z.string().trim().max(420, "Alt text too long").optional().or(z.literal("")),
   twitterSite: z.string().trim().optional().or(z.literal("")),
   twitterCreator: z.string().trim().optional().or(z.literal("")),
+
+  // Twitter Card (Arabic)
+  twitterTitleAr: z.string().trim().max(70, "Twitter title should be under 70 characters").optional().or(z.literal("")),
+  twitterDescriptionAr: z.string().trim().max(200, "Twitter description should be under 200 characters").optional().or(z.literal("")),
 
   // Technical SEO
   canonicalUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
@@ -60,6 +75,9 @@ export const pageMetadataSchema = z.object({
   breadcrumbTitle: z.string().trim().optional().or(z.literal("")),
   noindex: z.boolean().optional().default(false),
   nofollow: z.boolean().optional().default(false),
+
+  // Page title (Arabic)
+  titleAr: z.string().trim().optional().or(z.literal("")),
 });
 
 // Main page schema

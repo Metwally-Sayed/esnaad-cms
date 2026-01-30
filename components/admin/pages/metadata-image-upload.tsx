@@ -5,7 +5,7 @@ import { FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { uploadFile } from "@/server/actions/upload";
 import { ExternalLink, Upload, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 interface MetadataImageUploadProps {
@@ -25,6 +25,11 @@ export function MetadataImageUpload({
 }: MetadataImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(value || "");
+
+  // Sync previewUrl with value prop when it changes (e.g., form data loads asynchronously)
+  useEffect(() => {
+    setPreviewUrl(value || "");
+  }, [value]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

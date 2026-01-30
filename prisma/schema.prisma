@@ -172,6 +172,19 @@ model Page {
   twitterImageAlt        String?
   twitterSite            String?
   twitterTitle           String?
+
+  // Arabic SEO fields
+  titleAr                String?
+  seoTitleAr             String?
+  seoDescriptionAr       String?
+  seoKeywordsAr          String[]        @default([])
+  focusKeywordAr         String?
+  ogTitleAr              String?
+  ogDescriptionAr        String?
+  ogImageAr              String?
+  twitterTitleAr         String?
+  twitterDescriptionAr   String?
+
   collectionItem         CollectionItem? @relation("CollectionItemPage")
   footer                 Footer?         @relation(fields: [footerId], references: [id])
   header                 Header?         @relation(fields: [headerId], references: [id])

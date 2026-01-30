@@ -126,12 +126,21 @@ const HeroSection = ({
               </ScrollReveal>
             ) : null}
             <div className="mt-4 space-y-2 font-serif text-3xl uppercase tracking-[0.4em] sm:text-4xl">
-              {headline.map((line) => (
+              {headline.map((line, index) => (
                 <div key={line} className="space-y-1">
                 <ScrollReveal mode="slide-right">
-                  {chunkLine(line).map((chunk) => (
-                    <p key={`${line}-${chunk}`}>{chunk}</p>
-                  ))}
+                  {index === 0 ? (
+                    // First headline is H1 for SEO
+                    <h1 className="space-y-1">
+                      {chunkLine(line).map((chunk) => (
+                        <span key={`${line}-${chunk}`} className="block">{chunk}</span>
+                      ))}
+                    </h1>
+                  ) : (
+                    chunkLine(line).map((chunk) => (
+                      <p key={`${line}-${chunk}`}>{chunk}</p>
+                    ))
+                  )}
                 </ScrollReveal>
                 </div>
               ))}

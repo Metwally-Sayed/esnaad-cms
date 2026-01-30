@@ -1,4 +1,8 @@
+import { GoogleAnalytics } from "@/components/analytics";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { StructuredData } from "@/components/seo/structured-data";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -43,58 +47,99 @@ const cairo = Cairo({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: {
-    default: 'Esnaad',
-    template: '%s | Esnaad ',
-  },
-  description: 'اسناد للتطوير العقاري: خبرة أكثر من 20 عاماً في بناء مجتمعات سكنية فاخرة في دبي، حيث تلتقي الأناقة بالجودة في كل مشروع. ',
-  keywords: ['اسناد', "Esnaad" ,"Esnaad Real Estate","Esnaad Development","Esnaad Real Estate Development","Esnaad Development Company","Esnaad Dubai","شركة اسناد","اسناد دبي","مطور عقاري إماراتي","Esnaad Real Estate Development Company",'اسناد للتطوير العقاري', 'اسناد العقارية', 'شركة تطوير عقاري في دبي', 'مطور عقاري في دبي', "التطوير العقاري في دبي", "مشاريع عقارية في دبي"],
-  authors: [{ name: 'Esnaad Team' }],
-  creator: 'Esnaad Team',
-  publisher: 'Esnaad',
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
-  },
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: '/',
-    title: 'Esnaad',
-    description: 'اسناد للتطوير العقاري: خبرة أكثر من 20 عاماً في بناء مجتمعات سكنية فاخرة في دبي، حيث تلتقي الأناقة بالجودة في كل مشروع. ',
-    siteName: 'Esnaad',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Esnaad',
-    description: 'Esnaad Real Estate Development Company',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const isArabic = locale === 'ar';
+
+  // Locale-specific content
+  const ogImage = isArabic ? '/og-image-ar.png' : '/og-image.png';
+  const ogLocale = isArabic ? 'ar_AE' : 'en_US';
+  const ogAltLocale = isArabic ? 'en_US' : 'ar_AE';
+  const description = isArabic
+    ? 'اسناد للتطوير العقاري: خبرة أكثر من 20 عاماً في بناء مجتمعات سكنية فاخرة في دبي، حيث تلتقي الأناقة بالجودة في كل مشروع.'
+    : 'Esnaad Real Estate Development: Over 20 years of experience building luxury residential communities in Dubai, where elegance meets quality in every project.';
+  const ogAlt = isArabic ? 'اسناد للتطوير العقاري' : 'Esnaad - Real Estate Development';
+
+  return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+    title: {
+      default: 'Esnaad',
+      template: '%s | Esnaad',
+    },
+    description,
+    keywords: ['اسناد', "Esnaad", "Esnaad Real Estate", "Esnaad Development", "Esnaad Real Estate Development", "Esnaad Development Company", "Esnaad Dubai", "شركة اسناد", "اسناد دبي", "مطور عقاري إماراتي", "Esnaad Real Estate Development Company", 'اسناد للتطوير العقاري', 'اسناد العقارية', 'شركة تطوير عقاري في دبي', 'مطور عقاري في دبي', "التطوير العقاري في دبي", "مشاريع عقارية في دبي"],
+    authors: [{ name: 'Esnaad Team' }],
+    creator: 'Esnaad Team',
+    publisher: 'Esnaad',
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+        { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+      ],
+      shortcut: '/favicon.ico',
+      apple: { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    },
+    manifest: '/manifest.webmanifest',
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    openGraph: {
+      type: 'website',
+      locale: ogLocale,
+      alternateLocale: ogAltLocale,
+      url: '/',
+      title: 'Esnaad',
+      description,
+      siteName: 'Esnaad',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: ogAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Esnaad',
+      description,
+      images: [ogImage],
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  verification: {
-    // Add these later when you have the verification codes
-    // google: 'your-google-verification-code',
-    // yandex: 'your-yandex-verification-code',
-    // bing: 'your-bing-verification-code',
-  },
-};
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        'en': '/en',
+        'ar': '/ar',
+        'x-default': '/en',
+      },
+    },
+    verification: {
+      // Add these later when you have the verification codes
+      // google: 'your-google-verification-code',
+      // yandex: 'your-yandex-verification-code',
+      // bing: 'your-bing-verification-code',
+    },
+  };
+}
 
 export default async function Layout({
   children,
@@ -106,10 +151,13 @@ export default async function Layout({
   const { locale } = await params;
   const messages = await getMessages();
   const direction = locale === 'ar' ? 'rtl' : 'ltr';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
   return (
     <html lang={locale} dir={direction} className="w-full h-full" suppressHydrationWarning>
       <head>
+        <meta charSet="utf-8" />
+        <StructuredData locale={locale} siteUrl={siteUrl} />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -138,6 +186,9 @@ export default async function Layout({
             <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
+        <GoogleAnalytics />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

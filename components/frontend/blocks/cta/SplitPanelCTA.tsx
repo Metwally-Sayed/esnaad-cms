@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SmartLink } from "@/components/ui/smart-link";
 import type { SplitPanelCTAContent } from "./types";
 import { cn } from "@/lib/utils";
 
@@ -27,19 +27,19 @@ const SplitPanelCTA = ({
         <p className="mt-2 text-sm text-white/70">{copy}</p>
       </div>
       <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.35em]">
-        <Link
+        <SmartLink
           href={primary.href}
           className="rounded-full bg-white px-6 py-2 text-foreground transition hover:bg-white/80"
         >
           {primary.label}
-        </Link>
+        </SmartLink>
         {secondary ? (
-          <Link
+          <SmartLink
             href={secondary.href}
             className="rounded-full border border-white/30 px-6 py-2 text-white transition hover:border-white"
           >
             {secondary.label}
-          </Link>
+          </SmartLink>
         ) : null}
       </div>
     </div>

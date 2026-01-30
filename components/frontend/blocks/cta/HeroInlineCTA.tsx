@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SmartLink } from "@/components/ui/smart-link";
 import { cn } from "@/lib/utils";
 import type { HeroInlineCTAContent } from "./types";
 
@@ -32,7 +32,7 @@ const HeroInlineCTA = ({
   const toneClass = toneStyles[tone];
 
   return (
-    <Link
+    <SmartLink
       href={href}
       className={cn(
         "inline-flex items-center gap-3 border px-6 py-3 text-xs font-semibold uppercase tracking-[0.5em] transition",
@@ -44,7 +44,7 @@ const HeroInlineCTA = ({
     >
       {label}
       <span className={cn("h-px bg-current")} style={{ width: accentWidth }} />
-    </Link>
+    </SmartLink>
   );
 };
 

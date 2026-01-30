@@ -58,7 +58,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslations } from "next-intl";
 import BlockContentEditor from "./block-content-editor";
-import { PageMetadataSection } from "./page-metadata-section";
+import { PageMetadataSectionEnhanced } from "./page-metadata-section-enhanced";
 import { AvailableBlock, SelectedBlock } from "./types";
 
 type InitialPageBlock = {
@@ -119,6 +119,17 @@ type InitialPageData = {
   breadcrumbTitle?: string | null;
   noindex?: boolean;
   nofollow?: boolean;
+  // Arabic SEO fields
+  titleAr?: string | null;
+  seoTitleAr?: string | null;
+  seoDescriptionAr?: string | null;
+  seoKeywordsAr?: string[];
+  focusKeywordAr?: string | null;
+  ogTitleAr?: string | null;
+  ogDescriptionAr?: string | null;
+  ogImageAr?: string | null;
+  twitterTitleAr?: string | null;
+  twitterDescriptionAr?: string | null;
 };
 
 interface PageCreateFormProps {
@@ -302,6 +313,17 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
             breadcrumbTitle: initialPage.breadcrumbTitle ?? "",
             noindex: initialPage.noindex ?? false,
             nofollow: initialPage.nofollow ?? false,
+            // Arabic SEO fields
+            titleAr: initialPage.titleAr ?? "",
+            seoTitleAr: initialPage.seoTitleAr ?? "",
+            seoDescriptionAr: initialPage.seoDescriptionAr ?? "",
+            seoKeywordsAr: initialPage.seoKeywordsAr ?? [],
+            focusKeywordAr: initialPage.focusKeywordAr ?? "",
+            ogTitleAr: initialPage.ogTitleAr ?? "",
+            ogDescriptionAr: initialPage.ogDescriptionAr ?? "",
+            ogImageAr: initialPage.ogImageAr ?? "",
+            twitterTitleAr: initialPage.twitterTitleAr ?? "",
+            twitterDescriptionAr: initialPage.twitterDescriptionAr ?? "",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any,
         }
@@ -548,7 +570,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
             </Card>
 
             {/* SEO & Metadata Section */}
-            <PageMetadataSection />
+            <PageMetadataSectionEnhanced />
 
             <Card>
               <CardHeader>

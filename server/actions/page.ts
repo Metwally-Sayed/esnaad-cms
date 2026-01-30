@@ -128,6 +128,17 @@ export async function createPage(input: CreatePageInput) {
         breadcrumbTitle: metadata?.breadcrumbTitle || null,
         noindex: metadata?.noindex || false,
         nofollow: metadata?.nofollow || false,
+        // Arabic SEO fields
+        titleAr: metadata?.titleAr || null,
+        seoTitleAr: metadata?.seoTitleAr || null,
+        seoDescriptionAr: metadata?.seoDescriptionAr || null,
+        seoKeywordsAr: metadata?.seoKeywordsAr || [],
+        focusKeywordAr: metadata?.focusKeywordAr || null,
+        ogTitleAr: metadata?.ogTitleAr || null,
+        ogDescriptionAr: metadata?.ogDescriptionAr || null,
+        ogImageAr: metadata?.ogImageAr || null,
+        twitterTitleAr: metadata?.twitterTitleAr || null,
+        twitterDescriptionAr: metadata?.twitterDescriptionAr || null,
       },
     });
 
@@ -310,6 +321,17 @@ export async function updatePage(pageId: string, input: CreatePageInput) {
           breadcrumbTitle: metadata?.breadcrumbTitle || null,
           noindex: metadata?.noindex || false,
           nofollow: metadata?.nofollow || false,
+          // Arabic SEO fields
+          titleAr: metadata?.titleAr || null,
+          seoTitleAr: metadata?.seoTitleAr || null,
+          seoDescriptionAr: metadata?.seoDescriptionAr || null,
+          seoKeywordsAr: metadata?.seoKeywordsAr || [],
+          focusKeywordAr: metadata?.focusKeywordAr || null,
+          ogTitleAr: metadata?.ogTitleAr || null,
+          ogDescriptionAr: metadata?.ogDescriptionAr || null,
+          ogImageAr: metadata?.ogImageAr || null,
+          twitterTitleAr: metadata?.twitterTitleAr || null,
+          twitterDescriptionAr: metadata?.twitterDescriptionAr || null,
         },
       });
 

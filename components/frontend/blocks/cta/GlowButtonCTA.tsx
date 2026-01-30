@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SmartLink } from "@/components/ui/smart-link";
 import type { GlowButtonCTAContent } from "./types";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +14,7 @@ const GlowButtonCTA = ({
   className,
 }: GlowButtonCTAProps) => {
   return (
-    <Link
+    <SmartLink
       href={href}
       className={cn(
         "group relative inline-flex flex-col items-start overflow-hidden rounded-full bg-white/5 px-6 py-3 text-xs uppercase tracking-[0.4em] text-white",
@@ -35,7 +35,7 @@ const GlowButtonCTA = ({
           background: `radial-gradient(circle at center, ${glowColor}55, transparent 60%)`,
         }}
       />
-    </Link>
+    </SmartLink>
   );
 };
 
