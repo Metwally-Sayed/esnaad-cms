@@ -1,6 +1,7 @@
 import { GoogleAnalytics } from "@/components/analytics";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { StructuredData } from "@/components/seo/structured-data";
+import { getSiteUrl, buildHreflangAlternates } from "@/lib/site-config";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
@@ -54,6 +55,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isArabic = locale === 'ar';
+  const siteUrl = getSiteUrl();
 
   // Locale-specific content
   const ogImage = isArabic ? '/og-image-ar.png' : '/og-image.png';
@@ -65,7 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ogAlt = isArabic ? 'اسناد للتطوير العقاري' : 'Esnaad - Real Estate Development';
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+    metadataBase: new URL(siteUrl),
     title: {
       default: 'Esnaad',
       template: '%s | Esnaad',
@@ -125,12 +127,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        'en': '/en',
-        'ar': '/ar',
-        'x-default': '/en',
-      },
+      canonical: `${siteUrl}/${locale}`,
+      languages: buildHreflangAlternates(),
     },
     verification: {
       // Add these later when you have the verification codes
@@ -151,7 +149,7 @@ export default async function Layout({
   const { locale } = await params;
   const messages = await getMessages();
   const direction = locale === 'ar' ? 'rtl' : 'ltr';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const siteUrl = getSiteUrl();
 
   return (
     <html lang={locale} dir={direction} className="w-full h-full" suppressHydrationWarning>

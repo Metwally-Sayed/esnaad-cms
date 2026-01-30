@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getGlobalSeoDefaults } from "@/server/actions/global-settings";
 import { getPageBySlugCached } from "@/lib/data/page";
+import { getSiteUrl, buildHreflangAlternates } from "@/lib/site-config";
 import {
   safeString,
   safeArray,
@@ -15,8 +16,10 @@ import type { Props, PageData, GlobalDefaults } from "./types";
 async function buildMetadata(
   page: PageData,
   globals: GlobalDefaults,
-  isArabic: boolean = false
+  isArabic: boolean = false,
+  slug: string = ''
 ): Promise<Metadata> {
+  const siteUrl = getSiteUrl();
   const authorName = safeString(page.author || globals.defaultAuthor);
 
   // For Arabic locale, use Arabic fields if available, otherwise fall back to English
@@ -137,8 +140,8 @@ async function buildMetadata(
     },
 
     alternates: {
-      canonical,
-      languages: buildAlternateLanguages(page.alternateLanguages),
+      canonical: canonical || `${siteUrl}/${isArabic ? 'ar' : 'en'}${slug ? `/${slug}` : ''}`,
+      languages: buildAlternateLanguages(page.alternateLanguages) || buildHreflangAlternates(slug),
     },
 
     // Other metadata
@@ -191,5 +194,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const { defaults } = await getGlobalSeoDefaults();
-  return buildMetadata(page, defaults, isArabic);
+  return buildMetadata(page, defaults, isArabic, slug);
 }
