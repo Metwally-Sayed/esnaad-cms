@@ -43,6 +43,14 @@ interface FieldConfig {
     description?: string;
 }
 
+const isSharedField = (field: Pick<Field, "key" | "type">) =>
+  field.key === "units" ||
+  field.key === "conceptImages" ||
+  field.key === "floorPlans" ||
+  field.type === "image" ||
+  field.type === "video" ||
+  field.type === "media";
+
 interface CollectionItemDialogProps {
   collectionId: string;
   collectionSlug?: string;
@@ -142,7 +150,7 @@ export function CollectionItemDialog({
 
       fields.forEach((f) => {
         fieldContentEn[f.key] = f.valueEn;
-        fieldContentAr[f.key] = f.valueAr;
+        fieldContentAr[f.key] = isSharedField(f) ? f.valueEn : f.valueAr;
         schema.push({ key: f.key, type: f.type });
       });
 

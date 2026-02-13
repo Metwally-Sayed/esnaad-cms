@@ -299,7 +299,9 @@
     "phone": "PHONE",
     "preferredContact": "PREFERRED MODE OF CONTACT",
     "whatsapp": "Whatsapp",
-    "sendMessage": "SEND MESSAGE"
+    "sendMessage": "SEND MESSAGE",
+    "submitting": "SUBMITTING...",
+    "submissionError": "Failed to submit form. Please try again."
   },
   "About": {
     "teamMember": "Team member",

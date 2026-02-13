@@ -78,7 +78,7 @@ export default function AboutVisionStatement({ content, className }: AboutVision
 
         <motion.div
           className={cn(
-            "space-y-5 text-center text-sm leading-7 md:text-base",
+            "space-y-5 text-start text-sm leading-7 md:text-base",
             !useCustomColors && "text-foreground"
           )}
           style={textStyle}
@@ -112,7 +112,7 @@ export default function AboutVisionStatement({ content, className }: AboutVision
 
         {(content.founderHeading || founderParagraphs.length > 0) && (
           <motion.div
-            className="space-y-4 text-center"
+            className="space-y-4 text-start"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
@@ -121,7 +121,7 @@ export default function AboutVisionStatement({ content, className }: AboutVision
             {content.founderHeading && (
               <h3
                 className={cn(
-                  "font-serif text-lg uppercase tracking-[0.16em] md:text-xl",
+                  "font-serif text-lg uppercase tracking-[0.16em] md:text-xl text-center",
                   !useCustomColors && "text-foreground"
                 )}
                 style={titleStyle}

@@ -449,7 +449,23 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
 
   const handleSubmitEvent = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
-      void form.handleSubmit(handleFormSubmit)(event);
+      void form.handleSubmit(handleFormSubmit, (errors) => {
+        // Surface validation errors from collapsed sections (e.g. SEO metadata)
+        const messages: string[] = [];
+        const collect = (obj: Record<string, unknown>, prefix = "") => {
+          for (const [key, val] of Object.entries(obj)) {
+            if (val && typeof val === "object" && "message" in val && typeof (val as { message: unknown }).message === "string") {
+              messages.push(`${prefix}${key}: ${(val as { message: string }).message}`);
+            } else if (val && typeof val === "object") {
+              collect(val as Record<string, unknown>, `${prefix}${key}.`);
+            }
+          }
+        };
+        collect(errors);
+        if (messages.length > 0) {
+          toast.error(messages[0]);
+        }
+      })(event);
     },
     [form, handleFormSubmit]
   );
@@ -457,7 +473,7 @@ const PageCreateForm = ({ blocks, initialPage }: PageCreateFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmitEvent} className="space-y-6">
+      <form noValidate onSubmit={handleSubmitEvent} className="space-y-6">
         <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
           <div className="space-y-6">
             <Card>

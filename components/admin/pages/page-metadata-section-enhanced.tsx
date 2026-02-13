@@ -665,7 +665,7 @@ function AdvancedSeoMode({ globalDefaults }: { globalDefaults: GlobalSeoDefaults
                   <FormItem>
                     <FormLabel>Canonical URL</FormLabel>
                     <FormControl>
-                      <Input type="url" placeholder="https://example.com/page" {...field} />
+                      <Input type="text" placeholder="https://example.com/page" {...field} />
                     </FormControl>
                     <FormDescription>
                       The preferred URL for this page if accessible from multiple URLs.

@@ -91,17 +91,15 @@ const defaultLinks = [
 
 export function MainHeader({ logo, links, className, initialData, locale }: MainHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const menuButtonRef = useRef<HTMLDivElement>(null);
-  const lastScrollY = useRef(0);
 
   // Get header data from Zustand store
   const headerData = useHeaderStore((state) => state.headerData);
 
   console.log(headerData, "headerData");
-  
+
 
   // Helper function to map database links to NavLink format
   const mapLinksToNavLinks = (dbLinks: DbLink[]): NavLink[] => {
@@ -111,21 +109,21 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
     // For now let's try to get it from window location or simple heuristic if not passed
     // Actually best practice is to pass it.
     // Let's assume we will pass locale.
-    
+
     return dbLinks.map(link => {
       let displayName = link.name;
-      
+
       if (locale === 'ar') {
         if (link.nameAr) {
           displayName = link.nameAr;
         } else {
           // Fallback to default links translation if available
           // Check by href/slug OR by name (case-insensitive)
-          const defaultLink = defaultLinks.find(dl => 
-            dl.href === (link.slug || link.href) || 
+          const defaultLink = defaultLinks.find(dl =>
+            dl.href === (link.slug || link.href) ||
             dl.name.toLowerCase() === link.name.toLowerCase()
           );
-          
+
           if (defaultLink?.nameAr) {
             displayName = defaultLink.nameAr;
           }
@@ -201,17 +199,6 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
     } else {
       setHasScrolled(false);
     }
-
-    // Show/hide header based on scroll direction
-    if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-      // Scrolling down - hide header
-      setIsVisible(false);
-    } else {
-      // Scrolling up - show header
-      setIsVisible(true);
-    }
-
-    lastScrollY.current = currentScrollY;
   });
 
   const toggleMenu = useCallback(async () => {
@@ -267,8 +254,8 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
       {/* Fixed Header */}
       <motion.header
         animate={{
-          y: isVisible ? 0 : -100,
-          opacity: isVisible ? 1 : 0,
+          y: 0,
+          opacity: 1,
         }}
         transition={{
           duration: 0.3,
@@ -281,9 +268,8 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
           // iOS safe area support
           "pt-[max(0.75rem,env(safe-area-inset-top))] sm:pt-[max(1rem,env(safe-area-inset-top))]",
           "pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]",
-          hasScrolled
-            ? "bg-background text-foreground backdrop-blur-xl border-b border-foreground/15 shadow-sm"
-            : "bg-transparent text-white border-b border-transparent",
+          "bg-transparent border-b border-transparent transition-colors duration-300",
+          hasScrolled ? "text-foreground" : "text-white",
           className
         )}
       >

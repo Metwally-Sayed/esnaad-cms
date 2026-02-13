@@ -151,7 +151,7 @@ export function MetadataImageUpload({
           <FormLabel className="text-xs text-muted-foreground">Or enter image URL</FormLabel>
           <FormControl>
             <Input
-              type="url"
+              type="text"
               placeholder="https://example.com/image.jpg"
               value={previewUrl}
               onChange={(e) => handleUrlChange(e.target.value)}

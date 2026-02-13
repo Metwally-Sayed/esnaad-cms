@@ -18,9 +18,12 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useFormSecurity } from "@/hooks/use-form-security";
+import { submitFormEmail } from "@/server/actions/form-email";
+import { uploadFile } from "@/server/actions/upload";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -85,6 +88,12 @@ const FormDefault = ({ content }: { content: FormContent }) => {
   const t = useTranslations("Forms");
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const fileRefs = useRef<Record<string, File>>({});
+
+  // Security hook
+  const { formToken, formStartTime, honeypotValue, setHoneypotValue, resetSecurity } = useFormSecurity();
 
   const fields = useMemo(() => content.fields || [], [content.fields]);
   const title = content.title || t("contactUs");
@@ -106,9 +115,52 @@ const FormDefault = ({ content }: { content: FormContent }) => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Form Submitted:", values);
-    setSubmitted(true);
-    // Here you would typically send data to an API
+    setError(null);
+    startTransition(async () => {
+      // Prepare fields for email
+      const emailFields: Record<string, string | number | boolean> = {};
+
+      for (const [key, value] of Object.entries(values)) {
+        if (value instanceof File || fileRefs.current[key]) {
+          // Upload file to R2 and get URL
+          const file = fileRefs.current[key];
+          if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            const uploadResult = await uploadFile(formData, "form-uploads");
+            if (uploadResult.success && uploadResult.data) {
+              emailFields[key] = `${fileNames[key]} - Download: ${uploadResult.data.url}`;
+            } else {
+              emailFields[key] = `${fileNames[key]} (upload failed)`;
+            }
+          } else {
+            emailFields[key] = fileNames[key] || "File attached";
+          }
+        } else if (value !== undefined && value !== null) {
+          emailFields[key] = value as string | number | boolean;
+        }
+      }
+
+      const result = await submitFormEmail({
+        formType: "contact",
+        formTitle: title,
+        fields: emailFields,
+        // Security fields
+        honeypot: honeypotValue,
+        formToken,
+        formStartTime,
+      });
+
+      if (result.success) {
+        setSubmitted(true);
+        form.reset();
+        setFileNames({});
+        fileRefs.current = {};
+        resetSecurity();
+      } else {
+        setError(result.message);
+      }
+    });
   }
 
   if (submitted) {
@@ -147,6 +199,20 @@ const FormDefault = ({ content }: { content: FormContent }) => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {/* Honeypot field - hidden from humans, bots will fill it */}
+            <div className="absolute -left-[9999px] opacity-0 pointer-events-none" aria-hidden="true">
+              <label htmlFor="website_url">Website</label>
+              <input
+                type="text"
+                id="website_url"
+                name="website_url"
+                value={honeypotValue}
+                onChange={(e) => setHoneypotValue(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
           {fields.map((field) => {
                 const isHalf = field.width === "half";
@@ -264,10 +330,10 @@ const FormDefault = ({ content }: { content: FormContent }) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
                                       setFileNames(prev => ({ ...prev, [field.name]: file.name }));
-                                      formField.onChange(file);
+                                      fileRefs.current[field.name] = file;
+                                      formField.onChange(file.name);
                                     }
                                   }}
-                                  // File input value handling is special, don't pass value prop directly
                                 />
                                 <div className="flex items-center border-b border-border pb-2">
                                   <label
@@ -300,14 +366,21 @@ const FormDefault = ({ content }: { content: FormContent }) => {
               })}
             </div>
 
+            {error && (
+              <div className="text-center text-destructive text-sm">
+                {error}
+              </div>
+            )}
+
             <div className="pt-8 flex justify-center">
               <Button
                 type="submit"
                 variant="outline"
                 size="lg"
-                className="w-full md:w-auto min-w-[300px] uppercase tracking-widest h-14 text-lg border-border hover:bg-secondary/10 rounded-none"
+                disabled={isPending}
+                className="w-full md:w-auto min-w-[300px] uppercase tracking-widest h-14 text-lg border-border hover:bg-secondary/10 rounded-none disabled:opacity-50"
               >
-                {submitLabel}
+                {isPending ? t("submitting") : submitLabel}
               </Button>
             </div>
           </form>

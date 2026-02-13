@@ -299,7 +299,9 @@
     "phone": "الهاتف",
     "preferredContact": "وسيلة الاتصال المفضلة",
     "whatsapp": "واتساب",
-    "sendMessage": "إرسال الرسالة"
+    "sendMessage": "إرسال الرسالة",
+    "submitting": "جاري الإرسال...",
+    "submissionError": "فشل إرسال النموذج. يرجى المحاولة مرة أخرى."
   },
   "About": {
     "teamMember": "عضو الفريق",

@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import type { ActionResponse } from "@/lib/types/action-response";
 import { success, failure } from "@/lib/types/action-response";
+import { resolveLocalizedContent } from "@/lib/localized-content";
 import { logActionError } from "@/lib/utils/logger";
 import {
   createCollectionSchema,
@@ -319,17 +320,7 @@ export async function getProjectCards({
 
   return items.map((item) => {
     const rawContent = item.content as Record<string, unknown>;
-
-    let data: unknown = rawContent;
-    const localeContent = rawContent[locale];
-    const fallbackContent = rawContent["en"];
-    if (localeContent && typeof localeContent === "object") {
-      data = localeContent;
-    } else if (fallbackContent && typeof fallbackContent === "object") {
-      data = fallbackContent;
-    }
-
-    const typedData = data as {
+    const typedData = resolveLocalizedContent(rawContent, locale) as {
       title?: string;
       image?: string;
       slug?: string;
@@ -359,7 +350,7 @@ export type PhilosophyItemContent = {
   description?: string;
 };
 
-export async function getPhilosophyItems(collectionId?: string) {
+export async function getPhilosophyItems(collectionId?: string, locale: string = "en") {
   if (!collectionId) {
     return [];
   }
@@ -369,7 +360,10 @@ export async function getPhilosophyItems(collectionId?: string) {
     orderBy: { order: "asc" },
   });
 
-  return collectionItems.map((item) => item.content as PhilosophyItemContent);
+  return collectionItems.map((item) => {
+    const raw = item.content as Record<string, unknown>;
+    return resolveLocalizedContent(raw, locale) as PhilosophyItemContent;
+  });
 }
 
 export async function deleteCollectionItem(itemId: string) {

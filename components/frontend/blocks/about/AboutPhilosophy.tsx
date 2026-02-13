@@ -1,4 +1,5 @@
 import { getPhilosophyItems } from "@/server/actions/collection";
+import { getLocale } from "next-intl/server";
 import { AboutPhilosophyClient } from "./AboutPhilosophy.client";
 
 type AboutPhilosophyProps = {
@@ -20,7 +21,8 @@ export default async function AboutPhilosophy({
   content,
   className,
 }: AboutPhilosophyProps) {
-  const items = await getPhilosophyItems(content.collectionId);
+  const locale = await getLocale();
+  const items = await getPhilosophyItems(content.collectionId, locale);
 
   if (!items.length) return null;
 

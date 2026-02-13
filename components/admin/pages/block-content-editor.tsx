@@ -11,6 +11,7 @@ import {
     BlockSchemaField,
     createListItemDefaults,
 } from "@/lib/block-variants";
+import { syncSharedMediaFields } from "@/lib/localized-content";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -76,10 +77,12 @@ const ListField = ({
   field,
   value,
   onChange,
+  locale = "en",
 }: {
   field: BlockListField;
   value: unknown;
   onChange: (value: Record<string, unknown>[]) => void;
+  locale?: "en" | "ar";
 }) => {
   const items = Array.isArray(value)
     ? value.map((item) => (isRecord(item) ? item : {}))
@@ -165,6 +168,7 @@ const ListField = ({
               onChange={(nestedValue) =>
                 handleNestedChange(index, nestedField.name, nestedValue)
               }
+              locale={locale}
             />
           ))}
         </div>
@@ -182,7 +186,14 @@ interface FieldRendererProps {
 
 const FieldRenderer = ({ field, value, onChange, locale = "en" }: FieldRendererProps) => {
   if (field.type === "list") {
-    return <ListField field={field} value={value} onChange={onChange} />;
+    return (
+      <ListField
+        field={field}
+        value={value}
+        onChange={onChange}
+        locale={locale}
+      />
+    );
   }
 
   const resolved =
@@ -448,6 +459,24 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
     return fullValues;
   }, [fullValues, locale]);
 
+  const syncSharedMediaWithEnglish = useCallback(
+    (nextValues: Record<string, unknown>) => {
+      const enValues = isRecord(nextValues.en)
+        ? (nextValues.en as Record<string, unknown>)
+        : {};
+      const arValues = isRecord(nextValues.ar)
+        ? (nextValues.ar as Record<string, unknown>)
+        : {};
+
+      return {
+        ...nextValues,
+        en: enValues,
+        ar: syncSharedMediaFields(arValues, enValues),
+      };
+    },
+    [],
+  );
+
   const handleFieldChange = (name: string, value: unknown) => {
     // Check if this is a media field that should be shared
     const field = schema?.fields.find(f => f.name === name);
@@ -464,18 +493,18 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
       const enValues = (fullValues.en as Record<string, unknown>) || {};
       const arValues = (fullValues.ar as Record<string, unknown>) || {};
 
-      onChange({
+      onChange(syncSharedMediaWithEnglish({
         ...fullValues,
         en: { ...enValues, [name]: value },
         // Don't save media to AR, it will be merged from EN on render
         ar: arValues,
-      });
+      }));
     } else {
       // Text fields are locale-specific
-      onChange({
+      onChange(syncSharedMediaWithEnglish({
         ...fullValues,
         [locale]: newLocaleValues,
-      });
+      }));
     }
   };
 
@@ -500,7 +529,12 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
             Arabic
           </Button>
         </div>
-        <JsonEditor value={safeValues} onChange={(val) => onChange({ ...fullValues, [locale]: val })} />
+        <JsonEditor
+          value={safeValues}
+          onChange={(val) =>
+            onChange(syncSharedMediaWithEnglish({ ...fullValues, [locale]: val }))
+          }
+        />
       </div>
     );
   }
@@ -554,7 +588,9 @@ const BlockContentEditor = ({ block, onChange }: BlockContentEditorProps) => {
         <div className="mt-3">
           <JsonEditor 
             value={safeValues} 
-            onChange={(val) => onChange({ ...fullValues, [locale]: val })} 
+            onChange={(val) =>
+              onChange(syncSharedMediaWithEnglish({ ...fullValues, [locale]: val }))
+            } 
           />
         </div>
       </details>
