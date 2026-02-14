@@ -1,5 +1,6 @@
 import { FooterRenderer } from "@/components/admin/globals/footers/footer-renderer";
 import { HeaderRenderer } from "@/components/admin/globals/headers/header-renderer";
+import { StickyActionButtons } from "@/components/frontend/globals/sticky-action-buttons";
 
 type MarketingShellProps = {
   locale: string;
@@ -10,6 +11,7 @@ export function MarketingShell({ locale, children }: MarketingShellProps) {
   return (
     <>
       <HeaderRenderer locale={locale} />
+      <StickyActionButtons />
       <main className="w-full">{children}</main>
       <FooterRenderer locale={locale} />
     </>

@@ -299,10 +299,10 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
           <LanguageSwitcher
             currentLocale={locale || "en"}
             className={cn(
-              "h-10 w-10 sm:h-11 sm:w-11 transition-all duration-300",
+              "transition-all duration-300",
               hasScrolled
-                ? "bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 text-foreground"
-                : "bg-white/10 hover:bg-white/20 active:bg-white/25 text-white"
+                ? "text-foreground"
+                : "text-white hover:text-white/80"
             )}
           />
 
