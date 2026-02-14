@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { useThemeStore } from "@/store/theme-store";
-import { getActiveTheme } from "@/server/actions/theme";
 import { ThemeName } from "@/lib/theme-config";
+import { getActiveTheme } from "@/server/actions/theme";
+import { useThemeStore } from "@/store/theme-store";
+import { useEffect } from "react";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setTheme = useThemeStore((state) => state.setTheme);
@@ -16,10 +16,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const result = await getActiveTheme();
         console.log("Theme from database:", result);
 
-        // Get dark mode from localStorage (independent of theme colors)
-        const themeMode = localStorage.getItem("theme-mode") || "dark";
-        const savedMode = themeMode === "dark";
-        console.log("Dark mode from localStorage:", themeMode, "=>", savedMode);
+        // Always force dark mode
+        const savedMode = true;
+        console.log("Dark mode forced: true");
 
         if (result.success && result.theme) {
           // Apply theme color from database
@@ -30,15 +29,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           setTheme(savedTheme);
         }
 
-        // Apply dark mode from localStorage
+        // Apply dark mode
         setIsDark(savedMode);
       } catch (error) {
         console.error("Error loading theme:", error);
 
         // Fallback: load both from localStorage
         const savedTheme = (localStorage.getItem("theme-name") || "default") as ThemeName;
-        const themeMode = localStorage.getItem("theme-mode") || "dark";
-        const savedMode = themeMode === "dark";
+        // Force dark mode
+        const savedMode = true;
 
         setTheme(savedTheme);
         setIsDark(savedMode);

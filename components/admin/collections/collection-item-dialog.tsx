@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaPicker } from "@/components/admin/media/media-picker";
 import { UnitsArrayField } from "@/components/admin/collections/units-array-field";
 import { MultiImagePicker } from "@/components/admin/collections/multi-image-picker";
+import { StatsArrayField } from "@/components/admin/collections/stats-array-field";
 import { createCollectionItem, updateCollectionItem } from "@/server/actions/collection";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -31,6 +32,7 @@ interface Field {
   type: FieldType;
   valueEn: string;
   valueAr: string;
+  required: boolean;
   description?: string;
 }
 
@@ -45,11 +47,61 @@ interface FieldConfig {
 
 const isSharedField = (field: Pick<Field, "key" | "type">) =>
   field.key === "units" ||
+  field.key === "stats" ||
   field.key === "conceptImages" ||
   field.key === "floorPlans" ||
   field.type === "image" ||
   field.type === "video" ||
   field.type === "media";
+
+const hasRequiredValue = (field: Pick<Field, "key" | "type" | "valueEn">) => {
+  const value = field.valueEn.trim();
+
+  if (field.key === "stats") {
+    try {
+      const parsed = JSON.parse(field.valueEn) as unknown;
+      if (!Array.isArray(parsed)) return false;
+
+      return parsed.some((entry) => {
+        if (typeof entry !== "object" || entry === null) return false;
+        const stat = entry as Record<string, unknown>;
+        const statValue = String(stat.value ?? "").trim();
+        const statLabel = String(stat.label ?? "").trim();
+        return statValue.length > 0 && statLabel.length > 0;
+      });
+    } catch {
+      return false;
+    }
+  }
+
+  if (field.key === "units") {
+    try {
+      const parsed = JSON.parse(field.valueEn) as unknown;
+      if (!Array.isArray(parsed)) return false;
+
+      return parsed.some((entry) => {
+        if (typeof entry !== "object" || entry === null) return false;
+        const unit = entry as Record<string, unknown>;
+        return String(unit.type ?? "").trim().length > 0;
+      });
+    } catch {
+      return false;
+    }
+  }
+
+  if (field.key === "conceptImages" || field.key === "floorPlans") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean).length > 0;
+  }
+
+  if (field.type === "boolean") {
+    return value === "true" || value === "false";
+  }
+
+  return value.length > 0;
+};
 
 interface CollectionItemDialogProps {
   collectionId: string;
@@ -106,6 +158,7 @@ export function CollectionItemDialog({
               type: cf.type,
               valueEn: contentEn[cf.key] !== undefined ? String(contentEn[cf.key]) : "",
               valueAr: contentAr[cf.key] !== undefined ? String(contentAr[cf.key]) : "",
+              required: Boolean(cf.required),
               description: cf.description,
             }))
           );
@@ -118,6 +171,7 @@ export function CollectionItemDialog({
               type: cf.type,
               valueEn: "",
               valueAr: "",
+              required: Boolean(cf.required),
               description: cf.description,
             }))
           );
@@ -138,6 +192,12 @@ export function CollectionItemDialog({
     // Validate
     if (fields.some((f) => !f.key)) {
       toast.error("All fields must have a key (name)");
+      return;
+    }
+
+    const missingRequired = fields.filter((field) => field.required && !hasRequiredValue(field));
+    if (missingRequired.length > 0) {
+      toast.error(`Required fields missing: ${missingRequired.map((field) => field.key).join(", ")}`);
       return;
     }
 
@@ -232,6 +292,14 @@ export function CollectionItemDialog({
                         value={field.valueEn}
                         onChange={(value) => updateField(field.id, { valueEn: value })}
                         label={field.key}
+                        required={field.required}
+                      />
+                    ) : field.key === "stats" ? (
+                      <StatsArrayField
+                        value={field.valueEn}
+                        onChange={(value) => updateField(field.id, { valueEn: value })}
+                        label={field.key}
+                        required={field.required}
                       />
                     ) : field.key === "conceptImages" ? (
                       <MultiImagePicker
@@ -275,6 +343,9 @@ export function CollectionItemDialog({
                       <>
                         <Label htmlFor={`${field.id}-en`} className="text-sm font-medium">
                           {field.key}
+                          {field.required && (
+                            <span className="text-destructive ms-1">*</span>
+                          )}
                           {field.description && (
                             <span className="text-xs font-normal text-muted-foreground ms-2">
                               - {field.description}
@@ -302,7 +373,7 @@ export function CollectionItemDialog({
                       </>
                     )}
 
-                    {!["image", "video", "media"].includes(field.type) && !["units", "conceptImages", "floorPlans"].includes(field.key) && field.description && (
+                    {!["image", "video", "media"].includes(field.type) && !["units", "stats", "conceptImages", "floorPlans"].includes(field.key) && field.description && (
                       <p className="text-xs text-muted-foreground">{field.description}</p>
                     )}
                   </div>
@@ -313,7 +384,7 @@ export function CollectionItemDialog({
                 {fields.map((field) => (
                   <div key={`${field.id}-ar`} className="grid w-full gap-1.5">
                     {/* Special handling for shared fields (images/units are shared, text is localized) */}
-                    {field.key === "units" || field.key === "conceptImages" || field.key === "floorPlans" || field.type === "image" || field.type === "video" || field.type === "media" ? (
+                    {field.key === "units" || field.key === "stats" || field.key === "conceptImages" || field.key === "floorPlans" || field.type === "image" || field.type === "video" || field.type === "media" ? (
                       <div className="p-4 bg-muted/20 rounded-lg text-sm text-muted-foreground text-center">
                         <p>⚠️ {field.key} is shared across languages. Edit in English tab.</p>
                       </div>
@@ -321,6 +392,9 @@ export function CollectionItemDialog({
                       <>
                         <Label htmlFor={`${field.id}-ar`} className="text-sm font-medium" dir="rtl">
                           {field.key}
+                          {field.required && (
+                            <span className="text-destructive me-1">*</span>
+                          )}
                           {field.description && (
                             <span className="text-xs font-normal text-muted-foreground me-2">
                               - {field.description}
@@ -350,7 +424,7 @@ export function CollectionItemDialog({
                       </>
                     )}
 
-                    {!["image", "video", "media", "units", "conceptImages", "floorPlans"].includes(field.key) && field.description && (
+                    {!["image", "video", "media", "units", "stats", "conceptImages", "floorPlans"].includes(field.key) && field.description && (
                       <p className="text-xs text-muted-foreground" dir="rtl">{field.description}</p>
                     )}
                   </div>

@@ -13,7 +13,7 @@ export default function ProjectDetailsBlock({ content }: { content: Record<strin
     brochureUrl: (content.brochureUrl as string) || undefined,
     unitsTitle: (content.unitsTitle as string) || undefined,
     unitsSubtitle: (content.unitsSubtitle as string) || undefined,
-    units: (content.units as string) || undefined,
+    unitsOverview: (content.unitsOverview as string) || undefined,
     floorPlans: (content.floorPlans as string) || undefined,
     locationDescription: (content.locationDescription as string) || "",
     mapEmbedUrl: (content.mapEmbedUrl as string) || "",

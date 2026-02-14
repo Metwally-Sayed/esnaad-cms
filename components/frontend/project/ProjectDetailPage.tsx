@@ -5,14 +5,14 @@ import { ProjectConcept } from "./ProjectConcept";
 import { ProjectFloorPlans } from "./ProjectFloorPlans";
 import { ProjectHero } from "./ProjectHero";
 import { ProjectLocation } from "./ProjectLocation";
-import { ProjectStats } from "./ProjectStats";
 import { ProjectStickyNav } from "./ProjectStickyNav";
-import { ProjectUnits, type UnitType } from "./ProjectUnits";
+import { ProjectUnits, type ProjectUnitStat } from "./ProjectUnits";
 import { RegisterInterestForm } from "./RegisterInterestForm";
 
 export type ProjectStat = {
   value: string;
   label: string;
+  description?: string;
 };
 
 export type ProjectData = {
@@ -25,7 +25,7 @@ export type ProjectData = {
   brochureUrl?: string;
   unitsTitle?: string;
   unitsSubtitle?: string;
-  units?: string; // JSON string of UnitType[]
+  unitsOverview?: string;
   floorPlans?: string; // Comma-separated image URLs
   locationDescription: string;
   mapEmbedUrl: string;
@@ -45,12 +45,6 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
   const t = useTranslations("Project");
   const locale = useLocale();
 
-  console.log("=== ProjectDetailPage rendering ===");
-  console.log("Locale:", locale);
-  console.log("Data keys:", Object.keys(data));
-  console.log("Title:", data.title);
-  console.log("Units raw:", data.units?.substring(0, 100));
-
   // Memoize parsed data to prevent recreation on every render
   const conceptImagesArray = useMemo(() => {
     return data.conceptImages
@@ -65,7 +59,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
   }, [data.features]);
 
   // Parse stats JSON string with memoization
-  const statsArray = useMemo<ProjectStat[]>(() => {
+  const statsArray = useMemo<ProjectUnitStat[]>(() => {
     try {
       return data.stats ? JSON.parse(data.stats) : [];
     } catch (error) {
@@ -73,16 +67,6 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
       return [];
     }
   }, [data.stats]);
-
-  // Parse units JSON string with memoization
-  const unitsArray = useMemo<UnitType[]>(() => {
-    try {
-      return data.units ? JSON.parse(data.units) : [];
-    } catch (error) {
-      console.error("Failed to parse units:", error);
-      return [];
-    }
-  }, [data.units]);
 
   // Parse floor plans comma-separated URLs
   const floorPlansArray = useMemo(() => {
@@ -96,8 +80,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
     { id: "concept", label: t('concept') },
     { id: "units", label: t('units') },
     { id: "floor-plans", label: t('floorPlans') },
-    { id: "location", label: t('location') },
-    { id: "amenities", label: t('amenities') }
+    { id: "location", label: t('location') }
   ], [t]);
 
   const conceptLabels = useMemo(() => ({
@@ -140,7 +123,8 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
         <ProjectUnits
           title={data.unitsTitle || t('units')}
           subtitle={data.unitsSubtitle}
-          units={unitsArray}
+          overview={data.unitsOverview}
+          stats={statsArray}
         />
       </section>
 
@@ -160,12 +144,6 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
           labels={locationLabels}
         />
       </section>
-
-      {/* Tab 5: Amenities (ProjectStats) */}
-      <section id="amenities">
-        <ProjectStats stats={statsArray} />
-      </section>
-
       {/* Register Interest Form */}
       <RegisterInterestForm />
     </div>

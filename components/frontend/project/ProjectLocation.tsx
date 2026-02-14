@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 
@@ -16,6 +17,65 @@ type ProjectLocationProps = {
   };
 };
 
+const extractIframeSource = (value: string): string => {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  if (!trimmed.includes("<iframe")) {
+    return trimmed;
+  }
+
+  const srcMatch = trimmed.match(/src\s*=\s*["']([^"']+)["']/i);
+  if (!srcMatch?.[1]) {
+    return "";
+  }
+
+  return srcMatch[1].replace(/&amp;/g, "&").trim();
+};
+
+const toCompactGoogleMapSource = (value: string): string => {
+  try {
+    const parsed = new URL(value);
+    const isGoogleMaps = parsed.hostname.includes("google.") && parsed.pathname.includes("/maps");
+
+    if (!isGoogleMaps) {
+      return value;
+    }
+
+    const pb = parsed.searchParams.get("pb");
+    if (pb) {
+      // Prefer place query extracted from pb to preserve accurate target location.
+      const decodedPb = decodeURIComponent(pb);
+      const placeTokens = [...decodedPb.matchAll(/!2s([^!]+)!/g)]
+        .map((match) => match[1]?.trim())
+        .filter((token): token is string => Boolean(token) && token.length > 2);
+
+      if (placeTokens.length > 0) {
+        const bestPlaceToken = placeTokens[placeTokens.length - 1];
+        return `https://maps.google.com/maps?q=${encodeURIComponent(bestPlaceToken)}&z=16&output=embed`;
+      }
+
+      // Google embed URLs usually contain lng/lat in this token pair.
+      const coordinateMatches = [...decodedPb.matchAll(/!2d(-?\d+(?:\.\d+)?)!3d(-?\d+(?:\.\d+)?)/g)];
+      const coordinateMatch = coordinateMatches.length > 0 ? coordinateMatches[coordinateMatches.length - 1] : null;
+
+      if (coordinateMatch?.[1] && coordinateMatch?.[2]) {
+        const lng = coordinateMatch[1];
+        const lat = coordinateMatch[2];
+        return `https://maps.google.com/maps?ll=${lat},${lng}&z=16&output=embed`;
+      }
+    }
+
+    if (!parsed.searchParams.get("output")) {
+      parsed.searchParams.set("output", "embed");
+    }
+
+    return parsed.toString();
+  } catch {
+    return value;
+  }
+};
+
 export function ProjectLocation({
   description,
   mapEmbedUrl,
@@ -24,6 +84,11 @@ export function ProjectLocation({
   videoTourUrl,
   labels,
 }: ProjectLocationProps) {
+  const mapSource = useMemo(
+    () => toCompactGoogleMapSource(extractIframeSource(mapEmbedUrl)),
+    [mapEmbedUrl]
+  );
+
   return (
     <section id="location" className="min-h-screen snap-start bg-background px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 flex items-center">
       <div className="mx-auto max-w-7xl w-full">
@@ -78,16 +143,21 @@ export function ProjectLocation({
             viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
-            <iframe
-              src={mapEmbedUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Project Location Map"
-            />
+            {mapSource ? (
+              <iframe
+                src={mapSource}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Project Location Map"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/20 px-4 text-center text-sm text-muted-foreground">
+                Invalid map embed value. Paste a Google Maps embed URL or iframe code.
+              </div>
+            )}
           </motion.div>
         </div>
       </div>

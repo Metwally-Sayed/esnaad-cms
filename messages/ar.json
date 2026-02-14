@@ -96,7 +96,7 @@
     "reusableBlock": "بلوك قابل لإعادة الاستخدام مع محتوى مخصص.",
     "composableBlock": "بلوك محتوى قابل للتركيب.",
     "creating": "جاري الإنشاء...",
-    "createPage": "إنشاء صفحة",
+
     "updating": "جاري التحديث...",
     "updatePage": "تحديث الصفحة",
     "addBlockError": "أضف بلوك واحد على الأقل لإنشاء الصفحة.",
@@ -259,6 +259,7 @@
     "contact": "اتصل بنا",
     "registerInterest": "سجل اهتمامك",
     "floorPlans": "مخططات الطوابق",
+    "floorPlan": "مخطط الطابق",
     "keyPlanLevel": "مستوى المخطط الرئيسي",
     "floorRange1": "من الطابق 1 إلى 4",
     "floorRange2": "من الطابق 5 إلى 8",

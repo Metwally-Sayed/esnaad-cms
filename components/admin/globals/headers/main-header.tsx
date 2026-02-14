@@ -277,6 +277,9 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
         <Link
           href={`/${locale || 'en'}`}
           className="relative z-50 flex items-center font-serif tracking-[0.2em] sm:tracking-[0.3em] touch-manipulation"
+          onClick={() => {
+            if (isMenuOpen) toggleMenu();
+          }}
         >
           {logo || (
             <span

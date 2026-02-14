@@ -96,7 +96,7 @@
     "reusableBlock": "Reusable block with custom content.",
     "composableBlock": "Composable content block.",
     "creating": "Creating...",
-    "createPage": "Create page",
+
     "updating": "Updating...",
     "updatePage": "Update page",
     "addBlockError": "Add at least one block to compose the page.",
@@ -259,6 +259,7 @@
     "contact": "Contact Us",
     "registerInterest": "Register Interest",
     "floorPlans": "Floor Plans",
+    "floorPlan": "Floor Plan",
     "keyPlanLevel": "Key Plan Level",
     "floorRange1": "1 TO 4TH FLOOR",
     "floorRange2": "5TH TO 8TH FLOOR",

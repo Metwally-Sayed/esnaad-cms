@@ -1,7 +1,7 @@
 import { GoogleAnalytics } from "@/components/analytics";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { StructuredData } from "@/components/seo/structured-data";
-import { getSiteUrl, buildHreflangAlternates } from "@/lib/site-config";
+import { buildHreflangAlternates, getSiteUrl } from "@/lib/site-config";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
@@ -152,7 +152,7 @@ export default async function Layout({
   const siteUrl = getSiteUrl();
 
   return (
-    <html lang={locale} dir={direction} className="w-full h-full" suppressHydrationWarning>
+    <html lang={locale} dir={direction} className="w-full h-full dark" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <StructuredData locale={locale} siteUrl={siteUrl} />
@@ -161,15 +161,8 @@ export default async function Layout({
             __html: `
               try {
                 const themeName = localStorage.getItem('theme-name') || 'amber';
-                const themeMode = localStorage.getItem('theme-mode');
-                // Default to dark mode if no saved preference
-                const isDark = themeMode === null ? true : themeMode === 'dark';
                 document.documentElement.setAttribute('data-theme', themeName);
-                if (isDark) {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
+                document.documentElement.classList.add('dark');
               } catch (e) {}
             `,
           }}

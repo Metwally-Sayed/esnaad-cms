@@ -233,7 +233,7 @@ export function CreateCollectionDialog() {
                                 className="h-8 text-sm mt-1"
                             />
                         </div>
-                        <div className="col-span-3">
+                        <div className="col-span-2">
                             <Label className="text-xs text-muted-foreground">Type</Label>
                             <Select
                                 value={field.type}
@@ -252,7 +252,16 @@ export function CreateCollectionDialog() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="col-span-4">
+                        <div className="col-span-2">
+                            <Label className="text-xs text-muted-foreground">Required</Label>
+                            <div className="mt-3 flex items-center">
+                                <Checkbox
+                                    checked={field.required}
+                                    onCheckedChange={(checked) => updateField(index, { required: Boolean(checked) })}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-span-3">
                             <Label className="text-xs text-muted-foreground">Description</Label>
                             <Input
                                 value={field.description || ""}

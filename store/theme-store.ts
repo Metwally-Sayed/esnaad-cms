@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { ThemeName } from "@/lib/theme-config";
 import { CMS_CONFIG } from "@/config/cms.config";
+import { ThemeName } from "@/lib/theme-config";
+import { create } from "zustand";
 
 interface ThemeState {
   theme: ThemeName;
@@ -28,32 +28,29 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   },
 
   setIsDark: (isDark) => {
-    console.log("setIsDark called with:", isDark);
-    set({ isDark, mounted: true });
+    // Force true always
+    const forceDark = true;
+    console.log("setIsDark called, enforcing:", forceDark);
+    set({ isDark: forceDark, mounted: true });
     if (typeof window !== "undefined") {
-      if (isDark) {
-        document.documentElement.classList.add("dark");
-        console.log("Added dark class to document");
-      } else {
-        document.documentElement.classList.remove("dark");
-        console.log("Removed dark class from document");
-      }
-      localStorage.setItem("theme-mode", isDark ? "dark" : "light");
-      console.log("Saved to localStorage:", isDark ? "dark" : "light");
+      document.documentElement.classList.add("dark");
+      console.log("Added dark class to document (enforced)");
+      localStorage.setItem("theme-mode", "dark");
     }
   },
 
   toggleDarkMode: () => {
-    const { isDark, setIsDark } = get();
-    setIsDark(!isDark);
+    // Disable toggling, always force dark
+    const { setIsDark } = get();
+    setIsDark(true);
   },
 
   initializeTheme: () => {
     if (typeof window !== "undefined") {
       const savedTheme = (localStorage.getItem("theme-name") || CMS_CONFIG.defaultTheme) as ThemeName;
-      const savedModeValue = localStorage.getItem("theme-mode");
-      // Default to dark mode if no saved preference
-      const savedMode = savedModeValue === null ? true : savedModeValue === "dark";
+      
+      // Always force dark mode
+      const savedMode = true;
 
       set({
         theme: savedTheme,
@@ -63,11 +60,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
 
       // Apply to DOM
       document.documentElement.setAttribute("data-theme", savedTheme);
-      if (savedMode) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
+      document.documentElement.classList.add("dark");
     }
   },
 }));

@@ -21,9 +21,10 @@ interface UnitsArrayFieldProps {
   value: string; // JSON string
   onChange: (value: string) => void;
   label?: string;
+  required?: boolean;
 }
 
-export function UnitsArrayField({ value, onChange, label = "Units" }: UnitsArrayFieldProps) {
+export function UnitsArrayField({ value, onChange, label = "Units", required = false }: UnitsArrayFieldProps) {
   const createEmptyUnit = (): Unit => ({
     type: "",
     size: "",
@@ -108,7 +109,10 @@ export function UnitsArrayField({ value, onChange, label = "Units" }: UnitsArray
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">{label}</Label>
+        <Label className="text-sm font-medium">
+          {label}
+          {required && <span className="ms-1 text-destructive">*</span>}
+        </Label>
         <Button type="button" onClick={addUnit} size="sm" variant="outline">
           <Plus className="h-4 w-4 me-1" />
           Add Unit

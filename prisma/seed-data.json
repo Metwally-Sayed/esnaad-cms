@@ -24,6 +24,141 @@
       "slug": "projects",
       "hasProfilePages": true,
       "profilePageSlugPattern": "/projects/[slug]",
+      "fields": [
+        {
+          "key": "slug",
+          "type": "text",
+          "required": true,
+          "isFixed": true,
+          "description": "Project slug used in /projects/[slug]"
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "required": true,
+          "isFixed": true,
+          "description": "Project title"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "required": true,
+          "isFixed": true,
+          "description": "Card image for project listings"
+        },
+        {
+          "key": "heroImage",
+          "type": "image",
+          "required": true,
+          "isFixed": true,
+          "description": "Hero image on project page"
+        },
+        {
+          "key": "conceptDescription",
+          "type": "textarea",
+          "required": true,
+          "isFixed": true,
+          "description": "Main concept paragraph"
+        },
+        {
+          "key": "conceptImages",
+          "type": "image",
+          "required": true,
+          "isFixed": true,
+          "description": "Grid of concept images"
+        },
+        {
+          "key": "architecture",
+          "type": "text",
+          "required": true,
+          "isFixed": true,
+          "description": "Architecture summary"
+        },
+        {
+          "key": "features",
+          "type": "textarea",
+          "required": true,
+          "isFixed": true,
+          "description": "Comma-separated feature list"
+        },
+        {
+          "key": "brochureUrl",
+          "type": "text",
+          "required": false,
+          "isFixed": true,
+          "description": "Brochure link"
+        },
+        {
+          "key": "unitsTitle",
+          "type": "text",
+          "required": true,
+          "isFixed": false,
+          "description": "Units section title"
+        },
+        {
+          "key": "unitsSubtitle",
+          "type": "textarea",
+          "required": false,
+          "isFixed": false,
+          "description": "Units section subtitle"
+        },
+        {
+          "key": "unitsOverview",
+          "type": "textarea",
+          "required": true,
+          "isFixed": false,
+          "description": "General units overview text displayed under stats"
+        },
+        {
+          "key": "stats",
+          "type": "textarea",
+          "required": true,
+          "isFixed": true,
+          "description": "JSON array of unit stats"
+        },
+        {
+          "key": "floorPlans",
+          "type": "image",
+          "required": false,
+          "isFixed": false,
+          "description": "Floor plan images"
+        },
+        {
+          "key": "locationDescription",
+          "type": "textarea",
+          "required": true,
+          "isFixed": true,
+          "description": "Location description paragraph"
+        },
+        {
+          "key": "mapEmbedUrl",
+          "type": "text",
+          "required": true,
+          "isFixed": true,
+          "description": "Google Maps embed URL"
+        },
+        {
+          "key": "emplacementText",
+          "type": "textarea",
+          "required": true,
+          "isFixed": true,
+          "description": "Location detail text block 1"
+        },
+        {
+          "key": "recreationalText",
+          "type": "textarea",
+          "required": true,
+          "isFixed": true,
+          "description": "Location detail text block 2"
+        },
+        {
+          "key": "videoTourUrl",
+          "type": "text",
+          "required": false,
+          "isFixed": false,
+          "description": "Optional video tour URL"
+        }
+      ],
       "createdAt": "2025-11-21T17:05:00.000Z",
       "updatedAt": "2025-11-21T17:05:00.000Z"
     }
@@ -113,6 +248,9 @@
         "image": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=2000&q=80",
         "stats": "[{\"value\":\"50\",\"label\":\"RESIDENCES\"},{\"value\":\"B+G+5+R\",\"label\":\"FLOORS\"},{\"value\":\"2026\",\"label\":\"DELIVERY\"},{\"value\":\"LEED SILVER\",\"label\":\"CERTIFICATION\"}]",
         "title": "THE SPARK",
+        "unitsTitle": "UNITS",
+        "unitsSubtitle": "A curated mix of one and two-bedroom residences designed for modern urban living.",
+        "unitsOverview": "Every home in The Spark is planned around generous natural light, practical layouts, and premium everyday finishes that elevate daily life.",
         "features": "Full glass façade, Swimming pool, Gym, Sauna & Steam Room, Co-working space, Café & Entrance Lobby, Secured Covered Parking with Dedicated Spaces, Bicycle Parking and Electric Vehicle Charging Stations, 24/7 Dubai Civil Defense Approved Security Systems",
         "heroImage": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=80",
         "brochureUrl": "#",
