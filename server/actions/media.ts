@@ -25,6 +25,22 @@ export type MediaItem = {
 export type CreateMediaItemInput = Omit<MediaItem, "id">;
 export type UpdateMediaItemInput = Partial<CreateMediaItemInput>;
 
+// Normalize content that may be stored in flat or localized (ar/en) format
+function normalizeContent(raw: Record<string, unknown>): Record<string, unknown> {
+  // If content has "en" key with nested object, it's in localized format
+  if (raw.en && typeof raw.en === 'object' && !Array.isArray(raw.en)) {
+    // Use "en" locale as the primary source, fall back to "ar" for missing fields
+    const en = raw.en as Record<string, unknown>;
+    const ar = (raw.ar as Record<string, unknown>) || {};
+    return {
+      ...ar,
+      ...en,
+    };
+  }
+  // Already flat format
+  return raw;
+}
+
 // Get the Media collection
 async function getMediaCollection() {
   const collection = await prisma.collection.findUnique({
@@ -55,12 +71,12 @@ export async function getAllMediaItems(
 
     const mediaItems: MediaItem[] = items
       .filter((item) => {
-        const content = item.content as Record<string, unknown>;
+        const content = normalizeContent(item.content as Record<string, unknown>);
         // Filter out category items - only show actual media posts
         return (content.type as string) !== "category";
       })
       .map((item) => {
-        const content = item.content as Record<string, unknown>;
+        const content = normalizeContent(item.content as Record<string, unknown>);
         return {
           id: item.id,
           nameEn: (content.nameEn as string) || "",
@@ -95,12 +111,12 @@ export async function getAllCategories(): Promise<ActionResponse<MediaItem[]>> {
 
     const categories: MediaItem[] = items
       .filter((item) => {
-        const content = item.content as Record<string, unknown>;
+        const content = normalizeContent(item.content as Record<string, unknown>);
         // Only get category items
         return (content.type as string) === "category";
       })
       .map((item) => {
-        const content = item.content as Record<string, unknown>;
+        const content = normalizeContent(item.content as Record<string, unknown>);
         return {
           id: item.id,
           nameEn: (content.nameEn as string) || "",
@@ -134,7 +150,7 @@ export async function getMediaItemById(itemId: string): Promise<ActionResponse<M
       return failure("Media item not found");
     }
 
-    const content = item.content as Record<string, unknown>;
+    const content = normalizeContent(item.content as Record<string, unknown>);
     const mediaItem: MediaItem = {
       id: item.id,
       nameEn: (content.nameEn as string) || "",

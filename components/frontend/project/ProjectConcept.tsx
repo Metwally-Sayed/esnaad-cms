@@ -1,8 +1,8 @@
 "use client";
 
+import InfiniteMenu from "@/components/InfiniteMenu";
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
-import Image from "next/image";
 
 type ProjectConceptProps = {
   description: string;
@@ -26,11 +26,18 @@ export function ProjectConcept({
   brochureUrl,
   labels,
 }: ProjectConceptProps) {
-  console.log("🎨 ProjectConcept rendering", {
-    description: description?.substring(0, 50),
-    imageCount: images?.length,
-    featuresCount: features?.length
-  });
+
+  if (!images || images.length === 0) {
+    console.warn("ProjectConcept: No images provided for InfiniteMenu");
+    return null;
+  }
+
+  const items = images.map((image) => ({
+    image,
+    link: "",
+    title: "",
+    description: ""
+  }));
 
   return (
     <section id="concept" className="min-h-screen snap-start px-4 sm:px-6 md:px-10 py-12 sm:py-20 lg:py-28 bg-background flex items-center">
@@ -47,30 +54,11 @@ export function ProjectConcept({
         </motion.p>
 
         {/* Image Grid + Concept Details */}
-        <div className="mt-10 sm:mt-16 grid gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Image Grid (6 images in 2x3 layout) */}
-          <motion.div
-            className="grid grid-cols-3 gap-2 sm:gap-4"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {images.slice(0, 6).map((image, index) => (
-              <div
-                key={index}
-                className="relative aspect-square overflow-hidden rounded-sm"
-              >
-                <Image
-                  src={image}
-                  alt={`Concept image ${index + 1}`}
-                  fill
-                  className="object-cover transition-transform duration-500 hover:scale-110"
-                  sizes="(max-width: 768px) 33vw, 16vw"
-                />
-              </div>
-            ))}
-          </motion.div>
+        <div className="mt-10 sm:mt-16 grid gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          {/* Infinite Menu Replacement */}
+          <div className="relative w-full h-[600px] overflow-hidden rounded-lg">
+            <InfiniteMenu items={items} />
+          </div>
 
           {/* Concept Details */}
           <motion.div
@@ -116,8 +104,9 @@ export function ProjectConcept({
               </a>
             )}
           </motion.div>
+
         </div>
       </div>
-    </section>
+    </section >
   );
 }

@@ -1,11 +1,11 @@
 "use client";
 
+import { MediaPicker } from "@/components/admin/media/media-picker";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { MediaPicker } from "@/components/admin/media/media-picker";
-import { Plus, Trash2, GripVertical } from "lucide-react";
-import { useMemo } from "react";
+import { GripVertical, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useMemo } from "react";
 
 interface MultiImagePickerProps {
   value: string; // Comma-separated URLs
@@ -23,13 +23,19 @@ export function MultiImagePicker({
   // Derive images array directly from value prop (fully controlled)
   const images = useMemo(() => {
     if (value) {
-      return value.split(",").map((url) => url.trim()).filter(Boolean);
+      if (value === " ") return [""]; // Handle single empty item state
+      return value.split(",").map((url) => url.trim());
     }
     return [];
   }, [value]);
 
   const updateImages = (newImages: string[]) => {
-    onChange(newImages.filter(Boolean).join(","));
+    // If we have 1 empty image, save as " " to persist the state
+    if (newImages.length === 1 && !newImages[0]) {
+      onChange(" ");
+      return;
+    }
+    onChange(newImages.join(","));
   };
 
   const addImage = () => {

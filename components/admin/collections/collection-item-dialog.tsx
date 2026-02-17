@@ -1,5 +1,9 @@
 "use client";
 
+import { MultiImagePicker } from "@/components/admin/collections/multi-image-picker";
+import { StatsArrayField } from "@/components/admin/collections/stats-array-field";
+import { UnitsArrayField } from "@/components/admin/collections/units-array-field";
+import { MediaPicker } from "@/components/admin/media/media-picker";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,12 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MediaPicker } from "@/components/admin/media/media-picker";
-import { UnitsArrayField } from "@/components/admin/collections/units-array-field";
-import { MultiImagePicker } from "@/components/admin/collections/multi-image-picker";
-import { StatsArrayField } from "@/components/admin/collections/stats-array-field";
+import { Textarea } from "@/components/ui/textarea";
 import { createCollectionItem, updateCollectionItem } from "@/server/actions/collection";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -38,11 +38,11 @@ interface Field {
 
 
 interface FieldConfig {
-    key: string;
-    type: FieldType;
-    required?: boolean;
-    isFixed?: boolean;
-    description?: string;
+  key: string;
+  type: FieldType;
+  required?: boolean;
+  isFixed?: boolean;
+  description?: string;
 }
 
 const isSharedField = (field: Pick<Field, "key" | "type">) =>
@@ -237,12 +237,12 @@ export function CollectionItemDialog({
       } else {
         toast.error(result.error);
       }
-  } catch {
-    toast.error("Failed to save item");
-  } finally {
-    setIsLoading(false);
-  }
-};
+    } catch {
+      toast.error("Failed to save item");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Check if schema is defined
   const hasSchema = !!(collectionFields && collectionFields.length > 0);
@@ -306,14 +306,14 @@ export function CollectionItemDialog({
                         value={field.valueEn}
                         onChange={(value) => updateField(field.id, { valueEn: value })}
                         label="Concept Images"
-                        maxImages={6}
+                        maxImages={20}
                       />
                     ) : field.key === "floorPlans" ? (
                       <MultiImagePicker
                         value={field.valueEn}
                         onChange={(value) => updateField(field.id, { valueEn: value })}
                         label="Floor Plans"
-                        maxImages={10}
+                        maxImages={50}
                       />
                     ) : field.type === "image" ? (
                       <MediaPicker
