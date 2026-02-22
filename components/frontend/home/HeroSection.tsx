@@ -7,6 +7,7 @@ import {
 } from "@/components/frontend/blocks/highlights";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 import { useRef } from "react";
 
 type HeroSectionProps = {
@@ -61,6 +62,7 @@ const HeroSection = ({
   const mediaType = media?.type ?? "video";
   const mediaSource = media?.src ?? DEFAULT_VIDEO;
   const mimeType = inferMimeType(mediaSource);
+  const canRenderImageMedia = /^(https?:\/\/|\/)/i.test(mediaSource);
 
   const containerRef = useRef<HTMLElement>(null);
   
@@ -82,10 +84,22 @@ const HeroSection = ({
         style={{ y, scale, opacity }}
       >
         {mediaType === "image" ? (
-          <div
-            className="absolute inset-0 h-full w-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${mediaSource})` }}
-          />
+          canRenderImageMedia ? (
+            <Image
+              src={mediaSource}
+              alt={brand?.name ? `${brand.name} hero media` : "Hero media"}
+              fill
+              priority
+              quality={100}
+              sizes="100vw"
+              className="object-cover"
+            />
+          ) : (
+            <div
+              className="absolute inset-0 h-full w-full bg-cover bg-center"
+              style={{ backgroundImage: `url(${mediaSource})` }}
+            />
+          )
         ) : (
           <video
             className="absolute inset-0 h-full w-full object-cover"
@@ -93,6 +107,7 @@ const HeroSection = ({
             loop
             muted
             playsInline
+            preload="auto"
             poster={media?.poster || ""}
             suppressHydrationWarning
           >

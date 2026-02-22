@@ -31,7 +31,6 @@ interface FieldConfig {
 interface CollectionItemsListProps {
   collectionId: string;
   collectionSlug?: string;
-  hasProfilePages?: boolean;
   fields?: FieldConfig[] | null;
   items: CollectionItemPreview[];
 }
@@ -45,7 +44,6 @@ type CollectionItemPreview = {
 export function CollectionItemsList({
   collectionId,
   collectionSlug,
-  hasProfilePages,
   fields,
   items,
 }: CollectionItemsListProps) {
@@ -170,7 +168,6 @@ export function CollectionItemsList({
       <CollectionItemDialog
         collectionId={collectionId}
         collectionSlug={collectionSlug}
-        hasProfilePages={hasProfilePages}
         fields={fields}
         item={editingItem || undefined}
         open={isDialogOpen}

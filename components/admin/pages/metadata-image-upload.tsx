@@ -5,6 +5,7 @@ import { FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { uploadFile } from "@/server/actions/upload";
 import { ExternalLink, Upload, X } from "lucide-react";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -25,6 +26,7 @@ export function MetadataImageUpload({
 }: MetadataImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(value || "");
+  const canRenderPreview = /^(https?:\/\/|\/)/i.test(previewUrl);
 
   // Sync previewUrl with value prop when it changes (e.g., form data loads asynchronously)
   useEffect(() => {
@@ -90,16 +92,25 @@ export function MetadataImageUpload({
       <div className="space-y-3">
         {/* Image Preview */}
         {previewUrl && (
-          <div className="relative w-full rounded-lg border bg-muted overflow-hidden">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-full h-48 object-cover"
-              onError={() => {
-                toast.error("Failed to load image");
-                setPreviewUrl("");
-              }}
-            />
+          <div className="relative h-48 w-full overflow-hidden rounded-lg border bg-muted">
+            {canRenderPreview ? (
+              <Image
+                src={previewUrl}
+                alt="Preview"
+                fill
+                quality={100}
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-cover"
+                onError={() => {
+                  toast.error("Failed to load image");
+                  setPreviewUrl("");
+                }}
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center px-4 text-sm text-muted-foreground">
+                Invalid image URL
+              </div>
+            )}
             <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
               <Button
                 type="button"

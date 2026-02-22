@@ -1,9 +1,6 @@
-
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -14,193 +11,211 @@ type ProjectFloorPlansProps = {
 
 export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
   const t = useTranslations("Project");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
-  const thumbnailsRef = useRef<HTMLDivElement>(null);
+  const AUTO_SLIDE_MS = 5000;
+  const SWIPE_THRESHOLD_PX = 70;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const safeImages = floorPlans || [];
+  const imageCount = safeImages.length;
 
-  const nextPlan = () => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % floorPlans.length);
+  const normalizeIndex = (index: number) => {
+    if (imageCount === 0) return 0;
+    return ((index % imageCount) + imageCount) % imageCount;
   };
 
-  const prevPlan = () => {
+  const previousIndex = normalizeIndex(activeIndex - 1);
+  const nextIndex = normalizeIndex(activeIndex + 1);
+
+  const goToPrev = () => {
     setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + floorPlans.length) % floorPlans.length);
+    setActiveIndex(previousIndex);
   };
 
-  const goToPlan = (index: number) => {
-    setDirection(index > currentIndex ? 1 : -1);
-    setCurrentIndex(index);
+  const goToNext = () => {
+    setDirection(1);
+    setActiveIndex(nextIndex);
   };
 
-  // Scroll thumbnails to keep active one in view
-  useEffect(() => {
-    if (thumbnailsRef.current) {
-      const activeThumbnail = thumbnailsRef.current.children[currentIndex] as HTMLElement;
-      if (activeThumbnail) {
-        thumbnailsRef.current.scrollTo({
-          left: activeThumbnail.offsetLeft - thumbnailsRef.current.offsetWidth / 2 + activeThumbnail.offsetWidth / 2,
-          behavior: 'smooth'
-        });
-      }
-    }
-  }, [currentIndex]);
+  const goToIndex = (index: number) => {
+    const target = normalizeIndex(index);
+    setDirection(target >= activeIndex ? 1 : -1);
+    setActiveIndex(target);
+  };
 
-  // Auto-scroll functionality using ref pattern to avoid dependency issues
-  const autoScrollCallback = useRef(() => { });
+  const autoAdvanceRef = useRef<() => void>(() => {});
 
-  // Update ref to always have the latest state/props
   useEffect(() => {
-    autoScrollCallback.current = () => {
-      if (!isHovering && floorPlans.length > 1) {
-        setDirection(1);
-        setCurrentIndex((prev) => (prev + 1) % floorPlans.length);
-      }
+    autoAdvanceRef.current = () => {
+      if (imageCount <= 1) return;
+      setDirection(1);
+      setActiveIndex((prev) => ((prev + 1) % imageCount + imageCount) % imageCount);
     };
-  });
+  }, [imageCount]);
 
-  // Set up the interval once
   useEffect(() => {
-    const tick = () => autoScrollCallback.current();
-    const interval = setInterval(tick, 3000); // 3 seconds
-    return () => clearInterval(interval);
-  }, []); // Empty dependency array = truly stable interval
+    if (imageCount <= 1) return;
+    const timer = setInterval(() => {
+      autoAdvanceRef.current();
+    }, AUTO_SLIDE_MS);
+    return () => clearInterval(timer);
+  }, [imageCount, AUTO_SLIDE_MS]);
 
-  // If no floor plans provided, show message
-  if (!floorPlans || floorPlans.length === 0) {
+  if (imageCount === 0) {
     return (
       <section id="floor-plans" className="min-h-screen snap-start bg-background py-20 flex items-center">
-        <div className="container mx-auto px-4 w-full">
-          <h2 className="mb-12 font-serif text-3xl text-foreground md:text-4xl">
-            {t('floorPlans')}
-          </h2>
-          <div className="text-center text-muted-foreground">
-            <p>{t('noFloorPlansAvailable') || 'No floor plans available'}</p>
-          </div>
+        <div className="container mx-auto w-full px-4 text-center text-muted-foreground">
+          <p>{t("noFloorPlansAvailable") || "No floor plans available"}</p>
         </div>
       </section>
     );
   }
 
-  const variants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0
-    }),
-    center: {
-      zIndex: 1,
-      x: 0,
-      opacity: 1
-    },
-    exit: (direction: number) => ({
-      zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0
-    })
-  };
-
   return (
-    <section id="floor-plans" className="min-h-screen snap-start bg-background py-20 flex items-center overflow-hidden">
-      <div className="container mx-auto px-4 w-full h-full flex flex-col justify-center">
-        <h2 className="mb-8 font-serif text-3xl text-foreground md:text-4xl text-center">
-          {t('floorPlans')}
-        </h2>
+    <section id="floor-plans" className="min-h-screen snap-start bg-[#060606] px-4 py-12 sm:px-6 sm:py-16 md:px-10 lg:py-20">
+      <div className="mx-auto w-full max-w-[1720px]">
+        <div className="relative overflow-hidden rounded-2xl bg-[#090909]">
+          <div className="px-4 pt-6 sm:px-8 sm:pt-8 lg:px-12">
+            <h2 className="text-center font-serif text-3xl font-light uppercase tracking-[0.12em] text-white sm:text-4xl">
+              {t("floorPlans")}
+            </h2>
+          </div>
 
-        <div
-          className="relative flex flex-col items-center w-full max-w-6xl mx-auto"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-        >
-          {/* Main Slider */}
-          <div className="relative aspect-[16/9] w-full bg-transparent rounded-lg overflow-hidden">
-            <AnimatePresence initial={false} custom={direction}>
-              <motion.div
-                key={currentIndex}
-                custom={direction}
-                variants={variants}
+          <div className="relative pt-4 sm:pt-6">
+            <div className="relative h-[64vw] min-h-[280px] max-h-[780px] overflow-hidden sm:h-[58vw] lg:h-[44vw]">
+              <AnimatePresence initial={false} custom={direction}>
+                <motion.div
+                  key={`floor-plan-strip-${activeIndex}`}
+                  custom={direction}
+                  className="absolute inset-0 grid grid-cols-1 gap-4 will-change-transform lg:grid-cols-[1fr_2.35fr_1fr] lg:gap-6"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.06}
+                  onDragEnd={(_, info) => {
+                    const offsetX = info.offset.x;
+                    const velocityX = info.velocity.x;
+                    if (offsetX <= -SWIPE_THRESHOLD_PX || velocityX <= -420) {
+                      goToNext();
+                    } else if (offsetX >= SWIPE_THRESHOLD_PX || velocityX >= 420) {
+                      goToPrev();
+                    }
+                  }}
+                variants={{
+                  enter: (dir: 1 | -1) => ({
+                    x: dir > 0 ? 120 : -120,
+                    opacity: 1,
+                  }),
+                  center: {
+                    x: 0,
+                    opacity: 1,
+                  },
+                  exit: (dir: 1 | -1) => ({
+                    x: dir > 0 ? -120 : 120,
+                    opacity: 0,
+                  }),
+                }}
                 initial="enter"
                 animate="center"
                 exit="exit"
                 transition={{
-                  x: { type: "spring", stiffness: 300, damping: 30 },
-                  opacity: { duration: 0.2 }
+                  x: { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
+                  opacity: { duration: 0.08, ease: "linear" },
                 }}
-                className="absolute inset-0 flex items-center justify-center p-4 md:p-8"
               >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={floorPlans[currentIndex]}
-                    alt={`Floor Plan ${currentIndex + 1}`}
-                    fill
-                    className="object-contain"
-                    priority={true}
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                  <button
+                    type="button"
+                    onClick={goToPrev}
+                    className="relative hidden h-full overflow-hidden bg-black lg:block"
+                    aria-label="Previous floor plan"
+                  >
+                    <Image
+                      src={safeImages[previousIndex]}
+                      alt="Previous floor plan"
+                      fill
+                      quality={100}
+                      className="object-cover opacity-95 transition-opacity hover:opacity-100"
+                      sizes="20vw"
+                    />
+                  </button>
 
-            {/* Navigation Controls */}
-            {floorPlans.length > 1 && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={prevPlan}
-                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 rounded-full bg-background/80 hover:bg-background border border-border shadow-sm z-10 transition-transform active:scale-95"
-                >
-                  <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={nextPlan}
-                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 rounded-full bg-background/80 hover:bg-background border border-border shadow-sm z-10 transition-transform active:scale-95"
-                >
-                  <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-                </Button>
-              </>
-            )}
-          </div>
+                  <div className="relative h-full overflow-hidden bg-black touch-pan-y">
+                    <Image
+                      src={safeImages[activeIndex]}
+                      alt={`Floor Plan ${activeIndex + 1}`}
+                      fill
+                      priority
+                      quality={100}
+                      className="object-cover select-none"
+                      draggable={false}
+                      sizes="(max-width: 1024px) 100vw, 60vw"
+                    />
+                  </div>
 
-          <div className="mt-6 text-center">
-            <h3 className="font-serif text-xl md:text-2xl uppercase text-foreground">
-              {t('floorPlan')} {currentIndex + 1} <span className="text-muted-foreground mx-1">/</span> {floorPlans.length}
-            </h3>
-            <p className="text-xs md:text-sm uppercase tracking-widest text-muted-foreground mt-1">
-              {t('keyPlanLevel')}
-            </p>
-          </div>
-
-          {/* Thumbnails Strip */}
-          {floorPlans.length > 1 && (
-            <div
-              ref={thumbnailsRef}
-              className="mt-8 flex gap-3 overflow-x-auto w-full max-w-4xl px-4 py-2 scrollbar-none snap-x"
-              style={{ scrollBehavior: 'smooth' }}
-            >
-              {floorPlans.map((plan, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToPlan(index)}
-                  className={`
-                    relative flex-shrink-0 w-20 h-14 md:w-24 md:h-16 rounded overflow-hidden border-2 transition-all duration-300 snap-center
-                    ${index === currentIndex
-                      ? "border-primary opacity-100 scale-105 shadow-md"
-                      : "border-transparent opacity-60 hover:opacity-100 grayscale hover:grayscale-0"}
-                  `}
-                >
-                  <Image
-                    src={plan}
-                    alt={`Thumbnail ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="100px"
-                  />
-                </button>
-              ))}
+                  <button
+                    type="button"
+                    onClick={goToNext}
+                    className="relative hidden h-full overflow-hidden bg-black lg:block"
+                    aria-label="Next floor plan"
+                  >
+                    <Image
+                      src={safeImages[nextIndex]}
+                      alt="Next floor plan"
+                      fill
+                      quality={100}
+                      className="object-cover opacity-95 transition-opacity hover:opacity-100"
+                      sizes="20vw"
+                    />
+                  </button>
+                </motion.div>
+              </AnimatePresence>
             </div>
-          )}
+
+            <div className="flex items-center justify-center gap-3 pb-6 pt-4 sm:pb-8">
+              {safeImages.map((_, index) => {
+                const isActive = index === activeIndex;
+                return (
+                  <button
+                    key={`floor-plan-dot-${index}`}
+                    type="button"
+                    onClick={() => goToIndex(index)}
+                    aria-label={`Go to floor plan ${index + 1}`}
+                    className="group relative h-4 w-4"
+                  >
+                    <span
+                      className={`absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all ${
+                        isActive ? "bg-white" : "bg-white/35 group-hover:bg-white/60"
+                      }`}
+                    />
+                    {isActive ? (
+                      <motion.svg
+                        key={`floor-plan-dot-progress-${activeIndex}`}
+                        className="absolute inset-0"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden
+                      >
+                        <motion.circle
+                          cx="8"
+                          cy="8"
+                          r="7.5"
+                          stroke="rgba(255,255,255,0.8)"
+                          strokeWidth="1"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{
+                            duration: AUTO_SLIDE_MS / 1000,
+                            ease: "linear",
+                          }}
+                        />
+                      </motion.svg>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-20 bg-gradient-to-r from-[#060606] to-transparent lg:block" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-20 bg-gradient-to-l from-[#060606] to-transparent lg:block" />
+          </div>
         </div>
       </div>
     </section>

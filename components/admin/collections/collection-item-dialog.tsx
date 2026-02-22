@@ -5,6 +5,7 @@ import { StatsArrayField } from "@/components/admin/collections/stats-array-fiel
 import { UnitsArrayField } from "@/components/admin/collections/units-array-field";
 import { MediaPicker } from "@/components/admin/media/media-picker";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -16,9 +17,21 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { createCollectionItem, updateCollectionItem } from "@/server/actions/collection";
+import {
+  createCollectionItem,
+  getProjectRelationOptions,
+  updateCollectionItem,
+  type ProjectRelationOption,
+} from "@/server/actions/collection";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -106,7 +119,6 @@ const hasRequiredValue = (field: Pick<Field, "key" | "type" | "valueEn">) => {
 interface CollectionItemDialogProps {
   collectionId: string;
   collectionSlug?: string;
-  hasProfilePages?: boolean;
   fields?: FieldConfig[] | null;
   item?: { id: string; content: Record<string, unknown> }; // If provided, we are editing
   trigger?: React.ReactNode;
@@ -116,8 +128,7 @@ interface CollectionItemDialogProps {
 
 export function CollectionItemDialog({
   collectionId,
-  collectionSlug: _collectionSlug,
-  hasProfilePages: _hasProfilePages,
+  collectionSlug,
   fields: collectionFields,
   item,
   trigger,
@@ -128,9 +139,14 @@ export function CollectionItemDialog({
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
   const setOpen = isControlled ? onOpenChange! : setInternalOpen;
+  const isWhatWeBuildCollection = collectionSlug === "what-we-build";
 
   const [fields, setFields] = useState<Field[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasRelatedProject, setHasRelatedProject] = useState(false);
+  const [relatedProjectId, setRelatedProjectId] = useState("");
+  const [projectOptions, setProjectOptions] = useState<ProjectRelationOption[]>([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const router = useRouter();
   const t = useTranslations("Collections.itemDialog");
 
@@ -151,6 +167,16 @@ export function CollectionItemDialog({
             ? rawContent.ar as Record<string, unknown>
             : {} as Record<string, unknown>;
 
+          const existingRelatedProjectId =
+            typeof contentEn.relatedProjectId === "string"
+              ? contentEn.relatedProjectId
+              : typeof rawContent.relatedProjectId === "string"
+              ? rawContent.relatedProjectId
+              : "";
+
+          setRelatedProjectId(existingRelatedProjectId);
+          setHasRelatedProject(Boolean(existingRelatedProjectId));
+
           setFields(
             collectionFields.map((cf, i) => ({
               id: `field-${i}`,
@@ -164,6 +190,8 @@ export function CollectionItemDialog({
           );
         } else {
           // New item - start with empty values
+          setHasRelatedProject(false);
+          setRelatedProjectId("");
           setFields(
             collectionFields.map((cf, i) => ({
               id: `field-${i}`,
@@ -184,6 +212,38 @@ export function CollectionItemDialog({
     }
   }, [open, item, collectionFields]);
 
+  useEffect(() => {
+    if (!open || !isWhatWeBuildCollection) return;
+
+    let active = true;
+    setIsLoadingProjects(true);
+
+    getProjectRelationOptions("en")
+      .then((result) => {
+        if (!active) return;
+        if (result.success && result.data) {
+          setProjectOptions(result.data);
+          return;
+        }
+        setProjectOptions([]);
+        toast.error(!result.success ? result.error : "Failed to load projects");
+      })
+      .catch(() => {
+        if (!active) return;
+        setProjectOptions([]);
+        toast.error("Failed to load projects");
+      })
+      .finally(() => {
+        if (active) {
+          setIsLoadingProjects(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [open, isWhatWeBuildCollection]);
+
   const updateField = (id: string, updates: Partial<Field>) => {
     setFields(fields.map((f) => (f.id === id ? { ...f, ...updates } : f)));
   };
@@ -200,6 +260,10 @@ export function CollectionItemDialog({
       toast.error(`Required fields missing: ${missingRequired.map((field) => field.key).join(", ")}`);
       return;
     }
+    if (isWhatWeBuildCollection && hasRelatedProject && !relatedProjectId) {
+      toast.error("Please select a related project");
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -213,6 +277,16 @@ export function CollectionItemDialog({
         fieldContentAr[f.key] = isSharedField(f) ? f.valueEn : f.valueAr;
         schema.push({ key: f.key, type: f.type });
       });
+
+      if (isWhatWeBuildCollection) {
+        if (hasRelatedProject && relatedProjectId) {
+          fieldContentEn.relatedProjectId = relatedProjectId;
+          fieldContentAr.relatedProjectId = relatedProjectId;
+        } else {
+          delete fieldContentEn.relatedProjectId;
+          delete fieldContentAr.relatedProjectId;
+        }
+      }
 
       fieldContentEn._schema = schema;
       fieldContentAr._schema = schema;
@@ -284,6 +358,54 @@ export function CollectionItemDialog({
               </TabsList>
 
               <TabsContent value="en" className="space-y-4 mt-4">
+                {isWhatWeBuildCollection && (
+                  <div className="rounded-lg border p-4 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Checkbox
+                        id="related-project-enabled"
+                        checked={hasRelatedProject}
+                        onCheckedChange={(checked) => {
+                          const enabled = Boolean(checked);
+                          setHasRelatedProject(enabled);
+                          if (!enabled) {
+                            setRelatedProjectId("");
+                          }
+                        }}
+                      />
+                      <div className="space-y-1">
+                        <Label htmlFor="related-project-enabled" className="cursor-pointer">
+                          Link this item to a project page
+                        </Label>
+                        <p className="text-xs text-muted-foreground">
+                          Optional. If enabled, users will navigate to the selected project page.
+                        </p>
+                      </div>
+                    </div>
+                    {hasRelatedProject && (
+                      <div className="space-y-2">
+                        <Label htmlFor="related-project-id">Related project</Label>
+                        <Select
+                          value={relatedProjectId || undefined}
+                          onValueChange={setRelatedProjectId}
+                          disabled={isLoadingProjects}
+                        >
+                          <SelectTrigger id="related-project-id">
+                            <SelectValue
+                              placeholder={isLoadingProjects ? "Loading projects..." : "Select project"}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {projectOptions.map((project) => (
+                              <SelectItem key={project.id} value={project.id}>
+                                {project.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {fields.map((field) => (
                   <div key={`${field.id}-en`} className="grid w-full gap-1.5">
                     {/* Special handling for shared fields (images are language-independent) */}

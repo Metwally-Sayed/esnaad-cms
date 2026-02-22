@@ -3,7 +3,8 @@
 import { useFormContext, useWatch } from "react-hook-form";
 import type { PageDetailsFormValues } from "@/lib/validators/page";
 import { cn } from "@/lib/utils";
-import { Globe, Twitter, Facebook, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { Globe, Twitter, Facebook, CheckCircle2, AlertCircle } from "lucide-react";
+import Image from "next/image";
 
 // Character limits for optimal SEO
 const LIMITS = {
@@ -16,6 +17,9 @@ const LIMITS = {
 };
 
 type LimitKey = keyof typeof LIMITS;
+
+const isRenderableImageSrc = (value?: string | null) =>
+  Boolean(value && /^(https?:\/\/|\/)/i.test(value));
 
 function CharacterCounter({ value, limitKey }: { value: string; limitKey: LimitKey }) {
   const count = value?.length || 0;
@@ -91,6 +95,7 @@ export function SocialPreview() {
   const ogDescription = useWatch({ control: form.control, name: "metadata.ogDescription" });
   const seoDescription = useWatch({ control: form.control, name: "metadata.seoDescription" });
   const ogImage = useWatch({ control: form.control, name: "metadata.ogImage" });
+  const canRenderOgImage = isRenderableImageSrc(ogImage);
 
   const displayTitle = ogTitle || seoTitle || title || "Page Title";
   const displayDescription = ogDescription || seoDescription || "Add a description for social media sharing...";
@@ -101,9 +106,16 @@ export function SocialPreview() {
         <Facebook className="h-3.5 w-3.5" />
         <span>Facebook / LinkedIn Preview</span>
       </div>
-      <div className="aspect-[1.91/1] bg-muted flex items-center justify-center">
-        {ogImage ? (
-          <img src={ogImage} alt="OG Preview" className="w-full h-full object-cover" />
+      <div className="relative aspect-[1.91/1] bg-muted flex items-center justify-center">
+        {canRenderOgImage ? (
+          <Image
+            src={ogImage!}
+            alt="OG Preview"
+            fill
+            quality={100}
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 700px"
+          />
         ) : (
           <div className="text-muted-foreground text-sm">1200 x 630px recommended</div>
         )}
@@ -136,6 +148,7 @@ export function TwitterPreview() {
   const displayTitle = twitterTitle || seoTitle || title || "Page Title";
   const displayDescription = twitterDescription || ogDescription || seoDescription || "Add a description...";
   const displayImage = twitterImage || ogImage;
+  const canRenderDisplayImage = isRenderableImageSrc(displayImage);
 
   return (
     <div className="rounded-xl border bg-white dark:bg-zinc-900 overflow-hidden">
@@ -143,9 +156,16 @@ export function TwitterPreview() {
         <Twitter className="h-3.5 w-3.5" />
         <span>Twitter / X Preview</span>
       </div>
-      <div className="aspect-[2/1] bg-muted flex items-center justify-center">
-        {displayImage ? (
-          <img src={displayImage} alt="Twitter Preview" className="w-full h-full object-cover" />
+      <div className="relative aspect-[2/1] bg-muted flex items-center justify-center">
+        {canRenderDisplayImage ? (
+          <Image
+            src={displayImage!}
+            alt="Twitter Preview"
+            fill
+            quality={100}
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 700px"
+          />
         ) : (
           <div className="text-muted-foreground text-sm">1200 x 600px recommended</div>
         )}

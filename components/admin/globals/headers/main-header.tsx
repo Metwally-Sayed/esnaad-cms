@@ -4,6 +4,7 @@ import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { cn } from "@/lib/utils";
 import { useHeaderStore } from "@/store/header-store";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
@@ -12,17 +13,16 @@ interface AnimatedMenuIconProps {
   isOpen: boolean;
   onClick: () => void;
   className?: string;
-  hasScrolled?: boolean;
 }
 
-const AnimatedMenuIcon = ({ isOpen, onClick, className, hasScrolled }: AnimatedMenuIconProps) => {
+const AnimatedMenuIcon = ({ isOpen, onClick, className }: AnimatedMenuIconProps) => {
   return (
     <div
       onClick={onClick}
       className={cn(
         "header__burger",
         isOpen && "header__burger--opened",
-        hasScrolled ? "text-foreground" : "text-white",
+        "text-white",
         className
       )}
       id="js-burger"
@@ -39,9 +39,9 @@ const AnimatedMenuIcon = ({ isOpen, onClick, className, hasScrolled }: AnimatedM
         }
       }}
     >
-      <div className={cn("header__burger-line", hasScrolled ? "bg-foreground" : "bg-white")}></div>
-      <div className={cn("header__burger-line", hasScrolled ? "bg-foreground" : "bg-white")}></div>
-      <div className={cn("header__burger-line", hasScrolled ? "bg-foreground" : "bg-white")}></div>
+      <div className={cn("header__burger-line", "bg-current")}></div>
+      <div className={cn("header__burger-line", "bg-current")}></div>
+      <div className={cn("header__burger-line", "bg-current")}></div>
     </div>
   );
 };
@@ -98,9 +98,6 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
   // Get header data from Zustand store
   const headerData = useHeaderStore((state) => state.headerData);
 
-  console.log(headerData, "headerData");
-
-
   // Helper function to map database links to NavLink format
   const mapLinksToNavLinks = (dbLinks: DbLink[]): NavLink[] => {
     // We need to know the current locale to pick correct name
@@ -144,8 +141,6 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
     (headerData?.links ? mapLinksToNavLinks(headerData.links) : undefined) ||
     (initialData?.links ? mapLinksToNavLinks(initialData.links) : undefined) ||
     mapLinksToNavLinks(defaultLinks);
-
-  console.log(navLinks, "navLinks");
 
   const toggleSubmenu = useCallback((linkName: string) => {
     setExpandedMenus(prev => {
@@ -194,12 +189,9 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
     const currentScrollY = latest;
 
     // Set hasScrolled if user scrolled past 20px (more responsive)
-    if (currentScrollY > 20) {
-      setHasScrolled(true);
-    } else {
-      setHasScrolled(false);
-    }
+    setHasScrolled(currentScrollY > 20);
   });
+  const useAdaptiveBlendTone = !hasScrolled && !isMenuOpen;
 
   const toggleMenu = useCallback(async () => {
     if (!menuButtonRef.current) {
@@ -268,28 +260,37 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
           // iOS safe area support
           "pt-[max(0.75rem,env(safe-area-inset-top))] sm:pt-[max(1rem,env(safe-area-inset-top))]",
           "pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]",
-          "bg-transparent border-b border-transparent transition-colors duration-300",
-          hasScrolled ? "text-foreground" : "text-white",
+          "transition-colors duration-300",
+          useAdaptiveBlendTone && "mix-blend-difference text-white",
+          hasScrolled
+            ? "bg-background border-b border-foreground/10 text-foreground"
+            : "bg-transparent border-b border-transparent text-white",
           className
         )}
       >
         {/* Logo */}
         <Link
           href={`/${locale || 'en'}`}
-          className="relative z-50 flex items-center font-serif tracking-[0.2em] sm:tracking-[0.3em] touch-manipulation"
+          className={cn(
+            "relative z-50 flex items-center font-serif tracking-[0.2em] sm:tracking-[0.3em] touch-manipulation"
+          )}
           onClick={() => {
             if (isMenuOpen) toggleMenu();
           }}
         >
           {logo || (
-            <span
+            <Image
+              src={locale === "ar" ? "/logo-ar.svg" : "/logo-en.webp"}
+              alt="Esnaad"
+              width={168}
+              height={44}
               className={cn(
-                "text-base sm:text-xl font-semibold transition-colors duration-300",
-                hasScrolled ? "text-foreground" : "text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                "h-auto w-[120px] sm:w-[150px] transition-all duration-300",
+                "brightness-0 invert",
+                !useAdaptiveBlendTone && "drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
               )}
-            >
-              ESNAAD
-            </span>
+              priority
+            />
           )}
         </Link>
 
@@ -300,9 +301,7 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
             currentLocale={locale || "en"}
             className={cn(
               "transition-all duration-300",
-              hasScrolled
-                ? "text-foreground"
-                : "text-white hover:text-white/80"
+              "text-white hover:text-white/80"
             )}
           />
 
@@ -319,7 +318,10 @@ export function MainHeader({ logo, links, className, initialData, locale }: Main
 
           {/* Menu Button */}
           <div ref={menuButtonRef}>
-            <AnimatedMenuIcon isOpen={isMenuOpen} onClick={toggleMenu} hasScrolled={hasScrolled} />
+            <AnimatedMenuIcon
+              isOpen={isMenuOpen}
+              onClick={toggleMenu}
+            />
           </div>
         </div>
       </motion.header>

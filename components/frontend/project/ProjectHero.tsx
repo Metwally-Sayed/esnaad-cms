@@ -49,7 +49,7 @@ export function ProjectHero({ heroImage, title }: ProjectHeroProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          {title}
+          {/* {title} */}
         </motion.h1>
       </div>
     </section>

@@ -302,6 +302,58 @@ export type ProjectCard = {
   actionType?: "button" | "link";
 };
 
+export type ProjectRelationOption = {
+  id: string;
+  title: string;
+  link?: string;
+};
+
+export async function getProjectRelationOptions(
+  locale: string = "en"
+): Promise<ActionResponse<ProjectRelationOption[]>> {
+  try {
+    const projectItems = await prisma.collectionItem.findMany({
+      where: {
+        collection: {
+          slug: "projects",
+        },
+      },
+      include: {
+        page: {
+          select: {
+            slug: true,
+          },
+        },
+      },
+      orderBy: { order: "asc" },
+    });
+
+    const options = projectItems.map((item) => {
+      const rawContent = item.content as Record<string, unknown>;
+      const typedData = resolveLocalizedContent(rawContent, locale) as {
+        title?: string;
+        slug?: string;
+      };
+
+      const fallbackLink = typedData.slug ? `/projects/${typedData.slug}` : undefined;
+
+      return {
+        id: item.id,
+        title: typedData.title || typedData.slug || item.id,
+        link: item.page?.slug || fallbackLink,
+      };
+    });
+
+    return success(options);
+  } catch (error) {
+    logActionError("getProjectRelationOptions", error);
+    if (error instanceof Error) {
+      return failure(error.message);
+    }
+    return failure("Failed to fetch project options");
+  }
+}
+
 export async function getProjectCards({
   collectionId,
   locale,
@@ -318,7 +370,8 @@ export async function getProjectCards({
     orderBy: { order: "asc" },
   });
 
-  return items.map((item) => {
+  const relatedProjectIds = new Set<string>();
+  const localizedItems = items.map((item) => {
     const rawContent = item.content as Record<string, unknown>;
     const typedData = resolveLocalizedContent(rawContent, locale) as {
       title?: string;
@@ -327,9 +380,61 @@ export async function getProjectCards({
       link?: string;
       actionLabel?: string;
       actionType?: "button" | "link";
+      relatedProjectId?: string;
     };
 
+    const relatedProjectId =
+      typeof typedData.relatedProjectId === "string"
+        ? typedData.relatedProjectId.trim()
+        : "";
+
+    if (relatedProjectId) {
+      relatedProjectIds.add(relatedProjectId);
+    }
+
+    return {
+      itemId: item.id,
+      typedData,
+      relatedProjectId,
+    };
+  });
+
+  const relatedProjectLinkById = new Map<string, string>();
+  if (relatedProjectIds.size > 0) {
+    const relatedProjects = await prisma.collectionItem.findMany({
+      where: {
+        id: { in: Array.from(relatedProjectIds) },
+        collection: {
+          slug: "projects",
+        },
+      },
+      include: {
+        page: {
+          select: {
+            slug: true,
+          },
+        },
+      },
+    });
+
+    relatedProjects.forEach((projectItem) => {
+      const projectContent = resolveLocalizedContent(
+        projectItem.content as Record<string, unknown>,
+        locale
+      ) as { slug?: string };
+      const fallbackLink = projectContent.slug ? `/projects/${projectContent.slug}` : undefined;
+      const link = projectItem.page?.slug || fallbackLink;
+      if (link) {
+        relatedProjectLinkById.set(projectItem.id, link);
+      }
+    });
+  }
+
+  return localizedItems.map(({ typedData, relatedProjectId }) => {
     let finalLink = typedData.link;
+    if (relatedProjectId && relatedProjectLinkById.has(relatedProjectId)) {
+      finalLink = relatedProjectLinkById.get(relatedProjectId);
+    }
     if (!finalLink && typedData.slug) {
       finalLink = `/projects/${typedData.slug}`;
     }
@@ -348,6 +453,7 @@ export type PhilosophyItemContent = {
   image?: string;
   title?: string;
   description?: string;
+  link?: string;
 };
 
 export async function getPhilosophyItems(collectionId?: string, locale: string = "en") {
@@ -360,9 +466,64 @@ export async function getPhilosophyItems(collectionId?: string, locale: string =
     orderBy: { order: "asc" },
   });
 
-  return collectionItems.map((item) => {
+  const relatedProjectIds = new Set<string>();
+  const localizedItems = collectionItems.map((item) => {
     const raw = item.content as Record<string, unknown>;
-    return resolveLocalizedContent(raw, locale) as PhilosophyItemContent;
+    const localized = resolveLocalizedContent(raw, locale) as PhilosophyItemContent & {
+      relatedProjectId?: string;
+    };
+
+    const relatedProjectId =
+      typeof localized.relatedProjectId === "string"
+        ? localized.relatedProjectId.trim()
+        : "";
+
+    if (relatedProjectId) {
+      relatedProjectIds.add(relatedProjectId);
+    }
+
+    return { localized, relatedProjectId };
+  });
+
+  const relatedProjectLinkById = new Map<string, string>();
+  if (relatedProjectIds.size > 0) {
+    const relatedProjects = await prisma.collectionItem.findMany({
+      where: {
+        id: { in: Array.from(relatedProjectIds) },
+        collection: { slug: "projects" },
+      },
+      include: {
+        page: {
+          select: {
+            slug: true,
+          },
+        },
+      },
+    });
+
+    relatedProjects.forEach((projectItem) => {
+      const projectContent = resolveLocalizedContent(
+        projectItem.content as Record<string, unknown>,
+        locale
+      ) as { slug?: string };
+      const fallbackLink = projectContent.slug ? `/projects/${projectContent.slug}` : undefined;
+      const link = projectItem.page?.slug || fallbackLink;
+      if (link) {
+        relatedProjectLinkById.set(projectItem.id, link);
+      }
+    });
+  }
+
+  return localizedItems.map(({ localized, relatedProjectId }) => {
+    const relationLink =
+      relatedProjectId && relatedProjectLinkById.has(relatedProjectId)
+        ? relatedProjectLinkById.get(relatedProjectId)
+        : undefined;
+
+    return {
+      ...localized,
+      link: relationLink || localized.link,
+    };
   });
 }
 

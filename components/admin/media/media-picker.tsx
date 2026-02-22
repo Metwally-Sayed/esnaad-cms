@@ -187,12 +187,19 @@ export function MediaPicker({
       {selectedUrl && (
         <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-lg border">
           {selectedUrl.match(/\.(mp4|webm|mov)$/i) ? (
-            <video src={selectedUrl} controls className="h-full w-full object-cover" />
+            <video
+              src={selectedUrl}
+              controls
+              playsInline
+              preload="metadata"
+              className="h-full w-full object-cover"
+            />
           ) : (
             <Image
               src={selectedUrl}
               alt="Selected media"
               fill
+              quality={100}
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 448px"
             />
@@ -285,6 +292,7 @@ export function MediaPicker({
                               src={file.url}
                               alt={file.key}
                               fill
+                              quality={100}
                               className="object-cover transition-transform group-hover:scale-105"
                               sizes="(max-width: 768px) 100vw, 33vw"
                             />

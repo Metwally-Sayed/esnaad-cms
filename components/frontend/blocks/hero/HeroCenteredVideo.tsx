@@ -64,6 +64,7 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
           loop
           muted
           playsInline
+          preload="auto"
           poster={posterImage || ""}
           className="h-full w-full object-cover"
           suppressHydrationWarning

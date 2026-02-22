@@ -97,7 +97,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
   }), [t]);
 
   return (
-    <div key={locale} className="min-h-screen">
+    <div key={locale} className="min-h-screen w-full overflow-x-hidden">
       <ProjectHero
         heroImage={data.heroImage}
         title={data.title}
@@ -107,7 +107,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
       <ProjectStickyNav tabs={heroTabs} />
 
       {/* Tab 1: Concept */}
-      <section id="concept">
+      <section id="concept" className="w-full overflow-x-hidden">
         <ProjectConcept
           description={data.conceptDescription}
           images={conceptImagesArray}
@@ -119,7 +119,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
       </section>
 
       {/* Tab 2: Units */}
-      <section id="units">
+      <section id="units" className="w-full overflow-x-hidden">
         <ProjectUnits
           title={data.unitsTitle || t('units')}
           subtitle={data.unitsSubtitle}
@@ -129,12 +129,12 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
       </section>
 
       {/* Tab 3: Floor Plans */}
-      <section id="floor-plans">
+      <section id="floor-plans" className="w-full overflow-x-hidden">
         <ProjectFloorPlans floorPlans={floorPlansArray} />
       </section>
 
       {/* Tab 4: Location */}
-      <section id="location">
+      <section id="location" className="w-full overflow-x-hidden">
         <ProjectLocation
           description={data.locationDescription}
           mapEmbedUrl={data.mapEmbedUrl}

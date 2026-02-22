@@ -3,11 +3,13 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type PhilosophyItemContent = {
   image?: string;
   title?: string;
   description?: string;
+  link?: string;
 };
 
 type AboutPhilosophyClientProps = {
@@ -86,27 +88,20 @@ export function AboutPhilosophyClient({ content, items, className }: AboutPhilos
             const hasDescription = Boolean(item.description);
             const textAlignment =
               content.itemTextAlign || (hasDescription ? "left" : "center");
+            const isClickable = Boolean(item.link);
 
-            return (
-              <motion.div
-                key={`${item.title}-${index}`}
-                className="flex flex-col gap-6"
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: 0.08 * index,
-                }}
-              >
+            const cardContent = (
+              <>
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                   {item.image && (
                     <Image
                       src={item.image}
                       alt={item.title || "Collection item"}
                       fill
-                      className="object-cover transition-transform duration-700 hover:scale-105"
+                      className={cn(
+                        "object-cover transition-transform duration-700",
+                        isClickable ? "group-hover:scale-105" : "hover:scale-105"
+                      )}
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   )}
@@ -138,6 +133,29 @@ export function AboutPhilosophyClient({ content, items, className }: AboutPhilos
                     </p>
                   )}
                 </div>
+              </>
+            );
+
+            return (
+              <motion.div
+                key={`${item.title}-${index}`}
+                className={cn("flex flex-col gap-6", isClickable && "group")}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: 0.08 * index,
+                }}
+              >
+                {isClickable ? (
+                  <Link href={item.link!} className="flex flex-col gap-6">
+                    {cardContent}
+                  </Link>
+                ) : (
+                  cardContent
+                )}
               </motion.div>
             );
           })}

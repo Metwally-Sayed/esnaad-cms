@@ -342,6 +342,7 @@ export function R2Gallery({ files }: R2GalleryProps) {
                     alt={file.key}
                     width={400}
                     height={225}
+                    quality={100}
                     className="h-full w-full object-cover"
                   />
                 )}
@@ -350,6 +351,9 @@ export function R2Gallery({ files }: R2GalleryProps) {
                     src={file.url}
                     className="h-full w-full object-cover"
                     controls={false}
+                    muted
+                    playsInline
+                    preload="metadata"
                   />
                 )}
                 {(file.type === "pdf" || file.type === "other") && (

@@ -46,7 +46,6 @@ export default async function CollectionDetailPage({
           <CollectionItemDialog
             collectionId={collection.id}
             collectionSlug={collection.slug}
-            hasProfilePages={collection.hasProfilePages}
             fields={serializedFields}
             trigger={
               <Button>
@@ -60,7 +59,6 @@ export default async function CollectionDetailPage({
       <CollectionItemsList
         collectionId={collection.id}
         collectionSlug={collection.slug}
-        hasProfilePages={collection.hasProfilePages}
         fields={serializedFields}
         items={collection.items.map(item => ({
             ...item,

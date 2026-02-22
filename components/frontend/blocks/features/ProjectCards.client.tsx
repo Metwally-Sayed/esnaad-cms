@@ -34,11 +34,11 @@ export function ProjectCardsClient({
   };
 
   return (
-    <section className="px-4 sm:px-6 md:px-10 py-10 sm:py-12 bg-background text-foreground transition-colors min-h-[85vh]">
-      <div className="mx-auto max-w-6xl space-y-4 sm:space-y-5">
+    <section className="bg-background px-4 py-12 text-foreground transition-colors sm:px-6 sm:py-14 md:px-10 md:py-16">
+      <div className="mx-auto max-w-7xl space-y-6">
         {heading ? (
           <ScrollReveal width="100%" mode="fade-up">
-            <h2 className="font-serif text-xl sm:text-2xl tracking-[0.06em] sm:tracking-[0.08em] text-foreground">
+            <h2 className="font-serif text-2xl tracking-[0.08em] text-foreground sm:text-3xl md:text-4xl">
               {heading}
             </h2>
           </ScrollReveal>
@@ -46,36 +46,41 @@ export function ProjectCardsClient({
 
         <ScrollReveal
           width="100%"
-          className="grid gap-2 sm:gap-3 md:grid-cols-3"
+          className="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
         >
           {cards.map((card, index) => {
+            const actionLabel = card.actionLabel || "Explore Project";
+            const isClickable = Boolean(card.link || card.actionType === "button");
             const cardContent = (
-              <div className="relative aspect-4/3 w-full overflow-hidden md:aspect-square lg:aspect-3/4 xl:aspect-3/4">
+              <div className="relative aspect-[5/6] w-full overflow-hidden bg-muted">
                 {card.image && (
                   <Image
                     src={card.image}
                     alt={card.title || "Project image"}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105 group-active:scale-105"
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    quality={100}
                   />
                 )}
-                <div className="absolute inset-0 bg-linear-to-t from-background/35 via-transparent to-transparent dark:from-black/35" />
-                <div className="absolute inset-x-0 bottom-0 bg-black/50 dark:bg-black/55">
-                  <p
-                    className={cn(
-                      "px-3 sm:px-4 py-3 sm:py-4 text-center font-serif text-base sm:text-lg uppercase tracking-[0.12em] sm:tracking-[0.14em] text-white"
-                    )}
-                  >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/5" />
+                <div className="absolute inset-x-0 bottom-0 space-y-3 p-5 sm:p-6">
+                  <p className="font-serif text-lg uppercase tracking-[0.12em] text-white sm:text-xl">
                     {card.title}
                   </p>
+                  {isClickable ? (
+                    <div className="inline-flex items-center rounded-full border border-white/45 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-[0.08em] text-white backdrop-blur-sm transition-colors group-hover:bg-white/20">
+                      {actionLabel}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             );
 
             const key = `${card.title}-${index}`;
             const containerClass = cn(
-              "group relative block overflow-hidden",
+              "group relative block overflow-hidden rounded-2xl border border-border/50 bg-card/40 shadow-sm transition-all duration-300",
+              "hover:-translate-y-1 hover:border-primary/40 hover:shadow-2xl",
               card.link && "cursor-pointer"
             );
 
@@ -99,9 +104,7 @@ export function ProjectCardsClient({
                   key={key}
                   variants={cardVariants}
                   className={containerClass}
-                  onClick={() =>
-                    console.log(`Action clicked for: ${card.title}`)
-                  }
+                  onClick={() => {}}
                   type="button"
                 >
                   {cardContent}
