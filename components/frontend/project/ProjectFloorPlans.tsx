@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ProjectFloorPlansProps = {
   floorPlans?: string[];
@@ -15,8 +15,12 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
   const SWIPE_THRESHOLD_PX = 70;
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const safeImages = floorPlans || [];
+  const safeImages = floorPlans;
   const imageCount = safeImages.length;
+  const eagerUrls = useMemo(
+    () => safeImages.slice(0, Math.min(4, imageCount)).filter(Boolean),
+    [safeImages, imageCount]
+  );
 
   const normalizeIndex = (index: number) => {
     if (imageCount === 0) return 0;
@@ -59,6 +63,15 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
     }, AUTO_SLIDE_MS);
     return () => clearInterval(timer);
   }, [imageCount, AUTO_SLIDE_MS]);
+
+  useEffect(() => {
+    if (eagerUrls.length === 0) return;
+    eagerUrls.forEach((url) => {
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = url;
+    });
+  }, [eagerUrls]);
 
   if (imageCount === 0) {
     return (
@@ -131,6 +144,7 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
                       src={safeImages[previousIndex]}
                       alt="Previous floor plan"
                       fill
+                      priority={eagerUrls.includes(safeImages[previousIndex])}
                       quality={100}
                       className="object-cover opacity-95 transition-opacity hover:opacity-100"
                       sizes="20vw"
@@ -142,7 +156,7 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
                       src={safeImages[activeIndex]}
                       alt={`Floor Plan ${activeIndex + 1}`}
                       fill
-                      priority
+                      priority={eagerUrls.includes(safeImages[activeIndex])}
                       quality={100}
                       className="object-cover select-none"
                       draggable={false}
@@ -160,6 +174,7 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
                       src={safeImages[nextIndex]}
                       alt="Next floor plan"
                       fill
+                      priority={eagerUrls.includes(safeImages[nextIndex])}
                       quality={100}
                       className="object-cover opacity-95 transition-opacity hover:opacity-100"
                       sizes="20vw"

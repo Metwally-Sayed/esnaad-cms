@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Download } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ProjectConceptProps = {
   description: string;
@@ -31,8 +31,12 @@ export function ProjectConcept({
   const SWIPE_THRESHOLD_PX = 70;
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const safeImages = images || [];
+  const safeImages = images;
   const imageCount = safeImages.length;
+  const eagerUrls = useMemo(
+    () => safeImages.slice(0, Math.min(4, imageCount)).filter(Boolean),
+    [safeImages, imageCount]
+  );
 
   const normalizeIndex = (index: number) => {
     if (imageCount === 0) return 0;
@@ -72,6 +76,15 @@ export function ProjectConcept({
     }, AUTO_SLIDE_MS);
     return () => clearInterval(timer);
   }, [imageCount, AUTO_SLIDE_MS]);
+
+  useEffect(() => {
+    if (eagerUrls.length === 0) return;
+    eagerUrls.forEach((url) => {
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = url;
+    });
+  }, [eagerUrls]);
 
   if (imageCount === 0) {
     console.warn("ProjectConcept: No images provided for slider");
@@ -136,6 +149,7 @@ export function ProjectConcept({
                       src={safeImages[previousIndex]}
                       alt="Previous concept image"
                       fill
+                      priority={eagerUrls.includes(safeImages[previousIndex])}
                       quality={100}
                       className="object-cover opacity-95 transition-opacity hover:opacity-100"
                       sizes="20vw"
@@ -147,7 +161,7 @@ export function ProjectConcept({
                       src={safeImages[activeIndex]}
                       alt="Current concept image"
                       fill
-                      priority
+                      priority={eagerUrls.includes(safeImages[activeIndex])}
                       quality={100}
                       className="object-cover select-none"
                       draggable={false}
@@ -165,6 +179,7 @@ export function ProjectConcept({
                       src={safeImages[nextIndex]}
                       alt="Next concept image"
                       fill
+                      priority={eagerUrls.includes(safeImages[nextIndex])}
                       quality={100}
                       className="object-cover opacity-95 transition-opacity hover:opacity-100"
                       sizes="20vw"
