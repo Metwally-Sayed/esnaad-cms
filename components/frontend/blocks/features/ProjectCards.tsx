@@ -1,4 +1,4 @@
-import { getProjectCards } from "@/server/actions/collection";
+import { getProjectCardsCached } from "@/lib/data/collection";
 import { ProjectCardsClient } from "./ProjectCards.client";
 
 type ProjectCardsContent = {
@@ -13,7 +13,7 @@ export default async function ProjectCards({
   content: ProjectCardsContent;
   locale: string;
 }) {
-  const cards = await getProjectCards({
+  const cards = await getProjectCardsCached({
     collectionId: content.collectionId,
     locale,
   });

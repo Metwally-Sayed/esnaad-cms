@@ -25,7 +25,18 @@
     "confirm": "تأكيد",
     "areYouSure": "هل أنت متأكد؟",
     "noData": "لا توجد بيانات متاحة",
-    "backToList": "العودة إلى القائمة"
+    "backToList": "العودة إلى القائمة",
+    "readMore": "قراءة المزيد",
+    "readLess": "إخفاء",
+    "showDetails": "عرض التفاصيل",
+    "hideDetails": "إخفاء التفاصيل",
+    "viewAll": "عرض الكل",
+    "viewLess": "عرض أقل",
+    "view": "عرض",
+    "description": "الوصف",
+    "previous": "السابق",
+    "next": "التالي",
+    "watchVideoTour": "شاهد الجولة بالفيديو"
   },
   "Sidebar": {
     "dashboard": "لوحة التحكم",
@@ -96,7 +107,6 @@
     "reusableBlock": "بلوك قابل لإعادة الاستخدام مع محتوى مخصص.",
     "composableBlock": "بلوك محتوى قابل للتركيب.",
     "creating": "جاري الإنشاء...",
-
     "updating": "جاري التحديث...",
     "updatePage": "تحديث الصفحة",
     "addBlockError": "أضف بلوك واحد على الأقل لإنشاء الصفحة.",

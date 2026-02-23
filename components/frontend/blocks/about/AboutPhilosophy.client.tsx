@@ -1,9 +1,11 @@
 "use client";
 
+import { MobileExpandableText, MobileSectionHeader, MobileSnapRail } from "@/components/frontend/mobile";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 type PhilosophyItemContent = {
   image?: string;
@@ -28,6 +30,7 @@ type AboutPhilosophyClientProps = {
 };
 
 export function AboutPhilosophyClient({ content, items, className }: AboutPhilosophyClientProps) {
+  const tCommon = useTranslations("Common");
   const sectionStyle = content.customColors
     ? { backgroundColor: content.backgroundColor }
     : undefined;
@@ -38,127 +41,211 @@ export function AboutPhilosophyClient({ content, items, className }: AboutPhilos
   return (
     <section
       className={cn(
-        "py-16 md:py-24",
+        "py-12 md:py-24",
         !content.customColors && "bg-background",
         className
       )}
       style={sectionStyle}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="mb-16 text-center"
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <h2
-            className={cn(
-              "font-serif text-3xl tracking-[0.2em] md:text-4xl lg:text-5xl",
+        <div className="md:hidden">
+          <MobileSectionHeader
+            title={content.sectionTitle}
+            subtitle={content.subtitle}
+            className="mobile-section-spacing mb-6"
+            titleClassName={cn(
+              "font-serif text-2xl tracking-[0.1em] normal-case",
               !content.customColors && "text-foreground"
             )}
-            style={titleStyle}
-          >
-            {content.sectionTitle}
-          </h2>
-          <p
-            className={cn(
-              "mt-4 font-serif text-xl tracking-[0.15em] md:text-2xl",
+            subtitleClassName={cn(
+              "font-serif text-sm tracking-[0.08em]",
               !content.customColors && "text-muted-foreground"
             )}
-            style={textStyle}
-          >
-            {content.subtitle}
-          </p>
-          {content.description && (
-            <p
-              className={cn(
-                "mt-4 text-base leading-relaxed md:text-lg",
-                !content.customColors && "text-muted-foreground"
-              )}
-              style={textStyle}
-            >
-              {content.description}
-            </p>
-          )}
-        </motion.div>
+          />
+          {content.description ? (
+            <MobileExpandableText
+              text={content.description}
+              collapsedLines={5}
+              readMoreLabel={tCommon("readMore")}
+              readLessLabel={tCommon("readLess")}
+              className="mb-6"
+              contentClassName={cn("text-sm leading-7", !content.customColors && "text-muted-foreground")}
+            />
+          ) : null}
 
-        <div className="grid gap-x-8 gap-y-16 md:grid-cols-2">
-          {items.map((item, index) => {
-            const hasDescription = Boolean(item.description);
-            const textAlignment =
-              content.itemTextAlign || (hasDescription ? "left" : "center");
-            const isClickable = Boolean(item.link);
-
-            const cardContent = (
-              <>
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
-                  {item.image && (
+          <MobileSnapRail className="pb-1" itemClassName="basis-[84%]">
+            {items.map((item, index) => (
+              <motion.article
+                key={`${item.title}-${index}`}
+                className="rounded-2xl border border-border/60 bg-card/70 p-4 backdrop-blur-sm"
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: index * 0.04 }}
+              >
+                <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted">
+                  {item.image ? (
                     <Image
                       src={item.image}
                       alt={item.title || "Collection item"}
                       fill
-                      className={cn(
-                        "object-cover transition-transform duration-700",
-                        isClickable ? "group-hover:scale-105" : "hover:scale-105"
-                      )}
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
+                      sizes="85vw"
                     />
-                  )}
+                  ) : null}
                 </div>
 
-                <div className="space-y-4">
-                  <h3
-                    className={cn(
-                      "font-serif text-2xl tracking-wide",
-                      textAlignment === "center" && "text-center",
-                      textAlignment === "right" && "text-right",
-                      !content.customColors && "text-foreground"
-                    )}
-                    style={titleStyle}
+                <h3
+                  className={cn(
+                    "font-serif text-xl tracking-[0.08em]",
+                    !content.customColors && "text-foreground"
+                  )}
+                  style={titleStyle}
+                >
+                  {item.title}
+                </h3>
+
+                {item.description ? (
+                  <MobileExpandableText
+                    text={item.description}
+                    collapsedLines={5}
+                    readMoreLabel={tCommon("showDetails")}
+                    readLessLabel={tCommon("hideDetails")}
+                    className="mt-3"
+                    contentClassName={cn("text-sm leading-7", !content.customColors && "text-muted-foreground")}
+                    buttonClassName="text-[0.62rem] tracking-[0.2em]"
+                  />
+                ) : null}
+
+                {item.link ? (
+                  <Link
+                    href={item.link}
+                    className="mt-4 inline-flex text-[0.62rem] uppercase tracking-[0.2em] text-foreground/80 transition-colors hover:text-foreground"
                   >
-                    {item.title}
-                  </h3>
-                  {hasDescription && (
-                    <p
+                    {tCommon("viewAll")}
+                  </Link>
+                ) : null}
+              </motion.article>
+            ))}
+          </MobileSnapRail>
+        </div>
+
+        <div className="hidden md:block">
+          <motion.div
+            className="mb-16 text-center"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h2
+              className={cn(
+                "font-serif text-3xl tracking-[0.2em] md:text-4xl lg:text-5xl",
+                !content.customColors && "text-foreground"
+              )}
+              style={titleStyle}
+            >
+              {content.sectionTitle}
+            </h2>
+            <p
+              className={cn(
+                "mt-4 font-serif text-xl tracking-[0.15em] md:text-2xl",
+                !content.customColors && "text-muted-foreground"
+              )}
+              style={textStyle}
+            >
+              {content.subtitle}
+            </p>
+            {content.description && (
+              <p
+                className={cn(
+                  "mt-4 text-base leading-relaxed md:text-lg",
+                  !content.customColors && "text-muted-foreground"
+                )}
+                style={textStyle}
+              >
+                {content.description}
+              </p>
+            )}
+          </motion.div>
+
+          <div className="grid gap-x-8 gap-y-16 md:grid-cols-2">
+            {items.map((item, index) => {
+              const hasDescription = Boolean(item.description);
+              const textAlignment =
+                content.itemTextAlign || (hasDescription ? "left" : "center");
+              const isClickable = Boolean(item.link);
+
+              const cardContent = (
+                <>
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+                    {item.image && (
+                      <Image
+                        src={item.image}
+                        alt={item.title || "Collection item"}
+                        fill
+                        className={cn(
+                          "object-cover transition-transform duration-700",
+                          isClickable ? "group-hover:scale-105" : "hover:scale-105"
+                        )}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3
                       className={cn(
-                        "text-base leading-relaxed md:text-lg",
+                        "font-serif text-2xl tracking-wide",
                         textAlignment === "center" && "text-center",
                         textAlignment === "right" && "text-right",
-                        !content.customColors && "text-muted-foreground"
+                        !content.customColors && "text-foreground"
                       )}
-                      style={textStyle}
+                      style={titleStyle}
                     >
-                      {item.description}
-                    </p>
-                  )}
-                </div>
-              </>
-            );
+                      {item.title}
+                    </h3>
+                    {hasDescription && (
+                      <p
+                        className={cn(
+                          "text-base leading-relaxed md:text-lg",
+                          textAlignment === "center" && "text-center",
+                          textAlignment === "right" && "text-right",
+                          !content.customColors && "text-muted-foreground"
+                        )}
+                        style={textStyle}
+                      >
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                </>
+              );
 
-            return (
-              <motion.div
-                key={`${item.title}-${index}`}
-                className={cn("flex flex-col gap-6", isClickable && "group")}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: 0.08 * index,
-                }}
-              >
-                {isClickable ? (
-                  <Link href={item.link!} className="flex flex-col gap-6">
-                    {cardContent}
-                  </Link>
-                ) : (
-                  cardContent
-                )}
-              </motion.div>
-            );
-          })}
+              return (
+                <motion.div
+                  key={`${item.title}-${index}`}
+                  className={cn("flex flex-col gap-6", isClickable && "group")}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: 0.08 * index,
+                  }}
+                >
+                  {isClickable ? (
+                    <Link href={item.link!} className="flex flex-col gap-6">
+                      {cardContent}
+                    </Link>
+                  ) : (
+                    cardContent
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

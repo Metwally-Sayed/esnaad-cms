@@ -152,7 +152,7 @@ export default async function Layout({
   const siteUrl = getSiteUrl();
 
   return (
-    <html lang={locale} dir={direction} className="w-full h-full dark" suppressHydrationWarning>
+    <html lang={locale} dir={direction} className="w-full dark" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <StructuredData locale={locale} siteUrl={siteUrl} />
@@ -169,7 +169,7 @@ export default async function Layout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${brandSerif.variable} ${modernSans.variable} ${cairo.variable} antialiased w-full h-full font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} ${brandSerif.variable} ${modernSans.variable} ${cairo.variable} antialiased w-full min-h-screen font-sans`}
       >
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>

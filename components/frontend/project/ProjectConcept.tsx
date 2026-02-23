@@ -1,8 +1,16 @@
 "use client";
 
+import { MobileExpandableText } from "@/components/frontend/mobile";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { AnimatePresence, motion } from "framer-motion";
-import { Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type ProjectConceptProps = {
@@ -27,6 +35,7 @@ export function ProjectConcept({
   brochureUrl,
   labels,
 }: ProjectConceptProps) {
+  const tCommon = useTranslations("Common");
   const AUTO_SLIDE_MS = 5000;
   const SWIPE_THRESHOLD_PX = 70;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -94,7 +103,7 @@ export function ProjectConcept({
   return (
     <section
       id="concept"
-      className="snap-start bg-[#060606] px-4 py-12 sm:px-6 sm:py-16 md:px-10 lg:py-20"
+      className="bg-[#060606] px-4 py-12 sm:px-6 sm:py-16 md:px-10 lg:py-20"
     >
       <div className="mx-auto w-full max-w-[1720px]">
         <div className="relative overflow-hidden rounded-2xl bg-[#090909]">
@@ -189,7 +198,31 @@ export function ProjectConcept({
               </AnimatePresence>
             </div>
 
-            <div className="flex items-center justify-center gap-3 pb-6 pt-4 sm:pb-8">
+            <div className="flex items-center justify-center gap-2 pb-5 pt-4 md:hidden">
+              <button
+                type="button"
+                onClick={goToPrev}
+                className="mobile-touch-target inline-flex items-center gap-1 rounded-full border border-white/35 px-3 py-2 text-[0.62rem] uppercase tracking-[0.18em] text-white/90 transition-colors hover:border-white"
+                aria-label={tCommon("previous")}
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+                <span className="sr-only">{tCommon("previous")}</span>
+              </button>
+              <span className="rounded-full border border-white/25 px-4 py-2 text-[0.62rem] uppercase tracking-[0.18em] text-white/80">
+                {activeIndex + 1} / {imageCount}
+              </span>
+              <button
+                type="button"
+                onClick={goToNext}
+                className="mobile-touch-target inline-flex items-center gap-1 rounded-full border border-white/35 px-3 py-2 text-[0.62rem] uppercase tracking-[0.18em] text-white/90 transition-colors hover:border-white"
+                aria-label={tCommon("next")}
+              >
+                <ChevronRight className="h-3.5 w-3.5" />
+                <span className="sr-only">{tCommon("next")}</span>
+              </button>
+            </div>
+
+            <div className="hidden items-center justify-center gap-3 pb-6 pt-4 sm:pb-8 md:flex">
               {safeImages.map((_, index) => {
                 const isActive = index === activeIndex;
                 return (
@@ -238,7 +271,64 @@ export function ProjectConcept({
           </div>
 
           <div className="border-t border-white/10 bg-[#0a0a0a] px-4 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
-            <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:gap-14">
+            <div className="space-y-6 md:hidden">
+              <h2 className="font-serif text-3xl font-light uppercase tracking-[0.12em] text-white">
+                {labels?.concept || "CONCEPT"}
+              </h2>
+              <Accordion type="multiple" className="w-full space-y-3">
+                <AccordionItem value="description" className="rounded-xl border border-white/15 px-4">
+                  <AccordionTrigger className="py-4 text-xs uppercase tracking-[0.2em] text-white/70 hover:no-underline">
+                    {tCommon("description")}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    <MobileExpandableText
+                      text={description}
+                      collapsedLines={8}
+                      readMoreLabel={tCommon("readMore")}
+                      readLessLabel={tCommon("readLess")}
+                      contentClassName="whitespace-pre-line font-serif text-sm leading-7 text-white/85"
+                      buttonClassName="text-[0.62rem] tracking-[0.2em] text-white/80"
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="architecture" className="rounded-xl border border-white/15 px-4">
+                  <AccordionTrigger className="py-4 text-xs uppercase tracking-[0.2em] text-white/70 hover:no-underline">
+                    {labels?.architecture || "Architecture"}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 font-serif text-sm leading-7 text-white/90">
+                    {architecture}
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="features" className="rounded-xl border border-white/15 px-4">
+                  <AccordionTrigger className="py-4 text-xs uppercase tracking-[0.2em] text-white/70 hover:no-underline">
+                    {labels?.uniqueFeatures || "Unique Features"}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    <ul className="space-y-2 text-sm leading-7 text-white/90">
+                      {features.map((feature, index) => (
+                        <li key={`${feature}-${index}`} className="flex gap-2">
+                          <span className="mt-[0.5rem] h-1 w-1 rounded-full bg-white/70" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+              {brochureUrl ? (
+                <a
+                  href={brochureUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/45 px-5 py-3 text-[0.68rem] uppercase tracking-[0.16em] text-white/90 transition-all hover:border-white hover:text-white"
+                >
+                  <Download className="h-4 w-4 transition-transform group-hover:translate-y-1" />
+                  {labels?.downloadBrochure || "DOWNLOAD BROCHURE"}
+                </a>
+              ) : null}
+            </div>
+
+            <div className="hidden gap-10 md:grid lg:grid-cols-[1.25fr_0.75fr] lg:gap-14">
               <motion.p
                 className="max-w-4xl font-serif text-base leading-relaxed text-white/88 sm:text-lg md:text-[1.28rem] md:leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}

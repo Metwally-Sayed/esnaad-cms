@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useFormSecurity } from "@/hooks/use-form-security";
+import { cn } from "@/lib/utils";
 import { submitFormEmail } from "@/server/actions/form-email";
-import React, { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import React, { useState, useTransition } from "react";
 
 export function RegisterInterestForm() {
   const t = useTranslations("Forms");
@@ -21,8 +22,8 @@ export function RegisterInterestForm() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Security hook
-  const { formToken, formStartTime, honeypotValue, setHoneypotValue, resetSecurity } = useFormSecurity();
+  const { formToken, formStartTime, honeypotValue, setHoneypotValue, resetSecurity } =
+    useFormSecurity();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +39,6 @@ export function RegisterInterestForm() {
           phone: formData.phone,
           preferredContact: formData.contactMode,
         },
-        // Security fields
         honeypot: honeypotValue,
         formToken,
         formStartTime,
@@ -56,17 +56,19 @@ export function RegisterInterestForm() {
 
   if (submitted) {
     return (
-      <section className="snap-start bg-background py-20">
-        <div className="container mx-auto px-4 w-full">
+      <section className="bg-background py-14 md:py-20">
+        <div className="container mx-auto w-full px-4">
           <div className="mx-auto max-w-md text-center">
-            <h2 className="mb-8 font-serif text-3xl text-foreground">
+            <h2 className="mb-6 font-serif text-3xl tracking-[0.06em] text-foreground">
               {t("registerInterest")}
             </h2>
-            <div className="p-8 bg-secondary/10 rounded-lg">
-              <p className="text-lg text-foreground/80">{t("thankYouSubmission")}</p>
+            <div className="rounded-2xl border border-border/70 bg-card/70 p-6 md:p-8">
+              <p className="text-base leading-7 text-foreground/80 md:text-lg">
+                {t("thankYouSubmission")}
+              </p>
               <Button
                 variant="outline"
-                className="mt-6 uppercase tracking-widest"
+                className="mt-6 uppercase tracking-[0.16em]"
                 onClick={() => setSubmitted(false)}
               >
                 {t("sendAnother")}
@@ -79,15 +81,19 @@ export function RegisterInterestForm() {
   }
 
   return (
-    <section className="snap-start bg-background py-20">
-      <div className="container mx-auto px-4 w-full">
+    <section className="bg-background py-14 md:py-20">
+      <div className="container mx-auto w-full px-4">
         <div className="mx-auto max-w-md">
-          <h2 className="mb-8 text-center font-serif text-3xl text-foreground">
-            {t("registerInterest")}
-          </h2>
+          <div className="mb-5 rounded-2xl border border-border/70 bg-card/70 px-5 py-6 text-center">
+            <h2 className="font-serif text-3xl tracking-[0.06em] text-foreground">
+              {t("registerInterest")}
+            </h2>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Honeypot field - hidden from humans, bots will fill it */}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 rounded-2xl border border-border/70 bg-card/75 p-5 md:space-y-6 md:p-6"
+          >
             <div className="sr-only" aria-hidden="true">
               <label htmlFor="website_url_interest">Website</label>
               <input
@@ -101,80 +107,101 @@ export function RegisterInterestForm() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm uppercase tracking-wider text-foreground">
-                {t("name")}
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="border-foreground/20 bg-background"
-                required
-              />
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="name"
+                  className="text-[0.62rem] uppercase tracking-[0.2em] text-foreground/80"
+                >
+                  {t("name")}
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="h-12 rounded-xl border-foreground/20 bg-background"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="email"
+                  className="text-[0.62rem] uppercase tracking-[0.2em] text-foreground/80"
+                >
+                  {t("email")}
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="h-12 rounded-xl border-foreground/20 bg-background"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="phone"
+                  className="text-[0.62rem] uppercase tracking-[0.2em] text-foreground/80"
+                >
+                  {t("phone")}
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="h-12 rounded-xl border-foreground/20 bg-background"
+                  required
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm uppercase tracking-wider text-foreground">
-                {t("email")}
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="border-foreground/20 bg-background"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm uppercase tracking-wider text-foreground">
-                {t("phone")}
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="border-foreground/20 bg-background"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm uppercase tracking-wider text-foreground">
+            <div className="rounded-xl border border-border/70 bg-background/60 p-4">
+              <Label className="mb-3 block text-[0.62rem] uppercase tracking-[0.2em] text-foreground/80">
                 {t("preferredContact")}
               </Label>
               <RadioGroup
                 value={formData.contactMode}
                 onValueChange={(value) => setFormData({ ...formData, contactMode: value })}
-                className="flex gap-4"
+                className="grid grid-cols-2 gap-2"
               >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="whatsapp" id="whatsapp" />
-                  <Label htmlFor="whatsapp" className="text-sm text-foreground cursor-pointer">
-                    {t("whatsapp")}
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="phone" id="phone-option" />
-                  <Label htmlFor="phone-option" className="text-sm text-foreground cursor-pointer">
-                    {t("phone")}
-                  </Label>
-                </div>
+                <label
+                  htmlFor="whatsapp"
+                  className={cn(
+                    "mobile-touch-target flex cursor-pointer items-center justify-center rounded-full border px-3 py-2 text-[0.68rem] uppercase tracking-[0.16em] transition-colors",
+                    formData.contactMode === "whatsapp"
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border bg-background text-foreground/80"
+                  )}
+                >
+                  <RadioGroupItem value="whatsapp" id="whatsapp" className="sr-only" />
+                  {t("whatsapp")}
+                </label>
+                <label
+                  htmlFor="phone-option"
+                  className={cn(
+                    "mobile-touch-target flex cursor-pointer items-center justify-center rounded-full border px-3 py-2 text-[0.68rem] uppercase tracking-[0.16em] transition-colors",
+                    formData.contactMode === "phone"
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border bg-background text-foreground/80"
+                  )}
+                >
+                  <RadioGroupItem value="phone" id="phone-option" className="sr-only" />
+                  {t("phone")}
+                </label>
               </RadioGroup>
             </div>
 
-            {error && (
-              <p className="text-destructive text-sm text-center">{error}</p>
-            )}
+            {error ? <p className="text-center text-sm text-destructive">{error}</p> : null}
 
             <Button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-full border border-foreground bg-transparent py-6 text-sm uppercase tracking-widest text-foreground hover:bg-foreground hover:text-background disabled:opacity-50"
+              className="mobile-safe-bottom mobile-touch-target w-full rounded-full border border-foreground bg-transparent py-6 text-[0.68rem] uppercase tracking-[0.16em] text-foreground hover:bg-foreground hover:text-background disabled:opacity-50"
             >
               {isPending ? t("submitting") : t("sendMessage")}
             </Button>

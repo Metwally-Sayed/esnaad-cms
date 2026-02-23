@@ -2,10 +2,14 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+const r2PublicUrl = process.env.R2_PUBLIC_URL ?? "";
+const usesR2DevHost = r2PublicUrl.includes(".r2.dev");
 
 const nextConfig: NextConfig = {
   // Image Optimization
   images: {
+    // Bypass Next's optimizer for public R2 dev hosts to avoid DNS/server fetch failures.
+    unoptimized: usesR2DevHost,
     remotePatterns: [
       {
         protocol: "https",
@@ -19,6 +23,7 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'], // Modern image formats
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    qualities: [75, 100],
     minimumCacheTTL: 60, // Cache images for 60 seconds minimum
   },
 

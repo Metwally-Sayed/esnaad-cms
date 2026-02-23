@@ -1,4 +1,4 @@
-import { getAllMediaItems } from "@/server/actions/media";
+import { getAllMediaItemsCached } from "@/lib/data/media";
 import GalleryFilters from "./GalleryFilters";
 import MediaPostCard from "./MediaPostCard";
 
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default async function GalleryContent({ locale, filterType }: Props) {
-  const result = await getAllMediaItems("updatedAt");
+  const result = await getAllMediaItemsCached("updatedAt");
 
   if (!result.success || !result.data) {
     return (

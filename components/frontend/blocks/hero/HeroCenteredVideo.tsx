@@ -28,19 +28,16 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
   const videoUrl = content.videoUrl as string;
   const posterImage = content.posterImage as string;
   const ctas = (content.ctas as CTA[]) || [];
-  const minHeight = (content.minHeight as number) || undefined;
+  const minHeight = Number(content.minHeight) || undefined;
   const mimeType = inferMimeType(videoUrl);
-
-  // Determine the height class based on minHeight prop
-  const heightClass = minHeight ? `min-h-[${minHeight}px]` : "min-h-screen";
   const heightStyle = minHeight ? { minHeight: `${minHeight}px` } : undefined;
 
   const containerRef = useRef<HTMLElement>(null);
-  
+
   // Track scroll progress of the hero section
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
 
   // Transform values for parallax effect
@@ -51,14 +48,14 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
   return (
     <section
       ref={containerRef}
-      className={cn("relative overflow-hidden", heightClass, className)}
+      className={cn(
+        "relative min-h-[68svh] overflow-hidden sm:min-h-screen",
+        className
+      )}
       style={heightStyle}
     >
       {/* Video Background */}
-      <motion.div 
-        className="absolute inset-0 z-0"
-        style={{ y, scale, opacity }}
-      >
+      <motion.div className="absolute inset-0 z-0" style={{ y, scale, opacity }}>
         <video
           autoPlay
           loop
@@ -72,35 +69,47 @@ export default function HeroCenteredVideo({ content, className }: HeroVariantPro
           <source src={videoUrl} type={mimeType} />
         </video>
       </motion.div>
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/20 via-black/45 to-black/75" />
 
       {/* Content */}
       <div
-        className={cn("relative z-10 flex flex-col items-center justify-center px-4 text-center text-white", heightClass)}
+        className="relative z-10 flex min-h-[68svh] items-end px-4 pb-8 pt-20 text-white sm:min-h-screen sm:items-center sm:justify-center sm:px-6 sm:pb-16"
         style={heightStyle}
       >
-        <h1 className="mb-6 text-5xl font-bold tracking-tight md:text-7xl">
-          {title}
-        </h1>
-        {subtitle && (
-          <p className="mb-8 max-w-2xl text-lg text-white/80 md:text-xl">
-            {subtitle}
-          </p>
-        )}
-        {ctas.length > 0 && (
-          <div className="flex flex-wrap gap-4">
-            {ctas.map((cta, index) => (
-              <Link key={index} href={cta.link || "#"}>
-                <Button
-                  variant={cta.variant === "primary" ? "default" : cta.variant === "ghost" ? "ghost" : "secondary"}
-                  size="lg"
-                  className={cta.variant === "primary" ? "bg-white text-black hover:bg-white/90" : ""}
-                >
-                  {cta.text}
-                </Button>
-              </Link>
-            ))}
-          </div>
-        )}
+        <div className="w-full rounded-2xl border border-white/20 bg-black/35 p-4 backdrop-blur-md sm:w-auto sm:max-w-3xl sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none sm:text-center">
+          <h1 className="mb-3 font-serif text-3xl uppercase tracking-[0.12em] sm:mb-6 sm:text-5xl sm:tracking-tight md:text-7xl">
+            {title}
+          </h1>
+          {subtitle && (
+            <p className="mb-5 max-w-2xl text-sm leading-relaxed text-white/80 sm:mb-8 sm:text-lg md:text-xl">
+              {subtitle}
+            </p>
+          )}
+          {ctas.length > 0 && (
+            <div className="flex w-full flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
+              {ctas.map((cta, index) => (
+                <Link key={index} href={cta.link || "#"} className="w-full sm:w-auto">
+                  <Button
+                    variant={
+                      cta.variant === "primary"
+                        ? "default"
+                        : cta.variant === "ghost"
+                          ? "ghost"
+                          : "secondary"
+                    }
+                    size="lg"
+                    className={cn(
+                      "w-full sm:w-auto mobile-touch-target",
+                      cta.variant === "primary" && "bg-white text-black hover:bg-white/90"
+                    )}
+                  >
+                    {cta.text}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

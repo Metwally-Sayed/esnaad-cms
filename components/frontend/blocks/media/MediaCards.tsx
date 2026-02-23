@@ -1,4 +1,4 @@
-import { getAllMediaItems } from "@/server/actions/media";
+import { getAllMediaItemsCached } from "@/lib/data/media";
 import type { MediaItem } from "@/server/actions/media";
 import { getLocale } from "next-intl/server";
 import { MediaCardsStandard } from "./MediaCardsStandard";
@@ -28,7 +28,7 @@ export default async function MediaCards({
 
   if (content.collectionId) {
     const sortBy = content.sortBy || "order";
-    const result = await getAllMediaItems(sortBy);
+    const result = await getAllMediaItemsCached(sortBy);
 
     if (result.success && result.data) {
       let mediaItems = result.data;

@@ -14,7 +14,7 @@ export default function HeroTitleOnly({ content, className }: HeroVariantProps) 
   // Check if dark mode is active
   useEffect(() => {
     const checkDarkMode = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
     };
 
     checkDarkMode();
@@ -23,7 +23,7 @@ export default function HeroTitleOnly({ content, className }: HeroVariantProps) 
     const observer = new MutationObserver(checkDarkMode);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ["class"],
     });
 
     return () => observer.disconnect();
@@ -35,11 +35,14 @@ export default function HeroTitleOnly({ content, className }: HeroVariantProps) 
 
   return (
     <section
-      className={cn("flex items-center justify-center px-4 py-16 md:py-20 bg-background", className)}
+      className={cn(
+        "mobile-section-spacing flex items-center justify-center bg-background px-4 sm:py-20",
+        className
+      )}
       style={bgStyle}
     >
       <motion.h1
-        className="font-serif text-4xl tracking-[0.12em] text-foreground md:text-5xl lg:text-6xl"
+        className="mx-auto max-w-[16ch] text-center font-serif text-3xl uppercase tracking-[0.08em] text-foreground sm:max-w-[22ch] sm:text-5xl sm:tracking-[0.12em] lg:text-6xl"
         style={textStyle}
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}

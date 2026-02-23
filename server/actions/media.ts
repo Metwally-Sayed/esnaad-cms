@@ -1,5 +1,10 @@
 "use server";
 
+import {
+  invalidateMediaCaches,
+  invalidatePageCachesBySlugs,
+} from "@/lib/cache/invalidate";
+import { normalizePageSlug } from "@/lib/cache/tags";
 import prisma from "@/lib/prisma";
 import type { ActionResponse } from "@/lib/types/action-response";
 import { failure, success } from "@/lib/types/action-response";
@@ -24,6 +29,29 @@ export type MediaItem = {
 
 export type CreateMediaItemInput = Omit<MediaItem, "id">;
 export type UpdateMediaItemInput = Partial<CreateMediaItemInput>;
+
+function getMediaPageSlug(content: Record<string, unknown>): string | undefined {
+  const directSlug = typeof content.slug === "string" ? content.slug.trim() : "";
+  const englishSlug =
+    content.en &&
+    typeof content.en === "object" &&
+    typeof (content.en as Record<string, unknown>).slug === "string"
+      ? ((content.en as Record<string, unknown>).slug as string).trim()
+      : "";
+  const arabicSlug =
+    content.ar &&
+    typeof content.ar === "object" &&
+    typeof (content.ar as Record<string, unknown>).slug === "string"
+      ? ((content.ar as Record<string, unknown>).slug as string).trim()
+      : "";
+  const slug = directSlug || englishSlug || arabicSlug;
+
+  if (!slug) {
+    return undefined;
+  }
+
+  return normalizePageSlug(`/gallery/${slug}`);
+}
 
 // Normalize content that may be stored in flat or localized (ar/en) format
 function normalizeContent(raw: Record<string, unknown>): Record<string, unknown> {
@@ -193,6 +221,12 @@ export async function createMediaItem(
       },
     });
 
+    invalidateMediaCaches();
+    const mediaPageSlug = getMediaPageSlug(input as unknown as Record<string, unknown>);
+    if (mediaPageSlug) {
+      invalidatePageCachesBySlugs([mediaPageSlug]);
+    }
+
     revalidatePath("/admin/media");
     return success({ id: item.id });
   } catch (error) {
@@ -222,6 +256,8 @@ export async function updateMediaItem(
     // Merge existing content with updates
     const existingContent = existingItem.content as Record<string, unknown>;
     const updatedContent = { ...existingContent, ...input };
+    const previousMediaPageSlug = getMediaPageSlug(existingContent);
+    const nextMediaPageSlug = getMediaPageSlug(updatedContent);
 
     const item = await prisma.collectionItem.update({
       where: { id: itemId },
@@ -230,6 +266,11 @@ export async function updateMediaItem(
         order: input.order ?? existingItem.order,
       },
     });
+
+    invalidateMediaCaches();
+    invalidatePageCachesBySlugs(
+      [previousMediaPageSlug, nextMediaPageSlug].filter(Boolean) as string[]
+    );
 
     revalidatePath("/admin/media");
     return success({ id: item.id });
@@ -245,7 +286,19 @@ export async function updateMediaItem(
 // Delete media item
 export async function deleteMediaItem(itemId: string): Promise<ActionResponse<void>> {
   try {
+    const existingItem = await prisma.collectionItem.findUnique({
+      where: { id: itemId },
+      select: { content: true },
+    });
+    const previousMediaPageSlug = existingItem
+      ? getMediaPageSlug(existingItem.content as Record<string, unknown>)
+      : undefined;
+
     await prisma.collectionItem.delete({ where: { id: itemId } });
+    invalidateMediaCaches();
+    if (previousMediaPageSlug) {
+      invalidatePageCachesBySlugs([previousMediaPageSlug]);
+    }
     revalidatePath("/admin/media");
     return success(undefined);
   } catch (error) {
@@ -267,6 +320,7 @@ export async function reorderMediaItems(
         })
       )
     );
+    invalidateMediaCaches();
     revalidatePath("/admin/media");
     return success(undefined);
   } catch (error) {

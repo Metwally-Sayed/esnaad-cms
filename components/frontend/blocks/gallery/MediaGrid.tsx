@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { getAllMediaItems, getAllCategories } from "@/server/actions/media";
-import { getLocale } from "next-intl/server";
+import { getAllCategoriesCached, getAllMediaItemsCached } from "@/lib/data/media";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export type MediaGridItem = {
   image?: string;
@@ -24,6 +24,7 @@ export default async function MediaGrid({
   className?: string;
 }) {
   const locale = await getLocale();
+  const tCommon = await getTranslations("Common");
 
   let items: MediaGridItem[] = [];
 
@@ -32,7 +33,7 @@ export default async function MediaGrid({
     // Check if we should show category items or post type cards
     if (content.filterType === "category") {
       // Show category items as cards
-      const result = await getAllCategories();
+      const result = await getAllCategoriesCached();
       if (result.success && result.data) {
         items = result.data.map(category => ({
           image: category.image,
@@ -42,7 +43,7 @@ export default async function MediaGrid({
       }
     } else {
       // Dynamically group posts by type to create cards
-      const result = await getAllMediaItems();
+      const result = await getAllMediaItemsCached();
       if (result.success && result.data) {
         const mediaItems = result.data;
 
@@ -71,36 +72,37 @@ export default async function MediaGrid({
   }
 
   return (
-    <section className={cn("bg-background py-16", className)}>
+    <section className={cn("bg-background py-12 md:py-16", className)}>
       <div className="mx-auto max-w-7xl px-4">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3 md:gap-6">
           {items.map((item, index) => (
             <Link
               key={index}
               href={item.link || "#"}
-              className="group relative aspect-[4/5] overflow-hidden rounded-sm transition-transform duration-300 hover:scale-[1.02]"
+              className="group overflow-hidden rounded-2xl border border-border/60 bg-card/70 transition-transform duration-300 hover:scale-[1.01] md:relative md:aspect-[4/5] md:rounded-sm md:border-none md:bg-transparent"
             >
-              {/* Image */}
-              {item.image && (
-                <Image
-                  src={item.image}
-                  alt={item.label || `${index + 1}`}
-                  fill
-                  className="object-cover transition-all duration-500 group-hover:scale-105"
-                />
-              )}
+              <div className="relative aspect-[16/11] overflow-hidden md:absolute md:inset-0 md:aspect-auto">
+                {item.image && (
+                  <Image
+                    src={item.image}
+                    alt={item.label || `${index + 1}`}
+                    fill
+                    className="object-cover transition-all duration-500 group-hover:scale-105"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent md:bg-black/40 md:transition-opacity md:duration-300 md:group-hover:bg-black/50" />
+              </div>
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:bg-black/50" />
-
-              {/* Label */}
-              {item.label && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <h3 className="text-4xl font-light tracking-[0.15em] text-white md:text-5xl">
+              {item.label ? (
+                <div className="flex items-center justify-between px-4 py-4 md:absolute md:inset-0 md:justify-center md:p-0">
+                  <h3 className="font-serif text-xl tracking-[0.08em] text-white md:text-5xl md:font-light md:tracking-[0.15em]">
                     {item.label}
                   </h3>
+                  <span className="text-[0.62rem] uppercase tracking-[0.2em] text-white/80 md:hidden">
+                    {tCommon("view")}
+                  </span>
                 </div>
-              )}
+              ) : null}
             </Link>
           ))}
         </div>

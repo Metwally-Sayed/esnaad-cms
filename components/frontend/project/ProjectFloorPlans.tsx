@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -11,6 +12,7 @@ type ProjectFloorPlansProps = {
 
 export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
   const t = useTranslations("Project");
+  const tCommon = useTranslations("Common");
   const AUTO_SLIDE_MS = 5000;
   const SWIPE_THRESHOLD_PX = 70;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -75,7 +77,7 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
 
   if (imageCount === 0) {
     return (
-      <section id="floor-plans" className="min-h-screen snap-start bg-background py-20 flex items-center">
+      <section id="floor-plans" className="bg-background py-12 sm:py-16">
         <div className="container mx-auto w-full px-4 text-center text-muted-foreground">
           <p>{t("noFloorPlansAvailable") || "No floor plans available"}</p>
         </div>
@@ -84,7 +86,7 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
   }
 
   return (
-    <section id="floor-plans" className="min-h-screen snap-start bg-[#060606] px-4 py-12 sm:px-6 sm:py-16 md:px-10 lg:py-20">
+    <section id="floor-plans" className="bg-[#060606] px-4 py-12 sm:px-6 sm:py-16 md:px-10 lg:py-20">
       <div className="mx-auto w-full max-w-[1720px]">
         <div className="relative overflow-hidden rounded-2xl bg-[#090909]">
           <div className="px-4 pt-6 sm:px-8 sm:pt-8 lg:px-12">
@@ -184,7 +186,31 @@ export function ProjectFloorPlans({ floorPlans = [] }: ProjectFloorPlansProps) {
               </AnimatePresence>
             </div>
 
-            <div className="flex items-center justify-center gap-3 pb-6 pt-4 sm:pb-8">
+            <div className="flex items-center justify-center gap-2 pb-5 pt-4 md:hidden">
+              <button
+                type="button"
+                onClick={goToPrev}
+                className="mobile-touch-target inline-flex items-center gap-1 rounded-full border border-white/35 px-3 py-2 text-[0.62rem] uppercase tracking-[0.18em] text-white/90 transition-colors hover:border-white"
+                aria-label={tCommon("previous")}
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+                <span className="sr-only">{tCommon("previous")}</span>
+              </button>
+              <span className="rounded-full border border-white/25 px-4 py-2 text-[0.62rem] uppercase tracking-[0.18em] text-white/80">
+                {activeIndex + 1} / {imageCount}
+              </span>
+              <button
+                type="button"
+                onClick={goToNext}
+                className="mobile-touch-target inline-flex items-center gap-1 rounded-full border border-white/35 px-3 py-2 text-[0.62rem] uppercase tracking-[0.18em] text-white/90 transition-colors hover:border-white"
+                aria-label={tCommon("next")}
+              >
+                <ChevronRight className="h-3.5 w-3.5" />
+                <span className="sr-only">{tCommon("next")}</span>
+              </button>
+            </div>
+
+            <div className="hidden items-center justify-center gap-3 pb-6 pt-4 sm:pb-8 md:flex">
               {safeImages.map((_, index) => {
                 const isActive = index === activeIndex;
                 return (

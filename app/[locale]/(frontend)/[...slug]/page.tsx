@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { BlockWrapper, StructuredData } from "./_components";
 import {
   fetchPage,
@@ -10,7 +9,7 @@ import {
 } from "./_lib/helpers";
 import type { Props } from "./_lib/types";
 
-// Enable ISR with 60-second revalidation
+// Enable ISR with 30-second revalidation
 export const revalidate = 30;
 
 // Allow dynamic params - pages not known at build time are generated on-demand
@@ -23,7 +22,7 @@ export { generateMetadata } from "./_lib/metadata";
  * Dynamic page renderer for all CMS pages
  *
  * Features:
- * - ISR caching with 60-second revalidation
+ * - ISR caching with 30-second revalidation
  * - Auto-invalidation on page updates
  * - Request deduplication via React cache()
  * - Auto-generated collection detail blocks

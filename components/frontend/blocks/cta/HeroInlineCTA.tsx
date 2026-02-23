@@ -35,7 +35,7 @@ const HeroInlineCTA = ({
     <SmartLink
       href={href}
       className={cn(
-        "inline-flex items-center gap-3 border px-6 py-3 text-xs font-semibold uppercase tracking-[0.5em] transition",
+        "inline-flex items-center gap-2 sm:gap-3 border px-4 sm:px-6 py-2.5 sm:py-3 text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.22em] sm:tracking-[0.5em] transition",
         toneClass.text,
         toneClass.border,
         toneClass.bg,
@@ -43,7 +43,10 @@ const HeroInlineCTA = ({
       )}
     >
       {label}
-      <span className={cn("h-px bg-current")} style={{ width: accentWidth }} />
+      <span
+        className={cn("h-px bg-current")}
+        style={{ width: `clamp(18px, 7vw, ${accentWidth}px)` }}
+      />
     </SmartLink>
   );
 };

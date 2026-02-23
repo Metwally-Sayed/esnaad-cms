@@ -1,5 +1,11 @@
 "use server";
 
+import {
+  invalidateCollectionCaches,
+  invalidatePageCaches,
+  invalidatePageCachesBySlugs,
+} from "@/lib/cache/invalidate";
+import { normalizePageSlug } from "@/lib/cache/tags";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import type { ActionResponse } from "@/lib/types/action-response";
@@ -65,6 +71,7 @@ export async function createCollection(
     const collection = await prisma.collection.create({
       data: validated,
     });
+    invalidateCollectionCaches(collection.id);
     revalidatePath("/admin/collections");
     return success(collection);
   } catch (error) {
@@ -88,6 +95,7 @@ export async function updateCollection(
       where: { id },
       data: validated,
     });
+    invalidateCollectionCaches(collection.id);
     revalidatePath("/admin/collections");
     return success(collection);
   } catch (error) {
@@ -102,6 +110,7 @@ export async function updateCollection(
 export async function deleteCollection(id: string) {
   try {
     await prisma.collection.delete({ where: { id } });
+    invalidateCollectionCaches(id);
     revalidatePath("/admin/collections");
     return { success: true };
   } catch (error) {
@@ -142,6 +151,7 @@ export async function createCollectionItem(
 
     // Check if we need to create a page for this item
     let pageId: string | undefined;
+    let createdPageSlug: string | undefined;
     if (collection.hasProfilePages && collection.profilePageSlugPattern) {
       const content = (validated.content || {}) as Record<string, unknown>;
 
@@ -159,7 +169,9 @@ export async function createCollectionItem(
 
       if (itemSlug) {
         // Generate page slug from pattern
-        const pageSlug = collection.profilePageSlugPattern.replace("[slug]", itemSlug);
+        const pageSlug = normalizePageSlug(
+          collection.profilePageSlugPattern.replace("[slug]", itemSlug)
+        );
 
         // Create the page
         const page = await prisma.page.create({
@@ -172,6 +184,7 @@ export async function createCollectionItem(
         });
 
         pageId = page.id;
+        createdPageSlug = pageSlug;
       }
     }
 
@@ -183,6 +196,11 @@ export async function createCollectionItem(
         pageId,
       },
     });
+
+    invalidateCollectionCaches(validated.collectionId);
+    if (createdPageSlug) {
+      invalidatePageCaches(createdPageSlug);
+    }
 
     revalidatePath(`/admin/collections/${validated.collectionId}`);
     revalidatePath("/admin/pages");
@@ -214,6 +232,11 @@ export async function updateCollectionItem(
             profilePageSlugPattern: true,
           },
         },
+        page: {
+          select: {
+            slug: true,
+          },
+        },
       },
     });
 
@@ -222,6 +245,8 @@ export async function updateCollectionItem(
     }
 
     const content = (validated.content || {}) as Record<string, unknown>;
+    const previousPageSlug = existingItem.page?.slug;
+    let nextPageSlug: string | undefined;
 
     // Handle page updates if profile pages are enabled
     if (existingItem.collection.hasProfilePages && existingItem.collection.profilePageSlugPattern) {
@@ -238,7 +263,10 @@ export async function updateCollectionItem(
       const itemDescription = itemData.description as string | undefined;
 
       if (itemSlug) {
-        const pageSlug = existingItem.collection.profilePageSlugPattern.replace("[slug]", itemSlug);
+        const pageSlug = normalizePageSlug(
+          existingItem.collection.profilePageSlugPattern.replace("[slug]", itemSlug)
+        );
+        nextPageSlug = pageSlug;
 
         if (existingItem.pageId) {
           // Update existing page
@@ -279,6 +307,11 @@ export async function updateCollectionItem(
       where: { id: itemId },
       data: { content: (validated.content || {}) as Prisma.InputJsonValue },
     });
+
+    invalidateCollectionCaches(existingItem.collectionId);
+    invalidatePageCachesBySlugs(
+      [previousPageSlug, nextPageSlug].filter(Boolean) as string[]
+    );
 
     revalidatePath(`/admin/collections`);
     revalidatePath("/admin/pages");
@@ -532,7 +565,15 @@ export async function deleteCollectionItem(itemId: string) {
     // Get item with page info
     const item = await prisma.collectionItem.findUnique({
       where: { id: itemId },
-      select: { pageId: true },
+      select: {
+        collectionId: true,
+        pageId: true,
+        page: {
+          select: {
+            slug: true,
+          },
+        },
+      },
     });
 
     // Delete associated page if it exists
@@ -544,6 +585,13 @@ export async function deleteCollectionItem(itemId: string) {
 
     // Delete collection item (cascade will handle relations)
     await prisma.collectionItem.delete({ where: { id: itemId } });
+
+    if (item?.collectionId) {
+      invalidateCollectionCaches(item.collectionId);
+    }
+    if (item?.page?.slug) {
+      invalidatePageCaches(item.page.slug);
+    }
 
     revalidatePath(`/admin/collections`);
     revalidatePath("/admin/pages");

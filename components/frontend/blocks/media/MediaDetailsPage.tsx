@@ -44,8 +44,7 @@ export default async function MediaDetailsPage({
 
   return (
     <main className={cn("min-h-screen bg-background", className)}>
-      {/* Back Button */}
-      <div className="container mx-auto px-4 pt-24 pb-6">
+      <div className="container mx-auto px-4 pb-4 pt-20 md:pb-6 md:pt-24">
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/${locale}/gallery${content.type ? `?type=${content.type}` : ""}`}>
             <ArrowLeft className="me-2 size-4" />
@@ -54,10 +53,37 @@ export default async function MediaDetailsPage({
         </Button>
       </div>
 
-      {/* Hero Image */}
+      <section className="container mx-auto px-4 pb-5 md:hidden">
+        <div className="rounded-2xl border border-border/60 bg-card/70 p-5">
+          {title ? (
+            <h1 className="font-serif text-3xl leading-tight tracking-[0.04em] text-foreground">
+              {title}
+            </h1>
+          ) : null}
+
+          <div className="mt-4 flex flex-wrap gap-2.5 text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground">
+            {content.type ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/80 px-3 py-1.5">
+                <Tag className="size-3" />
+                {content.type.charAt(0).toUpperCase() + content.type.slice(1)}
+              </span>
+            ) : null}
+            {updatedAt ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/80 px-3 py-1.5">
+                <Calendar className="size-3" />
+                {updatedAt.toLocaleDateString(
+                  locale === "ar" ? "ar-SA" : "en-US",
+                  { year: "numeric", month: "short", day: "numeric" }
+                )}
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
       {content.image && (
-        <section className="container mx-auto px-4 pb-8">
-          <div className="relative aspect-[21/9] w-full overflow-hidden rounded-lg bg-muted">
+        <section className="container mx-auto px-4 pb-8 md:pb-10">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-muted md:aspect-[21/9] md:rounded-lg">
             <Image
               src={content.image}
               alt={title || "Media"}
@@ -69,11 +95,9 @@ export default async function MediaDetailsPage({
         </section>
       )}
 
-      {/* Content */}
       <section className="container mx-auto px-4 pb-16">
         <div className="mx-auto max-w-4xl">
-          {/* Meta */}
-          <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+          <div className="mb-6 hidden flex-wrap items-center gap-4 text-sm text-muted-foreground md:flex">
             {content.type && (
               <div className="flex items-center gap-2">
                 <Tag className="size-4" />
@@ -99,17 +123,15 @@ export default async function MediaDetailsPage({
             )}
           </div>
 
-          {/* Title */}
-          {title && (
-            <h1 className="mb-6 text-4xl font-light tracking-tight md:text-5xl">
+          {title ? (
+            <h1 className="mb-6 hidden text-4xl font-light tracking-tight md:block md:text-5xl">
               {title}
             </h1>
-          )}
+          ) : null}
 
-          {/* Description */}
           {description && (
-            <div className="prose prose-lg max-w-none dark:prose-invert">
-              <p className="text-lg leading-relaxed text-muted-foreground">
+            <div className="prose max-w-none dark:prose-invert md:prose-lg">
+              <p className="text-base leading-8 text-muted-foreground md:text-lg md:leading-relaxed">
                 {description}
               </p>
             </div>

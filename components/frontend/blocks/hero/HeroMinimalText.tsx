@@ -1,11 +1,14 @@
 "use client";
 
+import { MobileExpandableText } from "@/components/frontend/mobile";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { HeroVariantProps } from "./index";
 
 export default function HeroMinimalText({ content }: HeroVariantProps) {
+  const tCommon = useTranslations("Common");
   const title = content.title as string;
   const subtitle = content.subtitle as string;
   const textColor = (content.textColor as string) || "#ffffff";
@@ -53,9 +56,20 @@ export default function HeroMinimalText({ content }: HeroVariantProps) {
           {title}
         </h1>
         {subtitle && (
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl opacity-80 text-foreground leading-relaxed max-w-2xl mx-auto">
-            {subtitle}
-          </p>
+          <>
+            <div className="sm:hidden max-w-2xl mx-auto">
+              <MobileExpandableText
+                text={subtitle}
+                collapsedLines={4}
+                contentClassName="text-sm opacity-80 text-foreground leading-relaxed"
+                readMoreLabel={tCommon("readMore")}
+                readLessLabel={tCommon("readLess")}
+              />
+            </div>
+            <p className="hidden sm:block text-sm sm:text-base md:text-lg lg:text-xl opacity-80 text-foreground leading-relaxed max-w-2xl mx-auto">
+              {subtitle}
+            </p>
+          </>
         )}
       </motion.div>
     </section>

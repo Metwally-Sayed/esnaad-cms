@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { MediaItem } from "@/server/actions/media";
 import Image from "next/image";
@@ -43,6 +43,7 @@ function Media3dCard({
   const imageRef = useRef<HTMLImageElement>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
   const lastMousePosition = useRef({ x: 0, y: 0 });
+  const [enable3d, setEnable3d] = useState(false);
 
   const title = locale === "ar" ? item.nameAr : item.nameEn;
   const description =
@@ -55,6 +56,27 @@ function Media3dCard({
         : "";
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 768px)");
+    const updateSupport = () => setEnable3d(mediaQuery.matches);
+    updateSupport();
+    mediaQuery.addEventListener("change", updateSupport);
+    return () => mediaQuery.removeEventListener("change", updateSupport);
+  }, []);
+
+  useEffect(() => {
+    if (!enable3d) {
+      const card = cardRef.current;
+      const image = imageRef.current;
+      if (card) {
+        card.style.transform = "";
+        card.style.boxShadow = "";
+      }
+      if (image) {
+        image.style.transform = "";
+      }
+      return;
+    }
+
     const card = cardRef.current;
     const image = imageRef.current;
 
@@ -141,11 +163,17 @@ function Media3dCard({
       card.removeEventListener("mousemove", handleMouseMove);
       card.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, []);
+  }, [enable3d]);
 
   return (
     <Link href={`/${locale}/gallery/${item.slug}`}>
-      <Card ref={cardRef} className="cursor-pointer overflow-hidden">
+      <Card
+        ref={cardRef}
+        className={cn(
+          "cursor-pointer overflow-hidden transition-shadow",
+          enable3d ? "will-change-transform" : "hover:shadow-lg"
+        )}
+      >
         <CardHeader>
           <CardTitle className="line-clamp-2">{title}</CardTitle>
         </CardHeader>
@@ -197,7 +225,7 @@ export function MediaCards3d({
   return (
     <section className={cn("bg-background py-12", className)}>
       <div className="container mx-auto px-4">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {items.map((item) => (
             <Media3dCard key={item.id} item={item} locale={locale} imageStyle={imageStyle} />
           ))}

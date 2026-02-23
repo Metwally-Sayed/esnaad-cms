@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import { getGlobalHeader } from "@/server/actions/header";
 import { getGlobalFooter } from "@/server/actions/footer";
 
@@ -13,7 +14,7 @@ export const getGlobalHeaderCached = async () => {
     },
     ["global-header"],
     {
-      tags: ["header"],
+      tags: [CACHE_TAGS.header],
       revalidate: 3600 // 1 hour
     }
   )();
@@ -30,7 +31,7 @@ export const getGlobalFooterCached = async () => {
     },
     ["global-footer"],
     {
-      tags: ["footer"],
+      tags: [CACHE_TAGS.footer],
       revalidate: 3600 // 1 hour
     }
   )();

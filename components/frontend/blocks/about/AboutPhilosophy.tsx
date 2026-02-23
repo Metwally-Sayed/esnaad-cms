@@ -1,4 +1,4 @@
-import { getPhilosophyItems } from "@/server/actions/collection";
+import { getPhilosophyItemsCached } from "@/lib/data/collection";
 import { getLocale } from "next-intl/server";
 import { AboutPhilosophyClient } from "./AboutPhilosophy.client";
 
@@ -22,7 +22,7 @@ export default async function AboutPhilosophy({
   className,
 }: AboutPhilosophyProps) {
   const locale = await getLocale();
-  const items = await getPhilosophyItems(content.collectionId, locale);
+  const items = await getPhilosophyItemsCached(content.collectionId, locale);
 
   if (!items.length) return null;
 

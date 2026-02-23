@@ -22,6 +22,10 @@ type HeroContent = {
   mediaUrl?: string;
   backgroundImage?: string;
   posterImage?: string;
+  mobileImage?: string;
+  phoneImage?: string;
+  mobileMediaUrl?: string;
+  mobilePosterImage?: string;
   brandName?: string;
   brandDescriptor?: string;
   location?: string;
@@ -93,25 +97,30 @@ const normalizeHighlights = (
 const HeroBlock = ({ content }: { content: HeroContent }) => {
   const headlines: string[] = [];
 
-  if (typeof content.title === "string" && content.title.length) {
-    headlines.push(content.title);
+  if (typeof content.title === "string" && content.title.trim().length) {
+    headlines.push(content.title.trim());
   }
 
   if (Array.isArray(content.headlines)) {
     content.headlines.forEach((headline) => {
-      if (typeof headline === "string") {
-        headlines.push(headline);
-      } else if (headline?.text) {
-        headlines.push(headline.text);
+      if (typeof headline === "string" && headline.trim().length) {
+        headlines.push(headline.trim());
+      } else if (
+        typeof headline === "object" &&
+        headline !== null &&
+        typeof headline.text === "string" &&
+        headline.text.trim().length
+      ) {
+        headlines.push(headline.text.trim());
       }
     });
   }
 
-  if (!headlines.length && typeof content.subtitle === "string") {
-    headlines.push(content.subtitle);
+  if (!headlines.length && typeof content.subtitle === "string" && content.subtitle.trim().length) {
+    headlines.push(content.subtitle.trim());
   }
 
-  const heroHeadlines = headlines.length ? headlines : [" "];
+  const heroHeadlines = headlines;
 
   const ctas = normalizeCTAs(content);
   const highlights = normalizeHighlights(content);
@@ -123,6 +132,14 @@ const HeroBlock = ({ content }: { content: HeroContent }) => {
     (typeof content.videoUrl === "string" && content.videoUrl) ||
     (typeof content.backgroundImage === "string" && content.backgroundImage) ||
     "/hero-panel.svg";
+  const mobileImage =
+    (typeof content.mobileImage === "string" && content.mobileImage) ||
+    (typeof content.phoneImage === "string" && content.phoneImage) ||
+    (typeof content.mobileMediaUrl === "string" && content.mobileMediaUrl) ||
+    undefined;
+  const mobilePoster =
+    (typeof content.mobilePosterImage === "string" && content.mobilePosterImage) ||
+    undefined;
 
   return (
     <HeroSection
@@ -140,6 +157,9 @@ const HeroBlock = ({ content }: { content: HeroContent }) => {
         type: mediaType,
         src: mediaUrl,
         poster: content.posterImage ?? content.backgroundImage,
+        mobileType: mobileImage ? "image" : mediaType,
+        mobileSrc: mobileImage,
+        mobilePoster: mobilePoster ?? content.posterImage ?? content.backgroundImage,
       }}
     />
   );

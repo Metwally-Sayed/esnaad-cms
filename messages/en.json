@@ -25,7 +25,18 @@
     "confirm": "Confirm",
     "areYouSure": "Are you sure?",
     "noData": "No data available",
-    "backToList": "Back to list"
+    "backToList": "Back to list",
+    "readMore": "Read More",
+    "readLess": "Read Less",
+    "showDetails": "Show Details",
+    "hideDetails": "Hide Details",
+    "viewAll": "View All",
+    "viewLess": "View Less",
+    "view": "View",
+    "description": "Description",
+    "previous": "Previous",
+    "next": "Next",
+    "watchVideoTour": "Watch Video Tour"
   },
   "Sidebar": {
     "dashboard": "Dashboard",
@@ -96,7 +107,6 @@
     "reusableBlock": "Reusable block with custom content.",
     "composableBlock": "Composable content block.",
     "creating": "Creating...",
-
     "updating": "Updating...",
     "updatePage": "Update page",
     "addBlockError": "Add at least one block to compose the page.",

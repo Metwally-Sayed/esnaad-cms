@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import { useHeaderStore } from "@/store/header-store";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import {
     AnimatePresence,
     motion,
@@ -129,7 +130,7 @@ export const NavItems = ({ items, className, onItemClick, visible }: NavItemsPro
       )}
     >
       {items.map((item, idx) => (
-        <a
+        <Link
           onMouseEnter={() => setHovered(idx)}
           onClick={onItemClick}
           className={cn(
@@ -149,7 +150,7 @@ export const NavItems = ({ items, className, onItemClick, visible }: NavItemsPro
             />
           )}
           <span className="relative z-20">{item.name}</span>
-        </a>
+        </Link>
       ))}
     </motion.div>
   );

@@ -1,5 +1,6 @@
 "use server";
 
+import { invalidateSeoDefaultsCaches } from "@/lib/cache/invalidate";
 import prisma from "@/lib/prisma";
 
 /**
@@ -134,6 +135,8 @@ export async function updateGlobalSeoDefaults(data: {
         ...data,
       },
     });
+
+    invalidateSeoDefaultsCaches();
 
     return { success: true };
   } catch (error) {

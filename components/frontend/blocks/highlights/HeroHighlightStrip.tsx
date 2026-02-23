@@ -33,7 +33,7 @@ const HeroHighlightStrip = ({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center gap-8 text-xs uppercase tracking-[0.4em]",
+        "flex flex-wrap items-center gap-4 sm:gap-8 text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.4em]",
         className
       )}
     >
@@ -42,10 +42,10 @@ const HeroHighlightStrip = ({
           <p className={cn("text-sm sm:text-base", toneClass.value)}>
             {item.value}
           </p>
-          <p className={cn("text-[0.6rem]", toneClass.label)}>{item.label}</p>
+          <p className={cn("text-[0.55rem] sm:text-[0.6rem]", toneClass.label)}>{item.label}</p>
         </div>
       ))}
-      {divider ? <div className={cn("h-12 w-px", toneClass.divider)} /> : null}
+      {divider ? <div className={cn("h-10 sm:h-12 w-px", toneClass.divider)} /> : null}
       {contactLabel ? (
         <p className={cn("text-sm", toneClass.value)}>{contactLabel}</p>
       ) : null}

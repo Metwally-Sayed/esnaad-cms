@@ -42,6 +42,13 @@ const heroAdvanced: BlockVariantSchema = {
     },
     {
       type: "image",
+      name: "mobileImage",
+      label: "Phone Background Image",
+      placeholder: "/images/hero-mobile.jpg",
+      description: "Optional image used on phone screens.",
+    },
+    {
+      type: "image",
       name: "posterImage",
       label: "Poster / fallback image",
       placeholder: "/images/hero-poster.jpg",
@@ -495,6 +502,13 @@ const heroImageOnly: BlockVariantSchema = {
       label: "Background Image",
       placeholder: "/images/hero.jpg",
       required: true,
+    },
+    {
+      type: "image",
+      name: "mobileImage",
+      label: "Phone Background Image",
+      placeholder: "/images/hero-mobile.jpg",
+      description: "Optional image used on phone screens (under 640px).",
     },
     {
       type: "text",

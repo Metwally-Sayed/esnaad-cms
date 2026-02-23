@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getNavigationTag } from "@/lib/cache/tags";
 import { CMS_CONFIG } from "@/config/cms.config";
 import type { ActionResponse } from "@/lib/types/action-response";
 import { failure, success } from "@/lib/types/action-response";
 import type { NavigationData, NavigationLinkInput } from "@/lib/types/navigation";
 import { logActionError } from "@/lib/utils/logger";
-import { revalidatePath, revalidateTag, updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { prisma } from "../prisma";
 
 /**
@@ -285,7 +286,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
 
         revalidatePath("/");
         revalidatePath("/admin");
-        updateTag(type); // Invalidate header or footer cache
+        updateTag(getNavigationTag(type)); // Invalidate header or footer cache
 
         return success(undefined);
       } catch (error) {
@@ -362,7 +363,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
 
         revalidatePath("/");
         revalidatePath("/admin");
-        updateTag(type); // Invalidate header or footer cache
+        updateTag(getNavigationTag(type)); // Invalidate header or footer cache
 
         return success(undefined);
       } catch (error) {
@@ -381,7 +382,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
         });
 
         revalidatePath("/admin");
-        updateTag(type); // Invalidate header or footer cache
+        updateTag(getNavigationTag(type)); // Invalidate header or footer cache
 
         return success({ id: item.id });
       } catch (error) {
@@ -400,7 +401,7 @@ export function createNavigationActions<TType extends "header" | "footer">(
         });
 
         revalidatePath("/admin");
-        updateTag(type); // Invalidate header or footer cache
+        updateTag(getNavigationTag(type)); // Invalidate header or footer cache
 
         return success(undefined);
       } catch (error) {

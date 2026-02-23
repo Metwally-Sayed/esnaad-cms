@@ -93,32 +93,62 @@ export function ProjectStickyNav({ tabs }: ProjectStickyNavProps) {
   };
 
   return (
-    <div
-      className={cn(
-        "fixed bottom-8 left-1/2 z-50 -translate-x-1/2 transition-all duration-500 will-change-transform",
-        isVisible
-          ? "translate-y-0 opacity-100"
-          : "translate-y-[150%] opacity-0 pointer-events-none"
-      )}
-    >
-      <div className="w-fit max-w-[90vw] overflow-hidden rounded-xl border border-black/10 bg-black/70 p-1.5 shadow-2xl backdrop-blur-xl sm:p-2 dark:border-white/10 dark:bg-white/10">
-        <div className="scrollbar-hide flex flex-row gap-0.5 overflow-x-auto sm:gap-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => scrollToSection(tab.id)}
-              className={cn(
-                "relative shrink-0 whitespace-nowrap rounded-lg px-3 py-2 font-serif text-[0.65rem] uppercase tracking-wide transition-all duration-300 touch-manipulation sm:rounded-xl sm:px-6 sm:py-2.5 sm:text-xs sm:tracking-wider md:px-8 md:py-3 md:tracking-widest",
-                activeTab === tab.id
-                  ? "bg-white text-black shadow-md dark:bg-white/90 dark:text-black"
-                  : "text-white/70 hover:bg-white/10 hover:text-white dark:text-white/80"
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
+    <>
+      <div
+        className={cn(
+          "fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2 transition-all duration-500 will-change-transform md:hidden",
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "translate-y-full pointer-events-none opacity-0"
+        )}
+      >
+        <div className="overflow-hidden rounded-2xl border border-black/10 bg-black/80 p-1.5 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-white/10">
+          <div className="no-scrollbar flex gap-1 overflow-x-auto">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => scrollToSection(tab.id)}
+                className={cn(
+                  "mobile-touch-target shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 font-serif text-[0.62rem] uppercase tracking-[0.16em] transition-all duration-300 touch-manipulation",
+                  activeTab === tab.id
+                    ? "bg-white text-black shadow-md dark:bg-white/90 dark:text-black"
+                    : "text-white/75 hover:bg-white/10 hover:text-white dark:text-white/80"
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+
+      <div
+        className={cn(
+          "fixed bottom-8 left-1/2 z-50 hidden -translate-x-1/2 transition-all duration-500 will-change-transform md:block",
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "translate-y-[150%] pointer-events-none opacity-0"
+        )}
+      >
+        <div className="w-fit max-w-[90vw] overflow-hidden rounded-xl border border-black/10 bg-black/70 p-1.5 shadow-2xl backdrop-blur-xl sm:p-2 dark:border-white/10 dark:bg-white/10">
+          <div className="scrollbar-hide flex flex-row gap-0.5 overflow-x-auto sm:gap-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => scrollToSection(tab.id)}
+                className={cn(
+                  "relative shrink-0 whitespace-nowrap rounded-lg px-3 py-2 font-serif text-[0.65rem] uppercase tracking-wide transition-all duration-300 touch-manipulation sm:rounded-xl sm:px-6 sm:py-2.5 sm:text-xs sm:tracking-wider md:px-8 md:py-3 md:tracking-widest",
+                  activeTab === tab.id
+                    ? "bg-white text-black shadow-md dark:bg-white/90 dark:text-black"
+                    : "text-white/70 hover:bg-white/10 hover:text-white dark:text-white/80"
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

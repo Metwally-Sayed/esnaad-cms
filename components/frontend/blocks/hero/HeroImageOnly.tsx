@@ -4,19 +4,25 @@ import { cn } from "@/lib/utils";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { HeroVariantProps } from "./index";
 
 export default function HeroImageOnly({ content, className }: HeroVariantProps) {
   const image = content.image as string | undefined;
+  const mobileImage = (content.mobileImage || content.phoneImage) as
+    | string
+    | undefined;
   const imageAlt = (content.imageAlt as string) || "Hero image";
   const minHeight = Number(content.minHeight) || 520;
+  const isMobile = useIsMobile();
+  const displayImage = isMobile ? mobileImage || image : image || mobileImage;
 
   const containerRef = useRef<HTMLElement>(null);
-  
+
   // Track scroll progress of the hero section
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
 
   // Transform values for parallax effect
@@ -24,7 +30,7 @@ export default function HeroImageOnly({ content, className }: HeroVariantProps) 
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.5]);
 
-  if (!image) return null;
+  if (!displayImage) return null;
 
   return (
     <section ref={containerRef} className={cn("w-full overflow-hidden", className)}>
@@ -33,7 +39,7 @@ export default function HeroImageOnly({ content, className }: HeroVariantProps) 
         style={{ minHeight, y, scale, opacity }}
       >
         <Image
-          src={image}
+          src={displayImage}
           alt={imageAlt}
           fill
           priority

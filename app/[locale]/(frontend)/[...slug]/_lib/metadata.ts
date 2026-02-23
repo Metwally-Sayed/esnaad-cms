@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getGlobalSeoDefaults } from "@/server/actions/global-settings";
+import { getGlobalSeoDefaultsCached } from "@/lib/data/global-settings";
 import { getPageBySlugCached } from "@/lib/data/page";
 import { getSiteUrl, buildHreflangAlternates } from "@/lib/site-config";
 import {
@@ -193,6 +193,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const { defaults } = await getGlobalSeoDefaults();
+  const { defaults } = await getGlobalSeoDefaultsCached();
   return buildMetadata(page, defaults, isArabic, slug);
 }

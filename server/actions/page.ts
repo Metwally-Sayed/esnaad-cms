@@ -1,16 +1,22 @@
 "use server";
 
+import {
+  invalidatePageCaches,
+  invalidatePageCachesBySlugs,
+} from "@/lib/cache/invalidate";
+import { normalizePageSlug } from "@/lib/cache/tags";
 import prisma from "@/lib/prisma";
 import { pageDetailsSchema } from "@/lib/validators/page";
 import { BlockType, Prisma } from "@prisma/client";
-import { updateTag } from "next/cache";
 import { z } from "zod/v3";
 
 export async function getPageBySlug({ slug }: { slug: string }) {
   try {
+    const normalizedSlug = normalizePageSlug(slug);
+
     const page = await prisma.page.findUnique({
       where: {
-        slug,
+        slug: normalizedSlug,
       },
       include: {
         blocks: {
@@ -67,9 +73,7 @@ export async function createPage(input: CreatePageInput) {
 
   const { blocks, ...pageData } = parsed.data;
 
-  const normalizedSlug = pageData.slug.startsWith("/")
-    ? pageData.slug.toLowerCase()
-    : `/${pageData.slug}`.toLowerCase();
+  const normalizedSlug = normalizePageSlug(pageData.slug);
 
   try {
     const { metadata, ...corePageData } = pageData;
@@ -77,7 +81,7 @@ export async function createPage(input: CreatePageInput) {
     const createdPage = await prisma.page.create({
       data: {
         title: corePageData.title,
-        slug: normalizedSlug.replace(/\/{2,}/g, "/"),
+        slug: normalizedSlug,
         description:
           corePageData.description && corePageData.description.length > 0
             ? corePageData.description
@@ -166,9 +170,7 @@ export async function createPage(input: CreatePageInput) {
       data: createdBlocks,
     });
 
-    // Invalidate cache for all pages and this specific page
-    updateTag("pages");
-    updateTag(`page-${normalizedSlug.replace(/\/{2,}/g, "/")}`);
+    invalidatePageCaches(normalizedSlug);
 
     return {
       success: true,
@@ -258,19 +260,28 @@ export async function updatePage(pageId: string, input: CreatePageInput) {
 
   const { blocks, ...pageData } = parsed.data;
 
-  const normalizedSlug = pageData.slug.startsWith("/")
-    ? pageData.slug.toLowerCase()
-    : `/${pageData.slug}`.toLowerCase();
+  const normalizedSlug = normalizePageSlug(pageData.slug);
 
   try {
     const { metadata, ...corePageData } = pageData;
+    const existingPage = await prisma.page.findUnique({
+      where: { id: pageId },
+      select: { slug: true },
+    });
+
+    if (!existingPage) {
+      return {
+        success: false,
+        error: "Page not found.",
+      };
+    }
 
     const updatedPage = await prisma.$transaction(async (tx) => {
       const targetPage = await tx.page.update({
         where: { id: pageId },
         data: {
           title: corePageData.title,
-          slug: normalizedSlug.replace(/\/{2,}/g, "/"),
+          slug: normalizedSlug,
           description:
             corePageData.description && corePageData.description.length > 0
               ? corePageData.description
@@ -376,9 +387,7 @@ export async function updatePage(pageId: string, input: CreatePageInput) {
       return targetPage;
     });
 
-    // Invalidate cache for all pages and this specific page
-    updateTag("pages");
-    updateTag(`page-${normalizedSlug.replace(/\/{2,}/g, "/")}`);
+    invalidatePageCachesBySlugs([existingPage.slug, normalizedSlug]);
 
     return {
       success: true,

@@ -107,7 +107,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
       <ProjectStickyNav tabs={heroTabs} />
 
       {/* Tab 1: Concept */}
-      <section id="concept" className="w-full overflow-x-hidden">
+      <div className="w-full overflow-x-hidden">
         <ProjectConcept
           description={data.conceptDescription}
           images={conceptImagesArray}
@@ -116,25 +116,25 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
           brochureUrl={data.brochureUrl}
           labels={conceptLabels}
         />
-      </section>
+      </div>
 
       {/* Tab 2: Units */}
-      <section id="units" className="w-full overflow-x-hidden">
+      <div className="w-full overflow-x-hidden">
         <ProjectUnits
           title={data.unitsTitle || t('units')}
           subtitle={data.unitsSubtitle}
           overview={data.unitsOverview}
           stats={statsArray}
         />
-      </section>
+      </div>
 
       {/* Tab 3: Floor Plans */}
-      <section id="floor-plans" className="w-full overflow-x-hidden">
+      <div className="w-full overflow-x-hidden">
         <ProjectFloorPlans floorPlans={floorPlansArray} />
-      </section>
+      </div>
 
       {/* Tab 4: Location */}
-      <section id="location" className="w-full overflow-x-hidden">
+      <div className="w-full overflow-x-hidden">
         <ProjectLocation
           description={data.locationDescription}
           mapEmbedUrl={data.mapEmbedUrl}
@@ -143,7 +143,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
           videoTourUrl={data.videoTourUrl}
           labels={locationLabels}
         />
-      </section>
+      </div>
       {/* Register Interest Form */}
       <RegisterInterestForm />
     </div>
